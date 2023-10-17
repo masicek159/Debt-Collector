@@ -14,6 +14,7 @@
 		6CBCD5332ADF231600F431AA /* Debt_CollectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBCD5322ADF231600F431AA /* Debt_CollectorTests.swift */; };
 		6CBCD53D2ADF231600F431AA /* Debt_CollectorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBCD53C2ADF231600F431AA /* Debt_CollectorUITests.swift */; };
 		6CBCD53F2ADF231600F431AA /* Debt_CollectorUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBCD53E2ADF231600F431AA /* Debt_CollectorUITestsLaunchTests.swift */; };
+		6CBCD54C2ADF23A200F431AA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6CBCD54B2ADF23A200F431AA /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		6CBCD5382ADF231600F431AA /* Debt-CollectorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Debt-CollectorUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CBCD53C2ADF231600F431AA /* Debt_CollectorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debt_CollectorUITests.swift; sourceTree = "<group>"; };
 		6CBCD53E2ADF231600F431AA /* Debt_CollectorUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debt_CollectorUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		6CBCD54B2ADF23A200F431AA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 		6CBCD5202ADF231400F431AA /* Debt-Collector */ = {
 			isa = PBXGroup;
 			children = (
+				6CBCD54B2ADF23A200F431AA /* GoogleService-Info.plist */,
 				6CBCD5212ADF231400F431AA /* Debt_CollectorApp.swift */,
 				6CBCD5232ADF231400F431AA /* ContentView.swift */,
 				6CBCD5252ADF231600F431AA /* Assets.xcassets */,
@@ -233,6 +236,7 @@
 			files = (
 				6CBCD5292ADF231600F431AA /* Preview Assets.xcassets in Resources */,
 				6CBCD5262ADF231600F431AA /* Assets.xcassets in Resources */,
+				6CBCD54C2ADF23A200F431AA /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
