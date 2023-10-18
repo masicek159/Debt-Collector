@@ -9,9 +9,16 @@ import SwiftUI
 
 @main
 struct Debt_CollectorApp: App {
+    @State var isLoggedIn: Bool = false
+    // TODO: check if the user is logged in
+    // TODO: finish BE implementation of logging in
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if isLoggedIn {
+                ContentView()
+            } else {
+                LoginView()
+            }
         }
     }
 }
