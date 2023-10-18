@@ -6,19 +6,22 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct Debt_CollectorApp: App {
-    @State var isLoggedIn: Bool = false
+    @StateObject var authViewModel = AuthViewModel()
+    
+    init() {
+        FirebaseApp.configure()
+    }
+    
     // TODO: check if the user is logged in
     // TODO: finish BE implementation of logging in
     var body: some Scene {
         WindowGroup {
-            if isLoggedIn {
-                ContentView()
-            } else {
-                LoginView()
-            }
+            ContentView()
+                .environmentObject(authViewModel)
         }
     }
 }
