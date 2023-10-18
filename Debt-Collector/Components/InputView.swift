@@ -35,6 +35,8 @@ struct InputView: View {
     }
 }
 
-#Preview {
-    InputView(text: .constant(""), title: "", placeholder: "")
+struct InputView_Preview: PreviewProvider {
+    static var previews: some View {
+        InputView(text: .constant(""), title: "", placeholder: "")
+    }
 }
