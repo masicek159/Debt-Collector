@@ -28,6 +28,11 @@
 		6CC0F2072AE05C2C00627704 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC0F2062AE05C2C00627704 /* FirebaseAuth */; };
 		6CC0F2092AE05C2C00627704 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC0F2082AE05C2C00627704 /* FirebaseFirestore */; };
 		6CC0F20B2AE05C9D00627704 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC0F20A2AE05C9D00627704 /* FirebaseFirestoreSwift */; };
+		C4CD80C12AE1B17800A79570 /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CD80C02AE1B17800A79570 /* FriendsView.swift */; };
+		C4CD80C32AE1B25300A79570 /* AddExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CD80C22AE1B25300A79570 /* AddExpenseView.swift */; };
+		C4CD80C52AE1B2AC00A79570 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CD80C42AE1B2AB00A79570 /* ChartsView.swift */; };
+		C4CD80C72AE1B2EB00A79570 /* GroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CD80C62AE1B2EB00A79570 /* GroupsView.swift */; };
+		C4CD80C92AE1B32700A79570 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CD80C82AE1B32700A79570 /* SettingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +69,11 @@
 		6CC0F1F22AE0553000627704 /* InputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
 		6CC0F1F72AE056B900627704 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		6CC0F1FA2AE05A1E00627704 /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
+		C4CD80C02AE1B17800A79570 /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
+		C4CD80C22AE1B25300A79570 /* AddExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseView.swift; sourceTree = "<group>"; };
+		C4CD80C42AE1B2AB00A79570 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
+		C4CD80C62AE1B2EB00A79570 /* GroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsView.swift; sourceTree = "<group>"; };
+		C4CD80C82AE1B32700A79570 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +175,11 @@
 				6CC0F1EC2AE0552300627704 /* SignUpView.swift */,
 				6CC0F1ED2AE0552300627704 /* LoginView.swift */,
 				6CC0F1FA2AE05A1E00627704 /* LandingView.swift */,
+				C4CD80C02AE1B17800A79570 /* FriendsView.swift */,
+				C4CD80C22AE1B25300A79570 /* AddExpenseView.swift */,
+				C4CD80C42AE1B2AB00A79570 /* ChartsView.swift */,
+				C4CD80C62AE1B2EB00A79570 /* GroupsView.swift */,
+				C4CD80C82AE1B32700A79570 /* SettingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -329,11 +344,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4CD80C32AE1B25300A79570 /* AddExpenseView.swift in Sources */,
 				6CC0F1EE2AE0552300627704 /* ContentView.swift in Sources */,
+				C4CD80C72AE1B2EB00A79570 /* GroupsView.swift in Sources */,
 				6CC0F1EF2AE0552300627704 /* SignUpView.swift in Sources */,
+				C4CD80C12AE1B17800A79570 /* FriendsView.swift in Sources */,
 				6CC0F1FB2AE05A1E00627704 /* LandingView.swift in Sources */,
 				6CC0F1F82AE056B900627704 /* AuthViewModel.swift in Sources */,
 				6CC0F1F32AE0553000627704 /* InputView.swift in Sources */,
+				C4CD80C52AE1B2AC00A79570 /* ChartsView.swift in Sources */,
+				C4CD80C92AE1B32700A79570 /* SettingView.swift in Sources */,
 				6CC0F1F02AE0552300627704 /* LoginView.swift in Sources */,
 				6CBCD5222ADF231400F431AA /* Debt_CollectorApp.swift in Sources */,
 			);

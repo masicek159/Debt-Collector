@@ -9,7 +9,15 @@ import SwiftUI
 
 struct LandingView: View {
     var body: some View {
-        Text("Landing after logging in")
+        TabView {
+            
+            FriendsView()
+            ChartsView()
+            AddExpenseView()
+            GroupsView()
+            SettingView()
+        }.accentColor(.purple)
+        
     }
 }
 
