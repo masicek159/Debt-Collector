@@ -10,10 +10,5 @@ import SwiftUI
 struct GroupsView: View {
     var body: some View {
         Text("Groups")
-            .tabItem{
-                Image(systemName: "person.2.fill")
-                Text("Groups")
-            }
-        
     }
 }
