@@ -7,17 +7,37 @@
 
 import SwiftUI
 
+protocol AuthenticationFormProtocol {
+    var isFormValid: Bool { get }
+}
+
 struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
+    
     @EnvironmentObject var authViewModel: AuthViewModel
     
     var body: some View {
         NavigationStack {
             VStack {
+                Image("logo")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 120, height: 140)
+                    .padding(.top, 32)
+                    .padding(.vertical, 32)
+        
                 InputView(text: $email, title: "Email Address", placeholder: "name@example.com").autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                    .border(authViewModel.authFailed ? Color.red : Color.clear)
                 
                 InputView(text: $password, title: "Password", placeholder: "Enter your password", isSecuredField: true).autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                    .border(authViewModel.authFailed ? Color.red : Color.clear)
+
+                
+                if authViewModel.authFailed {
+                    Text("auth failed")
+                        .foregroundColor(Color.red)
+                }
             }
             .padding(.horizontal)
             
@@ -37,6 +57,8 @@ struct LoginView: View {
                 .frame(width: UIScreen.main.bounds.width - 32, height: 48)
             }
             .background(Color(.systemBlue))
+            .disabled(!isFormValid)
+            .opacity(isFormValid ? 1.0 : 0.5)
             .cornerRadius(10)
             .padding(.top, 24)
             
@@ -44,6 +66,7 @@ struct LoginView: View {
             
             NavigationLink {
                 SignUpView()
+                    .navigationBarBackButtonHidden()
             } label: {
                 HStack(spacing: 3) {
                     Text("Don't have an account?")
@@ -54,6 +77,16 @@ struct LoginView: View {
             }
         }
     }}
+
+
+extension LoginView: AuthenticationFormProtocol {
+    var isFormValid: Bool {
+        return !email.isEmpty
+        && email.contains("@")
+        && !password.isEmpty
+        && password.count > 5
+    }
+}
 
 struct LoginView_Preview: PreviewProvider {
     static var previews: some View {

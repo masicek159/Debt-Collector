@@ -10,10 +10,12 @@ import Firebase
 import FirebaseAuth
 
 class AuthViewModel: ObservableObject {
-    @Published var userSession: FirebaseAuth.User?
+    @Published var userSession: FirebaseAuth.User? = nil
+    @Published var authFailed: Bool = false
     
     init(){
-        self.userSession = Auth.auth().currentUser
+        self.userSession = nil
+        self.authFailed = false
     }
     
     func singIn(withEmail email: String, password: String) async throws {
@@ -23,6 +25,7 @@ class AuthViewModel: ObservableObject {
             self.userSession = result.user
         } catch {
             print("Problem with signing in user")
+            authFailed = true
         }
     }
     

@@ -13,7 +13,6 @@ struct InputView: View {
     let placeholder: String
     var isSecuredField = false
     
-    
     var body: some View {
         VStack {
             if title != "" {
@@ -30,7 +29,6 @@ struct InputView: View {
                 TextField(placeholder, text: $text)
                     .font(.system(size: 14))
             }
-                    
         }
     }
 }
