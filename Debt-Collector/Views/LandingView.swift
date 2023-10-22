@@ -10,10 +10,17 @@ import SwiftUI
 struct LandingView: View {
     
     @State var selectedTab: Int = 0
+    
+    var friends: [user] = [
+            user(username: "Friend1", password: "password1"),
+            user(username: "Friend2", password: "password2"),
+            
+        ]
+    
     var body: some View {
         TabView(selection: $selectedTab) {
             
-            FriendsView()
+            FriendsView(friends: friends)
                 .tabItem{
                     Image(systemName: "person.fill")
                     Text("Friends")
@@ -51,6 +58,7 @@ struct LandingView: View {
         }.accentColor(.purple)
         
     }
+    
 }
 
 struct LandingView_Previews: PreviewProvider {
