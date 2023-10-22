@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import GoogleSignIn
+import GoogleSignInSwift
 
 protocol AuthenticationFormProtocol {
     var isFormValid: Bool { get }
@@ -61,6 +63,18 @@ struct LoginView: View {
             .opacity(isFormValid ? 1.0 : 0.5)
             .cornerRadius(10)
             .padding(.top, 24)
+            
+            HStack {
+                    VStack { Divider() }
+                    Text("or")
+                    VStack { Divider() }
+                  }
+            
+            GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .light, style: .wide, state: .normal)) {
+                Task {
+                    try await authViewModel.googleSignIn()
+                }
+            }
             
             Spacer()
             

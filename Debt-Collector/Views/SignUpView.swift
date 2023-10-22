@@ -53,6 +53,18 @@ struct SignUpView: View {
             .cornerRadius(10)
             .padding(.top, 24)
             
+            HStack {
+                    VStack { Divider() }
+                    Text("or")
+                    VStack { Divider() }
+                  }
+            
+            GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .light, style: .wide, state: .normal)) {
+                Task {
+                    try await authViewModel.googleSignIn()
+                }
+            }
+            
             Spacer()
             
             Button {
