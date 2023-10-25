@@ -11,40 +11,64 @@ import GoogleSignInSwift
 
 struct SignUpView: View {
     @State private var email = ""
+    @State private var fullName = ""
     @State private var password = ""
     @State private var confirmPassword = ""
+    @State private var loading = false
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authViewModel: AuthViewModel
     
     var body: some View {
-        VStack{
+        ScrollView(showsIndicators: false) {
             VStack {
-                Image("logo")
+                Image("app-logo")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 120, height: 140)
-                    .padding(.top, 32)
+                    .padding(.top, 24)
                     .padding(.vertical, 32)
                 
-                InputView(text: $email, title: "Email Address", placeholder: "name@example.com").autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                InputView(text: $fullName, placeholder: "Full name")
+                    .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                    .padding()
                 
-                InputView(text: $password, title: "Password", placeholder: "Enter your password", isSecuredField: true)
+                InputView(text: $email, placeholder: "name@example.com")
+                    .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                    .padding()
                 
-                InputView(text: $confirmPassword, title: "Confirm Password", placeholder: "Confirm your password", isSecuredField: true)
+                InputView(text: $password, placeholder: "Enter your password", isSecuredField: true)
+                    .padding()
+                
+                InputView(text: $confirmPassword, placeholder: "Confirm your password", isSecuredField: true)
+                    .padding()
+                
+                if authViewModel.authFailed && authViewModel.errorMessage != nil {
+                    Text(authViewModel.errorMessage ?? "")
+                        .foregroundColor(Color.red)
+                        .font(.system(size: 14))
+                }
             }
             .padding(.horizontal)
-            
             
             Button {
                 print("Logging in")
                 Task {
+                    self.loading = true
                     try await authViewModel.createUser(withEmail: email, password: password)
+                    self.loading = false
                 }
             } label: {
-                HStack{
-                    Text("SIGN IN")
-                        .fontWeight(.semibold)
-                    Image(systemName: "arrow.right")
+                Group {
+                    if self.loading {
+                        Text("Loading...")
+                            .fontWeight(.semibold)
+                    } else {
+                        HStack{
+                            Text("SIGN IN")
+                                .fontWeight(.semibold)
+                            Image(systemName: "arrow.right")
+                        }
+                    }
                 }
                 .foregroundColor(.white)
                 .frame(width: UIScreen.main.bounds.width - 32, height: 48)
@@ -56,20 +80,17 @@ struct SignUpView: View {
             .padding(.top, 24)
             
             HStack {
-                    VStack { Divider() }
-                    Text("or")
-                    VStack { Divider() }
-                  }
-            
-            GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .light, style: .wide, state: .normal)) {
-                Task {
-                    try await authViewModel.googleSignIn()
-                }
+                VStack { Divider() }
+                Text("or")
+                VStack { Divider() }
             }
+            
+            CustomGoogleSignInButton()
             
             Spacer()
             
             Button {
+                // return back to log in page
                 dismiss()
             } label: {
                 HStack(spacing: 3) {
@@ -77,9 +98,11 @@ struct SignUpView: View {
                     Text("Sign in!")
                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 }
-                .font(.system(size: 14))
+                .padding(.top, 24)
+                .font(.system(size: 16))
             }
         }
+        .onAppear(perform: authViewModel.resetVariables)
     }
 }
 
@@ -89,7 +112,6 @@ extension SignUpView: AuthenticationFormProtocol {
         && email.contains("@")
         && !password.isEmpty
         && password.count > 5
-        && password == confirmPassword
     }
 }
 struct SignUpView_Preview: PreviewProvider {
