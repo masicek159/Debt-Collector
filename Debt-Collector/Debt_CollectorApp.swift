@@ -11,17 +11,17 @@ import Firebase
 @main
 struct Debt_CollectorApp: App {
     @StateObject var authViewModel = AuthViewModel()
+    @StateObject var swiftUIShared = SwiftUIShared()
     
     init() {
         FirebaseApp.configure()
     }
     
-    // TODO: check if the user is logged in
-    // TODO: finish BE implementation of logging in
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(authViewModel)
+                .environmentObject(swiftUIShared)
         }
     }
 }
