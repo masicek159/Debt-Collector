@@ -8,11 +8,32 @@
 import SwiftUI
 
 struct SecureInputView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+    @Binding private var text: String
+    @State private var isSecured: Bool = true
+    @FocusState var isFocused: Bool
+    private var placeholder: String
+    
+    init(_ placeholder: String, text: Binding<String>) {
+        self.placeholder = placeholder
+        self._text = text
     }
-}
+    
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            Group {
+                if isSecured {
+                    SecureField(placeholder, text: $text)
+                } else {
+                    TextField(placeholder, text: $text)
+                }
+            }
 
-#Preview {
-    SecureInputView()
+            Button(action: {
+                isSecured.toggle()
+            }) {
+                Image(systemName: self.isSecured ? "eye.slash" : "eye")
+                    .accentColor(.gray)
+            }
+        }
+    }
 }
