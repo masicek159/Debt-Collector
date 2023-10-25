@@ -14,39 +14,45 @@ import GoogleSignInSwift
 class AuthViewModel: ObservableObject {
     @Published var userSession: FirebaseAuth.User? = nil
     @Published var authFailed: Bool
+    @Published var errorMessage: String? = nil
     
     init(){
         self.userSession = nil
         self.authFailed = false
+        self.errorMessage = nil
     }
     
     func singIn(withEmail email: String, password: String) async throws {
-        print("sign in")
+        self.authFailed = false
+        self.errorMessage = nil
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             self.userSession = result.user
         } catch {
-            print("Problem with signing in user")
+            print("Problem with creating user: \(error.localizedDescription)")
+            self.errorMessage = error.localizedDescription
             self.authFailed = true
         }
     }
     
     func createUser(withEmail email: String, password: String) async throws {
-        print("sign up")
+        self.authFailed = false
+        self.errorMessage = nil
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             self.userSession = result.user
         } catch {
-            print("Problem with creating user")
+            print("Problem with creating user: \(error.localizedDescription)")
+            self.errorMessage = error.localizedDescription
             self.authFailed = true
         }
     }
     
     func googleSignIn() async throws -> Bool {
         guard let clientID = FirebaseApp.app()?.options.clientID else {
-                fatalError("No client ID found in Firebase configuration")
+            fatalError("No client ID found in Firebase configuration")
         }
-
+        
         // Create Google Sign In configuration object.
         let config = GIDConfiguration(clientID: clientID)
         GIDSignIn.sharedInstance.configuration = config
@@ -57,7 +63,7 @@ class AuthViewModel: ObservableObject {
             print("There is no root view controller")
             return false
         }
-
+        
         do {
             let userAuthentication = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
             let user = userAuthentication.user
@@ -74,5 +80,19 @@ class AuthViewModel: ObservableObject {
             print(error.localizedDescription)
             return false
         }
+    }
+    
+    func signOut() {
+        do {
+            try Auth.auth().signOut()
+            self.userSession = nil
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func resetVariables() {
+        self.errorMessage = nil
+        self.authFailed = false
     }
 }
