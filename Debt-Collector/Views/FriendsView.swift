@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FriendsView: View {
-    var friends: [user]
+    var friends: [User]
 
     var body: some View {
         NavigationView {
@@ -46,7 +46,7 @@ struct FriendsView: View {
                                         Image(systemName: "person.fill")
                                             .font(.largeTitle)
                                             .foregroundColor(.purple)
-                                        Text(friend.username)
+                                        Text(friend.email)
                                             .font(.headline)
                                         Spacer()
                                         Text("Balance: \(friend.balance)$")

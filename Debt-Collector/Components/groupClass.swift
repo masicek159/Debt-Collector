@@ -7,14 +7,14 @@
 
 import Foundation
 class group{
-    var members: [user: Int]
+    var members: [User: Int]
     init(){
         members = [:]
     }
-    func addMember(member: user){
+    func addMember(member: User){
         members[member] = 0
     }
-    func processPayment(value: Int, payer: user){
+    func processPayment(value: Int, payer: User){
         //Ensuring payer is in group
         guard members.keys.contains(payer) else {
             return
