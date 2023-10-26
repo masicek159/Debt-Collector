@@ -7,19 +7,25 @@
 
 import Foundation
 import Firebase
+import FirebaseFirestoreSwift
 import FirebaseAuth
 import GoogleSignIn
 import GoogleSignInSwift
 
+@MainActor
 class AuthViewModel: ObservableObject {
     @Published var userSession: FirebaseAuth.User? = nil
+    @Published var currentUser: User? = nil
     @Published var authFailed: Bool
     @Published var errorMessage: String? = nil
     
     init(){
-        self.userSession = nil
         self.authFailed = false
         self.errorMessage = nil
+        
+        Task {
+            await fetchFirestoreUser()
+        }
     }
     
     func singIn(withEmail email: String, password: String) async throws {
@@ -28,19 +34,22 @@ class AuthViewModel: ObservableObject {
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             self.userSession = result.user
+            await fetchFirestoreUser()
         } catch {
             print("Problem with creating user: \(error.localizedDescription)")
-            self.errorMessage = error.localizedDescription
+            self.errorMessage = "You have entered an invalid email or password"
             self.authFailed = true
         }
     }
     
-    func createUser(withEmail email: String, password: String) async throws {
+    func createUser(withEmail email: String, password: String, fullName: String) async throws {
         self.authFailed = false
         self.errorMessage = nil
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             self.userSession = result.user
+            await createFirestoreUserIfNotExists(uid: result.user.uid, email: email, fullName: fullName)
+            await fetchFirestoreUser()
         } catch {
             print("Problem with creating user: \(error.localizedDescription)")
             self.errorMessage = error.localizedDescription
@@ -75,6 +84,8 @@ class AuthViewModel: ObservableObject {
             let result = try await Auth.auth().signIn(with: credential)
             let firebaseUser = result.user
             self.userSession = firebaseUser
+            await createFirestoreUserIfNotExists(uid: result.user.uid, email: result.user.email ?? "", fullName: result.user.displayName ?? "")
+            await fetchFirestoreUser()
             return true
         } catch {
             print(error.localizedDescription)
@@ -89,6 +100,24 @@ class AuthViewModel: ObservableObject {
         } catch {
             print(error.localizedDescription)
         }
+    }
+    
+    func createFirestoreUserIfNotExists(uid: String, email: String, fullName: String) async {
+        let userRef = Firestore.firestore().collection("users").document(uid)
+        let userDoc = try? await userRef.getDocument()
+        if let document = userDoc, document.exists {
+            return
+        } else {
+            let user = User(id: uid, email: email, fullName: fullName)
+            guard let encodedUser = try? Firestore.Encoder().encode(user) else { return }
+            try? await userRef.setData(encodedUser)
+        }
+    }
+    
+    func fetchFirestoreUser() async {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
+        self.currentUser = try? snapshot.data(as: User.self)
     }
     
     func resetVariables() {

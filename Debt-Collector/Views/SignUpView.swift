@@ -54,7 +54,7 @@ struct SignUpView: View {
                 print("Logging in")
                 Task {
                     self.loading = true
-                    try await authViewModel.createUser(withEmail: email, password: password)
+                    try await authViewModel.createUser(withEmail: email, password: password, fullName: fullName)
                     self.loading = false
                 }
             } label: {

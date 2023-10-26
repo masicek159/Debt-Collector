@@ -11,9 +11,9 @@ struct LandingView: View {
     
     @State var selectedTab: Int = 0
     
-    var friends: [user] = [
-            user(username: "Friend1", password: "password1"),
-            user(username: "Friend2", password: "password2"),
+    var friends: [User] = [
+        User(id: "ss", email: "Friend1@gmail.com", fullName: "Friend 1"),
+            User(id: "sssdsd", email: "Friend2@gmail.com", fullName: "Friend 2"),
             
         ]
     

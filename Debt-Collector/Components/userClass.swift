@@ -6,36 +6,51 @@
 //
 
 import Foundation
-class user: Hashable{
-    var username: String
-    var password: String
-    var balance: Int
-    var friends: [user] = []
-    init(username: String, password: String){
-        self.username = username
-        self.password = password
-        self.balance = 0
-        self.friends = []
+
+class User: Hashable, Identifiable, Encodable, Decodable {
+    var email: String
+    var fullName: String
+    var id: String
+    var balance: Int = 0
+    var friends: [User] = []
+    
+    init(id: String, email: String, fullName: String){
+        self.email = email
+        self.id = id
+        self.fullName = fullName
+        
+        loadFriends()
     }
-    static func == (lhs: user, rhs: user) -> Bool {
-            return lhs.username == rhs.username
+    
+    func loadFriends() {
+        // TODO: call firestore and get friends
     }
+    
+    static func == (lhs: User, rhs: User) -> Bool {
+        return lhs.email == rhs.email
+    }
+    
     func hash(into hasher: inout Hasher) {
-            hasher.combine(username)
-        }
+        hasher.combine(email)
+    }
+    
     func getBalance() -> Int{
         return(balance)
     }
+    
     func addBalance(bal: Int){
         balance += bal
     }
+    
     func removeBalance(bal: Int){
         balance -= bal
     }
-    func getFriends() -> [user]{
+    
+    func getFriends() -> [User]{
         return(friends)
     }
-    func addFriend(friend: user){
+    
+    func addFriend(friend: User){
         friends.append(friend)
     }
 }
