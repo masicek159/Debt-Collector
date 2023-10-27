@@ -6,7 +6,7 @@
 //
 
 import Foundation
-class group{
+class GroupModel{
     var members: [User: Int]
     init(){
         members = [:]
