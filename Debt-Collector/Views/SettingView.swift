@@ -9,15 +9,28 @@ import SwiftUI
 
 struct SettingView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
+    @State var confirmationShown = false
     
     var body: some View {
         VStack {
             Text("Settings")
             
             Button {
-                authViewModel.signOut()
+                confirmationShown = true
             } label: {
                 Text("Sign out")
+            }
+            .alert(isPresented: $confirmationShown) {
+                Alert(
+                    title: Text("Confirmation"),
+                    message: Text("Are you sure you want to Sign Out?"),
+                    primaryButton: .default(Text("Yes")) {
+                        authViewModel.signOut()
+                    },
+                    secondaryButton: .cancel() {
+                        confirmationShown = false
+                    }
+                )
             }
         }
     }
