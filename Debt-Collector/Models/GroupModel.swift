@@ -6,14 +6,27 @@
 //
 
 import Foundation
-class GroupModel{
+import Firebase
+import FirebaseFirestoreSwift
+
+class GroupModel: Codable {
+    var id: String = ""
     var members: [User: Int]
-    init(){
-        members = [:]
+    var name: String
+    var currency: String // TODO: add currency model or currency enum
+    var image: String? = nil
+
+    init(name: String, currency: String, image: String? = nil) {
+        self.image = image
+        self.name = name
+        self.currency = currency
+        self.members = [:]
     }
+    
     func addMember(member: User){
         members[member] = 0
     }
+    
     func processPayment(value: Int, payer: User){
         //Ensuring payer is in group
         guard members.keys.contains(payer) else {
@@ -27,4 +40,5 @@ class GroupModel{
             }
         }
     }
+    
 }
