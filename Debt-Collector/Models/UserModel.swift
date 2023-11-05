@@ -7,12 +7,19 @@
 
 import Foundation
 
-class User: Hashable, Identifiable, Encodable, Decodable {
+class User: Hashable, Identifiable, Codable {
     var email: String
     var fullName: String
     var id: String
     var balance: Int = 0
     var friends: [User] = []
+    
+    enum CodingKeys: String, CodingKey {
+            case email
+            case fullName
+            case id
+            case balance
+        }
     
     init(id: String, email: String, fullName: String){
         self.email = email
