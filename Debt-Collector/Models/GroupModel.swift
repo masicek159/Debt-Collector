@@ -9,14 +9,15 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-class GroupModel: Codable {
+class GroupModel: Codable, Identifiable {
     var id: String = ""
     var members: [User: Int]
     var name: String
     var currency: String // TODO: add currency model or currency enum
     var image: String? = nil
 
-    init(name: String, currency: String, image: String? = nil) {
+    init(id: String, name: String, currency: String, image: String? = nil) {
+        self.id = id
         self.image = image
         self.name = name
         self.currency = currency
