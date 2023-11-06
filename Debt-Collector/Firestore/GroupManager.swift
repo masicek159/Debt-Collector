@@ -8,20 +8,25 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+import FirebaseAuth
 
 final class GroupManager {
     
     static let shared = GroupManager()
     private init () {}
-    
+        
     private let groupCollection = Firestore.firestore().collection("groups")
     
     private func groupDocument(groupId: String) -> DocumentReference {
         groupCollection.document(groupId)
     }
     
-    func uploadGroup(group: GroupModel) async throws {
-        try groupDocument(groupId: group.id).setData(from: group, merge: false)
+    func uploadGroup(name: String, currency: String, image: String = "") async throws {
+        let groupRef = groupCollection.document()
+        let group = GroupModel(id: groupRef.documentID, name: name, currency: currency, image: image)
+        try groupRef.setData(from: group, merge: false)
+        let userId = Auth.auth().currentUser?.uid ?? ""
+        try await UserManager.shared.addGroupUser(userId: userId, groupId: groupRef.documentID)
     }
     
     func getGroup(groupId: String) async throws -> GroupModel {
