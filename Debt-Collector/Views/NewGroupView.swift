@@ -17,16 +17,16 @@ struct NewGroupView: View {
     
     var body: some View {
         Form {
-              Section(header: Text("Group Information")) {
+            Section(header: Text("Group Information")) {
                   TextField("Name", text: $groupName)
                   TextField("Currency", text: $groupCurrency)
               }
               
-              Section(header: Text("Group Image")) {
+            Section(header: Text("Group Image")) {
                   TextField("Image URL", text: $groupImage)
               }
               
-              Button(action: {
+            Button(action: {
                   Task {
                       try await viewModel.addGroup(name: groupName, currency: groupCurrency, image: groupImage)
                       showPopup = false
