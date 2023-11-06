@@ -6,3 +6,8 @@
 //
 
 import Foundation
+import SwiftUI
+
+class CurrenciesHelper: ObservableObject {
+    @Published var currencies = ["USD", "EUR", "GBP", "JPY", "CAD", "CZK"]
+}
