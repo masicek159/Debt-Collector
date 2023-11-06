@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 @MainActor
 final class GroupsViewModel: ObservableObject {
@@ -17,18 +18,17 @@ final class GroupsViewModel: ObservableObject {
     
     func getGroups () {
         Task {
-            let userGroups = try await UserManager.shared.getAllUserGroups()
+            guard let userId = Auth.auth().currentUser?.uid else { return }
+            let userGroups = try await UserManager.shared.getAllUserGroups(userId: userId)
             
             var localArray: [GroupModel] = []
             
             for userGroup in userGroups {
                 if let group = try? await GroupManager.shared.getGroup(groupId: userGroup.groupId) {
                     localArray.append( group)
-                    print(group.id)
                 }
             }
             self.groups = localArray
-            print(self.groups)
         }
     }
 }
