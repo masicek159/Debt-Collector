@@ -21,15 +21,21 @@ struct ProfileView: View {
     
     @StateObject private var viewModel = ProfileViewModel()
     
+    init() {
+        self.viewModel.loadCurrentUser()
+    }
+    
     var body: some View {
         NavigationView {
             
             List {
                 if let user = viewModel.user {
-                    Text("UserID: \(user.id)")
+                    Text("Name: \(user.fullName)")
+                    Text("Email: \(user.email)")
+                    Text("Balance: \(user.balance)")
                 }
             }
-            .onAppear {
+            .onAppear() {
                 viewModel.loadCurrentUser()
             }
             .navigationTitle("Profile")
