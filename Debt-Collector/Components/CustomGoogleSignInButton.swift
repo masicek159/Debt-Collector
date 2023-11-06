@@ -35,6 +35,9 @@ struct CustomGoogleSignInButton: View {
     }
 }
 
-#Preview {
-    CustomGoogleSignInButton()
+struct  CustomGoogleSignInButton_Previews: PreviewProvider {
+    static var previews: some View {
+        CustomGoogleSignInButton()
+    }
 }
+

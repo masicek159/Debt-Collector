@@ -13,7 +13,10 @@ import GoogleSignIn
 import GoogleSignInSwift
 
 @MainActor
-class AuthViewModel: ObservableObject {
+final class AuthViewModel: ObservableObject {
+    
+    static let shared = AuthViewModel()
+    
     @Published var userSession: FirebaseAuth.User? = nil
     @Published var currentUser: User? = nil
     @Published var authFailed: Bool

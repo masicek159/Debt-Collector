@@ -81,6 +81,8 @@ struct NewGroupView: View {
     }
 }
 
-#Preview {
+struct NewGroupView_Previews: PreviewProvider {
+    static var previews: some View {
     NewGroupView(viewModel: GroupsViewModel(), showPopup: .constant(false))
+    }
 }

@@ -60,9 +60,20 @@ struct FriendsView: View {
                     .listStyle(GroupedListStyle())
                     .navigationBarTitle("Friends")
                     .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            NavigationLink {
+                                ProfileView()
+                            } label: {
+                                Image(systemName: "person.fill")
+                                    .font(.headline)
+                            }
 
-                }
-    }
+                        }
+                    }
+            
+        }
+}
     func calculateTotalPositiveBalance() -> String {
             let totalPositiveBalance = friends.filter { $0.balance >= 0 }.reduce(0) { $0 + $1.balance }
             return String(totalPositiveBalance)
@@ -72,4 +83,14 @@ struct FriendsView: View {
             return String(totalNegativeBalance)
         }
 
+}
+
+struct FriendsView_Previews: PreviewProvider {
+    static var previews: some View {
+        FriendsView(friends: [
+            User(id: "ss", email: "Friend1@gmail.com", fullName: "Friend 1"),
+                User(id: "sssdsd", email: "Friend2@gmail.com", fullName: "Friend 2"),
+                
+            ])
+    }
 }
