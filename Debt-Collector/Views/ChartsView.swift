@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import SwiftUICharts
 
 struct ChartsView: View {
+    
+    
     var body: some View {
-        Text("Charts")        
+        Text("Charts")
     }
 }

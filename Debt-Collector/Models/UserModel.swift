@@ -12,7 +12,7 @@ class User: Hashable, Identifiable, Codable {
     var fullName: String
     var id: String
     var balance: Int = 0
-    var friends: [User] = []
+    var friends: [FriendshipModel] = []
     
     enum CodingKeys: String, CodingKey {
             case email
@@ -53,11 +53,11 @@ class User: Hashable, Identifiable, Codable {
         balance -= bal
     }
     
-    func getFriends() -> [User]{
+    func getFriends() -> [FriendshipModel]{
         return(friends)
     }
     
-    func addFriend(friend: User){
+    func addFriend(friend: FriendshipModel){
         friends.append(friend)
     }
 }

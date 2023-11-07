@@ -45,8 +45,6 @@ struct NewGroupView: View {
                                    // Retrieve selected asset in the form of Data
                                    if let data = try? await newItem?.loadTransferable(type: Data.self) {
                                        selectedImageData = data
-//                                       TODO: save image to firestore - how to do it?
-//                                       groupImage = data.base64EncodedString()
                                    }
                                }
                            }
@@ -66,7 +64,11 @@ struct NewGroupView: View {
             
             Button(action: {
                 Task {
-                    try await viewModel.addGroup(name: groupName, currency: groupCurrency, image: groupImage)
+<<<<<<< HEAD
+                    try await viewModel.addGroup(name: groupName, currency: groupCurrency, image: selectedImageData ?? Data())
+=======
+                    try await viewModel.addGroup(name: groupName, currency: groupCurrency, image: selectedImageData)
+>>>>>>> main
                     showPopup = false
                     viewModel.getGroups()
                 }
