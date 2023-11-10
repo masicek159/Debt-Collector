@@ -14,9 +14,9 @@ class GroupModel: Codable, Identifiable {
     var members: [User: Int]
     var name: String
     var currency: String // TODO: add currency model or currency enum
-    var image: Data
+    var image: Data?
 
-    init(id: String, name: String, currency: String, image: Data) {
+    init(id: String, name: String, currency: String, image: Data?) {
         self.id = id
         self.image = image
         self.name = name

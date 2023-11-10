@@ -21,7 +21,7 @@ final class GroupManager {
         groupCollection.document(groupId)
     }
     
-    func uploadGroup(name: String, currency: String, image: Data) async throws {
+    func uploadGroup(name: String, currency: String, image: Data?) async throws {
         let groupRef = groupCollection.document()
         let group = GroupModel(id: groupRef.documentID, name: name, currency: currency, image: image)
         try groupRef.setData(from: group, merge: false)
