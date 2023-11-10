@@ -12,7 +12,7 @@ import FirebaseAuth
 final class GroupsViewModel: ObservableObject {
     @Published private(set) var groups: [GroupModel] = []
     
-    func addGroup(name: String, currency: String, image: Data) async throws {
+    func addGroup(name: String, currency: String, image: Data?) async throws {
         try await GroupManager.shared.uploadGroup(name: name, currency: currency, image: image)
     }
     
@@ -41,16 +41,10 @@ struct GroupsView: View {
         NavigationView {
             List {
                 ForEach(viewModel.groups, id: \.id) { group in
-                    // TODO: group view
-                    HStack {
-                        if let uiImage = UIImage(data: group.image) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 50, height: 50)
+                    NavigationLink(destination: GroupDetail(group: group)) {
+                        HStack {
+                            Text(group.name)
                         }
-                        
-                        Text(group.name)
                     }
                 }
             }
