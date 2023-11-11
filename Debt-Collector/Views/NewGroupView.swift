@@ -64,11 +64,7 @@ struct NewGroupView: View {
             
             Button(action: {
                 Task {
-<<<<<<< HEAD
-                    try await viewModel.addGroup(name: groupName, currency: groupCurrency, image: selectedImageData ?? Data())
-=======
                     try await viewModel.addGroup(name: groupName, currency: groupCurrency, image: selectedImageData)
->>>>>>> main
                     showPopup = false
                     viewModel.getGroups()
                 }

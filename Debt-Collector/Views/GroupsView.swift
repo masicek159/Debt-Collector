@@ -12,11 +12,7 @@ import FirebaseAuth
 final class GroupsViewModel: ObservableObject {
     @Published private(set) var groups: [GroupModel] = []
     
-<<<<<<< HEAD
-    func addGroup(name: String, currency: String, image: Data) async throws {
-=======
     func addGroup(name: String, currency: String, image: Data?) async throws {
->>>>>>> main
         try await GroupManager.shared.uploadGroup(name: name, currency: currency, image: image)
     }
     
