@@ -41,23 +41,10 @@ struct GroupsView: View {
         NavigationView {
             List {
                 ForEach(viewModel.groups, id: \.id) { group in
-<<<<<<< HEAD
-                    // TODO: group view
-                    HStack {
-                        if let uiImage = UIImage(data: group.image) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 50, height: 50)
-                        }
-                        
-                        Text(group.name)
-=======
                     NavigationLink(destination: GroupDetail(group: group)) {
                         HStack {
                             Text(group.name)
                         }
->>>>>>> main
                     }
                 }
             }
