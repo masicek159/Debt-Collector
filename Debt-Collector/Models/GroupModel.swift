@@ -23,11 +23,36 @@ class GroupModel: Codable, Identifiable {
         self.currency = currency
         self.members = [:]
     }
-    
     func addMember(member: User){
         members[member] = 0
     }
-    
+    func removeMember(member: User) {
+        members.removeValue(forKey: member)
+    }
+    func getAllMembers() -> [User] {
+        return Array(members.keys)
+    }
+    func getGroupID() -> String {
+        return id
+    }
+    func getGroupName() -> String {
+        return name
+    }
+    func getGroupCurrency() -> String {
+        return currency
+    }
+    func getGroupImage() -> Data? {
+        return image
+    }
+    func setGroupName(newName: String) {
+        name = newName
+    }
+    func setGroupCurrency(newCurrency: String) {
+        currency = newCurrency
+    }
+    func setGroupImage(newImage: Data?) {
+        image = newImage
+    }
     func processPayment(value: Int, payer: User){
         //Ensuring payer is in group
         guard members.keys.contains(payer) else {
