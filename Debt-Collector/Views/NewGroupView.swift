@@ -68,6 +68,7 @@ struct NewGroupView: View {
                     uploadingGroup = true
                     try await viewModel.addGroup(name: groupName, currency: groupCurrency, image: selectedImageData)
                     showPopup = false
+                    uploadingGroup = false
                     viewModel.getGroups()
                 }
             }) {
