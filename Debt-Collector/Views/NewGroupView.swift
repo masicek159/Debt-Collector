@@ -12,6 +12,7 @@ struct NewGroupView: View {
     @ObservedObject var viewModel: GroupsViewModel
     @EnvironmentObject var currenciesHelper: CurrenciesHelper
     @Binding var showPopup: Bool
+    @State var uploadingGroup = false
     
     @State private var groupName = ""
     @State private var groupCurrency = ""
@@ -64,6 +65,7 @@ struct NewGroupView: View {
             
             Button(action: {
                 Task {
+                    uploadingGroup = true
                     try await viewModel.addGroup(name: groupName, currency: groupCurrency, image: selectedImageData)
                     showPopup = false
                     viewModel.getGroups()
@@ -72,6 +74,7 @@ struct NewGroupView: View {
                 Text("Create Group")
             }
         }
+        .disabled(uploadingGroup)
         .navigationBarTitle("Create Group")
         .task {
             groupCurrency = currenciesHelper.currencies.first ?? ""
