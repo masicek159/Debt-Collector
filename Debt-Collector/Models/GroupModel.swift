@@ -23,19 +23,6 @@ class GroupModel: Codable, Identifiable {
         self.currency = currency
         self.members = [:]
     }
-    deinit {
-        // Delete the corresponding document from Firestore
-        let groupCollection = Firestore.firestore().collection("groups")
-        let groupDocument = groupCollection.document(id)
-            
-        groupDocument.delete { error in
-            if let error = error {
-                print("Error deleting group document: \(error)")
-            } else {
-                print("Group document deleted successfully.")
-            }
-        }
-    }
     func addMember(member: User){
         members[member] = 0
     }
