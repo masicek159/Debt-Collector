@@ -8,11 +8,11 @@
 import Foundation
 
 class FriendshipModel: Identifiable, Codable{
-    var friend_id: String
+    var friendId: String
     var balance: Int
     
     init(friend_id: String, balance: Int) {
-        self.friend_id = friend_id
+        self.friendId = friend_id
         self.balance = balance
     }
 }

@@ -18,7 +18,7 @@ class GroupModel: Codable, Identifiable, Hashable {
        }
     
     var id: String = ""
-    var members: [User: Int]
+    var members: [User] = []
     var name: String
     var currency: String // TODO: add currency model or currency enum
     var image: Data?
@@ -30,14 +30,17 @@ class GroupModel: Codable, Identifiable, Hashable {
         self.currency = currency
         self.members = [owner: 0]
     }
+    
     func addMember(member: User){
-        members[member] = 0
+        members.append(member)
     }
     func removeMember(member: User) {
-        members.removeValue(forKey: member)
+        if let index = members.firstIndex(where: { $0.id == member.id }) {
+            members.remove(at: index)
+        }
     }
     func getAllMembers() -> [User] {
-        return Array(members.keys)
+        return members
     }
     func getGroupID() -> String {
         return id
@@ -62,16 +65,11 @@ class GroupModel: Codable, Identifiable, Hashable {
     }
     func processPayment(value: Int, payer: User){
         //Ensuring payer is in group
-        guard members.keys.contains(payer) else {
+        guard members.contains(where: {$0.id == payer.id}) else {
             return
         }
-        members[payer]! += value
-        var debt = value/members.count
-        for (member, _) in members {
-            if member != payer {
-                members[member]! -= debt
-            }
-        }
+        
+        let paymentPerMember = value / members.count
     }
-    
 }
+

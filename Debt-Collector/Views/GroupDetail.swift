@@ -6,15 +6,43 @@
 //
 
 import SwiftUI
+import FirebaseAuth
+
+@MainActor
+final class GroupMemberViewModel: ObservableObject {
+    @Published private(set) var friends: [User] = []
+    
+    func addGroupMember(groupId: String, userId: String, balance: Double = 0) async throws {
+        try await GroupManager.shared.addUserGroup(groupId: groupId, userId: userId, balance: balance)
+    }
+    
+    func getFriends () {
+        Task {
+            guard let userId = Auth.auth().currentUser?.uid else { return }
+            let userFriends = try await UserManager.shared.getAllUserFriends(userId: userId)
+            
+            var localArray: [User] = []
+            
+            for userFriend in userFriends {
+                if let friend = try? await UserManager.shared.getUser(userId: userFriend.friendId) {
+                    localArray.append(friend)
+                }
+            }
+            self.friends = localArray
+        }
+    }
+    
+}
 
 struct GroupDetail: View {
     @ObservedObject var viewModel = GroupsViewModel()
     
     var group: GroupModel
+    @ObservedObject var viewModel = GroupMemberViewModel()
     @State var expenses: [ExpenseModel] = []
     
-    var body: some View {
-        List {
+        NavigationView {
+    List {
             Section {
                 HStack {
                     if let imageData = group.image, let uiImage = UIImage(data: imageData) {
@@ -44,7 +72,13 @@ struct GroupDetail: View {
             }
             
             Section("Members") {
-                
+                NavigationLink(destination: NewGroupMemberView(viewModel: viewModel)) {
+                    Text("Add Member")
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(Color.blue)
+                        .cornerRadius(8)
+                }
             }
             
             Section("Expenses") {
@@ -57,9 +91,20 @@ struct GroupDetail: View {
                 }
             }
         }
+    }
         .onAppear {
             Task {
                 expenses = try await viewModel.getExpenses(groupId: group.id)
+                            
+                            Text("\(expense.amount)")
+                        }
+                    }
+                }
+            }
+            .onAppear {
+                Task {
+                    expenses = try await viewModel.getExpenses(groupId: group.id)
+                }
             }
         }
     }
