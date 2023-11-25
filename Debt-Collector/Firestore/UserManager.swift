@@ -57,9 +57,18 @@ final class UserManager {
         
         try await document.setData(data, merge: false)
     }
+        
+    func getAllUserFriends(userId: String) async throws -> [FriendshipModel] {
+        let user = try await userDocument(userId: userId).getDocument(as: User.self)
+        return user.friends
+    }
     
     func getAllUserGroups(userId: String) async throws -> [GroupUser] {
         try await groupUserCollection(userId: userId).getDocuments(as: GroupUser.self)
+    }
+    
+    func getUser(userId: String) async throws -> User {
+        try await userDocument(userId: userId).getDocument(as: User.self)
     }
 }
 
