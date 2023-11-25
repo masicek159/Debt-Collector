@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct GroupDetail: View {
+    @ObservedObject var viewModel = GroupsViewModel()
+    
     var group: GroupModel
+    @State var expenses: [ExpenseModel] = []
     
     var body: some View {
         List {
@@ -45,7 +48,18 @@ struct GroupDetail: View {
             }
             
             Section("Expenses") {
-                
+                ForEach(expenses, id: \.id) { expense in
+                    HStack{
+                        Text(expense.name)
+                        
+                        Text("\(expense.amount)")
+                    }
+                }
+            }
+        }
+        .onAppear {
+            Task {
+                expenses = try await viewModel.getExpenses(groupId: group.id)
             }
         }
     }
@@ -53,7 +67,7 @@ struct GroupDetail: View {
 
 struct GroupDetail_Previews: PreviewProvider {
     static var previews: some View {
-        GroupDetail(group: GroupModel(id: "1", name: "Group name", currency: "USD", image: nil))
+        GroupDetail(group: GroupModel(id: "1", name: "Group name", currency: "USD", image: nil, owner: User(id: "ss", email: "Friend1@gmail.com", fullName: "Friend 1")))
     }
 }
 

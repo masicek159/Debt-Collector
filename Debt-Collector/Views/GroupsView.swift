@@ -31,6 +31,14 @@ final class GroupsViewModel: ObservableObject {
             self.groups = localArray
         }
     }
+    
+    func getMembers(groupId: String) async throws -> [User] {
+        try await GroupManager.shared.getMembers(groupId: groupId)
+    }
+    
+    func getExpenses(groupId: String) async throws -> [ExpenseModel] {
+        try await GroupManager.shared.getExpenses(groupId: groupId)
+    }
 }
 
 struct GroupsView: View {

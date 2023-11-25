@@ -9,5 +9,7 @@ import Foundation
 import SwiftUI
 
 class CurrenciesHelper: ObservableObject {
+    static let shared = CurrenciesHelper()
+    private init () {}
     @Published var currencies = ["USD", "EUR", "GBP", "JPY", "CAD", "CZK"]
 }

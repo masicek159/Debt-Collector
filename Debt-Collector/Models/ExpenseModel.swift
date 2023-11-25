@@ -12,16 +12,18 @@ class ExpenseModel: Identifiable, Codable {
     var name: String
     var amount: Double
     var category: String
-    var group: String
+    var currency: String
+    var groupId: String
     var paidBy: User
     var participants: [User]
 
-    init(id: String, name: String, amount: Double, category: String, group: String, paidBy: User, participants: [User]) {
+    init(id: String, name: String, amount: Double, category: String, currency: String, groupId: String, paidBy: User, participants: [User]) {
         self.id = id
         self.name = name
         self.amount = amount
+        self.currency = currency
         self.category = category
-        self.group = group
+        self.groupId = groupId
         self.paidBy = paidBy
         self.participants = participants
     }
@@ -49,12 +51,12 @@ class ExpenseModel: Identifiable, Codable {
     func setExpenseCategory(newCategory: String) {
         category = newCategory
     }
-    func getExpenseGroup() -> String {
-        return group
+    func getExpenseGroupId() -> String {
+        return groupId
     }
 
-    func setExpenseGroup(newGroup: String) {
-        group = newGroup
+    func setExpenseGroupId(newGroupId: String) {
+        groupId = newGroupId
     }
     func getExpensePaidBy() -> User {
         return paidBy

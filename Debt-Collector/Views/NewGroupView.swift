@@ -10,7 +10,6 @@ import PhotosUI
 
 struct NewGroupView: View {
     @ObservedObject var viewModel: GroupsViewModel
-    @EnvironmentObject var currenciesHelper: CurrenciesHelper
     @Binding var showPopup: Bool
     @State var uploadingGroup = false
     
@@ -21,14 +20,20 @@ struct NewGroupView: View {
     @State private var selectedItem: PhotosPickerItem? = nil
     @State private var selectedImageData: Data? = nil
     
+    init(viewModel: GroupsViewModel, showPopup: Binding<Bool>) {
+        self.viewModel = viewModel
+        self._showPopup = showPopup
+        self._groupCurrency = State(initialValue: CurrenciesHelper.shared.currencies.first ?? "USD")
+    }
+    
     var body: some View {
         Form {
             Section(header: Text("Group Information")) {
                 TextField("Name", text: $groupName)
                 
                 Picker("Select Currency", selection: $groupCurrency) {
-                    ForEach(currenciesHelper.currencies, id: \.self) { currency in
-                        Text(currency)
+                    ForEach(CurrenciesHelper.shared.currencies, id: \.self) { currency in
+                        Text(currency).tag(currency)
                     }
                 }
                 .pickerStyle(.menu)
@@ -77,9 +82,6 @@ struct NewGroupView: View {
         }
         .disabled(uploadingGroup)
         .navigationBarTitle("Create Group")
-        .task {
-            groupCurrency = currenciesHelper.currencies.first ?? ""
-        }
     }
 }
 

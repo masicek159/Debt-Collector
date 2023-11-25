@@ -9,19 +9,26 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-class GroupModel: Codable, Identifiable {
+class GroupModel: Codable, Identifiable, Hashable {
+    static func == (lhs: GroupModel, rhs: GroupModel) -> Bool {
+        lhs.id == rhs.id
+    }
+    public func hash(into hasher: inout Hasher) {
+           return hasher.combine(id)
+       }
+    
     var id: String = ""
     var members: [User: Int]
     var name: String
     var currency: String // TODO: add currency model or currency enum
     var image: Data?
 
-    init(id: String, name: String, currency: String, image: Data?) {
+    init(id: String, name: String, currency: String, image: Data?, owner: User) {
         self.id = id
         self.image = image
         self.name = name
         self.currency = currency
-        self.members = [:]
+        self.members = [owner: 0]
     }
     func addMember(member: User){
         members[member] = 0
