@@ -44,13 +44,15 @@ struct AddExpenseView: View {
     var body: some View {
         Group {
             if expenseAdded {
-                Text("Expense was added")
-                
-                Button(action: {
-                    expenseAdded = false
-                }, label: {
-                    Text("Add another expense")
-                })
+                VStack {
+                    Text("Expense was added")
+                    
+                    Button(action: {
+                        expenseAdded = false
+                    }) {
+                        Text("Add another expense")
+                    }
+                }
             } else {
                 NavigationView{
                     Form {
@@ -115,5 +117,11 @@ struct AddExpenseView: View {
                 }
             }
         }
+    }
+}
+
+struct AddExpenseView_Previews: PreviewProvider {
+    static var previews: some View {
+        AddExpenseView()
     }
 }
