@@ -21,6 +21,14 @@ final class GroupManager {
         groupCollection.document(groupId)
     }
     
+    private func userGroupCollection(groupId: String) -> CollectionReference {
+        groupDocument(groupId: groupId).collection("members")
+    }
+    
+    private func userGroupDocument(groupId: String, userId: String) -> DocumentReference {
+        userGroupCollection(groupId: groupId).document(userId)
+    }
+    
     func uploadGroup(name: String, currency: String, image: Data?) async throws {
         let groupRef = groupCollection.document()
         let group = GroupModel(id: groupRef.documentID, name: name, currency: currency, image: image)
@@ -33,8 +41,19 @@ final class GroupManager {
         try await groupDocument(groupId: groupId).getDocument(as: GroupModel.self)
     }
     
-    func getAllUserGroups(userId: String) {
-        // TODO:
+    func addUserGroup(groupId: String, userId: String, balance: Double) async throws {
+        let document = userGroupCollection(groupId: groupId).document()
+        
+        let data: [String : Any] = [
+            UserGroup.CodingKeys.userId.rawValue : userId,
+            UserGroup.CodingKeys.balance.rawValue : balance
+        ]
+        
+        try await document.setData(data, merge: false)
+    }
+    
+    func getAllUserInGroup(groupId: String) async throws -> [UserGroup]{
+        try await userGroupCollection(groupId: groupId).getDocuments(as: UserGroup.self)
     }
 }
 
@@ -44,5 +63,15 @@ extension Query {
         return try snapshot.documents.map({ document in
             try document.data(as: T.self)
         })
+    }
+}
+
+struct UserGroup: Codable {
+    let userId: String
+    let balance: Int
+
+    enum CodingKeys: String, CodingKey {
+        case userId = "user_id"
+        case balance = "balance"
     }
 }
