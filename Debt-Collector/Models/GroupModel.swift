@@ -28,7 +28,7 @@ class GroupModel: Codable, Identifiable, Hashable {
         self.image = image
         self.name = name
         self.currency = currency
-        self.members = [owner: 0]
+        self.members = [owner]
     }
     
     func addMember(member: User){

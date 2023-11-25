@@ -19,7 +19,6 @@ final class ExpenseViewModel: ObservableObject {
 struct AddExpenseView: View {
     @ObservedObject var groupViewModel = GroupsViewModel()
     @ObservedObject var expenseViewModel = ExpenseViewModel()
-    @EnvironmentObject var authViewModel: AuthViewModel
     
     @State var name: String = ""
     @State var amount: Double = 0.0
@@ -43,70 +42,75 @@ struct AddExpenseView: View {
     }()
     
     var body: some View {
-        if expenseAdded {
-            Text("Expense was added")
-        } else {
-            NavigationView{
-                Form {
-                    Picker("Select Group", selection: $group) {
-                        ForEach(groupViewModel.groups, id: \.id) { group in
-                            Text(group.name).tag(group as GroupModel?)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .onChange(of: group) { newGroup in
-                        paidBy = AuthViewModel.shared.currentUser
-                        participants = Set(Array(newGroup?.members.map { $0.0 } ?? []))
-                        expenseCurrency = newGroup?.currency ?? "USD"
-                    }
-                    
-                    TextField("Name", text: $name)
-                    
-                    TextField("Category", text: $category)
-                    
-                    TextField("Amount", value: $amount, formatter: decimalFormatter)
-                    
-                    Picker("Select Currency", selection: $expenseCurrency) {
-                        ForEach(CurrenciesHelper.shared.currencies, id: \.self) { currency in
-                            Text(currency).tag(currency)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    
-                    Picker("Select Who Paid", selection: $paidBy) {
-                        ForEach(Array(group?.members ?? [:]), id: \.key) { (user, intValue) in
-                            Text(user.fullName)
-                                .tag(user as User?)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    
-                    MultiSelector<Text, User>(
-                        label: Text("For whom"),
-                        options: Array(group?.members.map { $0.0 } ?? []),
-                        optionToString: { $0.fullName },
-                        selected: $participants
-                    )
-                    
-                    
-                    Button(action: {
-                        Task {
-                            if let group = group, let paidBy = paidBy {
-                                uploadingExpense = true
-                                try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: Array(participants))
-                                uploadingExpense = false
-                                expenseAdded = true
+        Group {
+            if expenseAdded {
+                Text("Expense was added")
+            } else {
+                NavigationView{
+                    Form {
+                        Picker("Select Group", selection: $group) {
+                            ForEach(groupViewModel.groups, id: \.id) { group in
+                                Text(group.name).tag(group as GroupModel?)
                             }
                         }
-                    }) {
-                        Text("Add Expense")
+                        .pickerStyle(.menu)
+                        .onChange(of: group) { newGroup in
+                            paidBy = AuthViewModel.shared.currentUser
+                            participants = Set(Array(newGroup?.members ?? []))
+                            expenseCurrency = newGroup?.currency ?? "USD"
+                        }
+                        
+                        TextField("Name", text: $name)
+                        
+                        TextField("Category", text: $category)
+                        
+                        TextField("Amount", value: $amount, formatter: decimalFormatter)
+                        
+                        Picker("Select Currency", selection: $expenseCurrency) {
+                            ForEach(CurrenciesHelper.shared.currencies, id: \.self) { currency in
+                                Text(currency).tag(currency)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        
+                        Picker("Select Who Paid", selection: $paidBy) {
+                            ForEach(Array(group?.members ?? []), id: \.id) { user in
+                                Text(user.fullName)
+                                    .tag(user as User?)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        
+                        MultiSelector<Text, User>(
+                            label: Text("For whom"),
+                            options: Array(group?.members ?? []),
+                            optionToString: { $0.fullName },
+                            selected: $participants
+                        )
+                        
+                        
+                        Button(action: {
+                            Task {
+                                if let group = group, let paidBy = paidBy {
+                                    uploadingExpense = true
+                                    try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: Array(participants))
+                                    uploadingExpense = false
+                                    expenseAdded = true
+                                }
+                            }
+                        }) {
+                            Text("Add Expense")
+                        }
                     }
+                    .disabled(uploadingExpense)
                 }
-                .disabled(uploadingExpense)
+                .task {
+                    groupViewModel.getGroups()
+                }
             }
-            .task {
-                groupViewModel.getGroups()
-            }
+        }
+        .onAppear {
+            expenseAdded = false
         }
     }
 }

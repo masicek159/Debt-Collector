@@ -52,7 +52,7 @@ final class GroupManager {
     }
     
     func addUserGroup(groupId: String, userId: String, balance: Double) async throws {
-        let document = userGroupCollection(groupId: groupId).document()
+        let document = groupMembersCollection(groupId: groupId).document()
         
         let data: [String : Any] = [
             UserGroup.CodingKeys.userId.rawValue : userId,
@@ -63,7 +63,7 @@ final class GroupManager {
     }
     
     func getAllUserInGroup(groupId: String) async throws -> [UserGroup]{
-        try await userGroupCollection(groupId: groupId).getDocuments(as: UserGroup.self)
+        try await groupMembersCollection(groupId: groupId).getDocuments(as: UserGroup.self)
     }
     
     func getMembers(groupId: String) async throws -> [User] {
