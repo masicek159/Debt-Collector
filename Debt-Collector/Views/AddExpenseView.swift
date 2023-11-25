@@ -45,6 +45,12 @@ struct AddExpenseView: View {
         Group {
             if expenseAdded {
                 Text("Expense was added")
+                
+                Button(action: {
+                    expenseAdded = false
+                }, label: {
+                    Text("Add another expense")
+                })
             } else {
                 NavigationView{
                     Form {
@@ -108,9 +114,6 @@ struct AddExpenseView: View {
                     groupViewModel.getGroups()
                 }
             }
-        }
-        .onAppear {
-            expenseAdded = false
         }
     }
 }
