@@ -54,6 +54,7 @@ struct GroupsView: View {
                             Text(group.name)
                         }
                     }
+                    .navigationBarBackButtonHidden(true)
                 }
             }
             .navigationTitle("My Groups")
