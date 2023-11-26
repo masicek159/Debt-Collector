@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct FriendsView: View {
-    var friends: [User]
+
+    @ObservedObject var viewModel = GroupMemberViewModel()
 
     var body: some View {
         NavigationView {
@@ -21,7 +23,7 @@ struct FriendsView: View {
                                 Text("Positive Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("\(calculateTotalPositiveBalance())$")
+                                Text("calculateTotalPositiveBalance$")
                                     .font(.title)
                                     .foregroundColor(.green)
                             }
@@ -32,7 +34,7 @@ struct FriendsView: View {
                                 Text("Negative Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("-\(calculateTotalNegativeBalance())$")
+                                Text("calculateTotalNegativeBalance$")
                                     .font(.title)
                                     .foregroundColor(.red)
                             }
@@ -41,12 +43,12 @@ struct FriendsView: View {
                     
                     
                     Section(header: Text("Friends")) {
-                        ForEach(friends, id: \.self) { friend in
+                        ForEach(viewModel.friends, id: \.self) { friend in
                             HStack {
                                 Image(systemName: "person.fill")
                                     .font(.largeTitle)
                                     .foregroundColor(.purple)
-                                Text(friend.email)
+                                Text(friend.fullName)
                                     .font(.headline)
                                 Spacer()
                                 Text("Balance: \(friend.balance)$")
@@ -55,6 +57,10 @@ struct FriendsView: View {
                             }
                         }
                     }
+                    .onAppear {
+                        viewModel.getFriends()
+                    }
+                    
                 }
             }
             .listStyle(GroupedListStyle())
@@ -74,7 +80,8 @@ struct FriendsView: View {
             
         }
     }
-    func calculateTotalPositiveBalance() -> String {
+    
+/*    func calculateTotalPositiveBalance() -> String {
             let totalPositiveBalance = friends.filter { $0.balance >= 0 }.reduce(0) { $0 + $1.balance }
             return String(totalPositiveBalance)
         }
@@ -82,15 +89,5 @@ struct FriendsView: View {
             let totalNegativeBalance = friends.filter { $0.balance < 0 }.reduce(0) { $0 + $1.balance }
             return String(totalNegativeBalance)
         }
-
-}
-
-struct FriendsView_Previews: PreviewProvider {
-    static var previews: some View {
-        FriendsView(friends: [
-            User(id: "ss", email: "Friend1@gmail.com", fullName: "Friend 1"),
-                User(id: "sssdsd", email: "Friend2@gmail.com", fullName: "Friend 2"),
-                
-            ])
-    }
+*/
 }

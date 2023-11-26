@@ -7,12 +7,12 @@
 
 import Foundation
 
-class FriendshipModel: Identifiable, Codable{
+class FriendshipModel: Identifiable, Codable {
     var friendId: String
     var balance: Int
     
-    init(friend_id: String, balance: Int) {
-        self.friendId = friend_id
+    init(friendId: String, balance: Int) {
+        self.friendId = friendId
         self.balance = balance
     }
 }

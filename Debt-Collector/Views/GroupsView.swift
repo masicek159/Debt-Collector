@@ -42,13 +42,13 @@ final class GroupsViewModel: ObservableObject {
 }
 
 struct GroupsView: View {
-    @ObservedObject var viewModel = GroupsViewModel()
+    @ObservedObject var groupViewModel = GroupsViewModel()
     @State private var showPopup = false
     
     var body: some View {
         NavigationView {
             List {
-                ForEach(viewModel.groups, id: \.id) { group in
+                ForEach(groupViewModel.groups, id: \.id) { group in
                     NavigationLink(destination: GroupDetail(group: group)) {
                         HStack {
                             Text(group.name)
@@ -63,17 +63,11 @@ struct GroupsView: View {
                 Image(systemName: "plus")
             }))
             .sheet(isPresented: $showPopup, content: {
-                NewGroupView(viewModel: viewModel, showPopup: $showPopup)
+                NewGroupView(viewModel: groupViewModel, showPopup: $showPopup)
             })
             .task {
-                viewModel.getGroups()
+                groupViewModel.getGroups()
             }
         }
-    }
-}
-
-struct GroupsView_Previews: PreviewProvider {
-    static var previews: some View {
-        GroupsView()
     }
 }

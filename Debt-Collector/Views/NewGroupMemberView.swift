@@ -9,11 +9,11 @@ import SwiftUI
 import FirebaseAuth
 
 struct NewGroupMemberView: View {
-    @ObservedObject var viewModel: GroupMemberViewModel
-    
-    var currentUserId: String? = Auth.auth().currentUser?.uid
+    @ObservedObject var viewModel = GroupMemberViewModel()
     @State var selectedMember: User?
     
+    var group: GroupModel
+
     var body: some View {
         
         Form {
@@ -26,16 +26,19 @@ struct NewGroupMemberView: View {
         }
         .task {
             viewModel.getFriends()
-            print(viewModel.friends)
         }
+
         
-        
-        
-        
-        
-        
-        //        Task{
-        //            viewModel.addGroupMember(groupId:group.id, userId:balance:)
-        
+ /*       Button(action: {
+            if let selectedUser = selectedMember {
+                try await viewModel.addGroupMember(groupId: group.id, userId: selectedUser.id, balance: 0)
+            } else {
+                // Handle the case where selectedMember is nil
+                print("No member selected")
+            }
+        } {
+            Text("Add member")
+        } */
     }
+
 }

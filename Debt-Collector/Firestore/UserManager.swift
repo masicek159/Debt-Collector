@@ -24,6 +24,14 @@ final class UserManager {
         groupUserCollection(userId: userId).document(groupId)
     }
     
+    private func friendsCollection(userId: String) -> CollectionReference {
+        userDocument(userId: userId).collection("friends")
+    }
+    
+    private func friendsDocument(userId: String, friendId: String) -> DocumentReference {
+        friendsCollection(userId: userId).document(friendId)
+    }
+    
     private func userDocument(userId: String) -> DocumentReference {
         userCollection.document(userId)
     }
@@ -59,8 +67,7 @@ final class UserManager {
     }
         
     func getAllUserFriends(userId: String) async throws -> [FriendshipModel] {
-        let user = try await userDocument(userId: userId).getDocument(as: User.self)
-        return user.friends
+        try await friendsCollection(userId: userId).getDocuments(as: FriendshipModel.self)
     }
     
     func getAllUserGroups(userId: String) async throws -> [GroupUser] {

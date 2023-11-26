@@ -6,37 +6,9 @@
 //
 
 import SwiftUI
-import FirebaseAuth
-
-@MainActor
-final class GroupMemberViewModel: ObservableObject {
-    @Published private(set) var friends: [User] = []
-    
-    func addGroupMember(groupId: String, userId: String, balance: Double = 0) async throws {
-        try await GroupManager.shared.addUserGroup(groupId: groupId, userId: userId, balance: balance)
-    }
-    
-    func getFriends () {
-        Task {
-            guard let userId = Auth.auth().currentUser?.uid else { return }
-            let userFriends = try await UserManager.shared.getAllUserFriends(userId: userId)
-            
-            var localArray: [User] = []
-            
-            for userFriend in userFriends {
-                if let friend = try? await UserManager.shared.getUser(userId: userFriend.friendId) {
-                    localArray.append(friend)
-                }
-            }
-            self.friends = localArray
-        }
-    }
-    
-}
 
 struct GroupDetail: View {
     @ObservedObject var groupsViewModel = GroupsViewModel()
-    @ObservedObject var groupMemberViewModel = GroupMemberViewModel()
     
     var group: GroupModel
     @State var expenses: [ExpenseModel] = []
@@ -73,7 +45,7 @@ struct GroupDetail: View {
                 }
                 
                 Section("Members") {
-                    NavigationLink(destination: NewGroupMemberView(viewModel: groupMemberViewModel)) {
+                    NavigationLink(destination: NewGroupMemberView(group: group)) {
                         Text("Add Member")
                             .padding()
                             .foregroundColor(.white)
@@ -101,9 +73,4 @@ struct GroupDetail: View {
     }
 }
 
-struct GroupDetail_Previews: PreviewProvider {
-    static var previews: some View {
-        GroupDetail(group: GroupModel(id: "1", name: "Group name", currency: "USD", image: nil, owner: User(id: "ss", email: "Friend1@gmail.com", fullName: "Friend 1")))
-    }
-}
 
