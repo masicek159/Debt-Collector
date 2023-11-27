@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseAuth
 
 struct NewGroupMemberView: View {
-    @ObservedObject var viewModel = GroupMemberViewModel()
+    @ObservedObject var viewModel = UserViewModel()
     @State var selectedMember: User?
     
     var group: GroupModel

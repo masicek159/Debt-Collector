@@ -9,7 +9,7 @@ import Foundation
 import FirebaseAuth
 
 @MainActor
-final class GroupMemberViewModel: ObservableObject {
+final class UserViewModel: ObservableObject {
     @Published var friends: [User] = []
 
     

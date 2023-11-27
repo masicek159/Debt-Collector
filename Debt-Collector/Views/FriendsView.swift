@@ -10,7 +10,7 @@ import FirebaseAuth
 
 struct FriendsView: View {
 
-    @ObservedObject var viewModel = GroupMemberViewModel()
+    @ObservedObject var viewModel = UserViewModel()
 
     var body: some View {
         NavigationView {
