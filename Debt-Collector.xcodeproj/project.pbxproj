@@ -46,6 +46,7 @@
 		C47A3D7A2B12B9C200E8225A /* MultiSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A3D792B12B9C200E8225A /* MultiSelector.swift */; };
 		C47A3D7C2B12B9FF00E8225A /* ExpenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A3D7B2B12B9FF00E8225A /* ExpenseManager.swift */; };
 		C4960F252B15389E00002155 /* GroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4960F242B15389E00002155 /* GroupViewModel.swift */; };
+		C4960F272B15399C00002155 /* ExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4960F262B15399C00002155 /* ExpenseViewModel.swift */; };
 		C4BCA6562B13A236003D4F42 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BCA6552B13A236003D4F42 /* UserViewModel.swift */; };
 		C4CD80C12AE1B17800A79570 /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CD80C02AE1B17800A79570 /* FriendsView.swift */; };
 		C4CD80C32AE1B25300A79570 /* AddExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CD80C22AE1B25300A79570 /* AddExpenseView.swift */; };
@@ -85,6 +86,7 @@
 		C47A3D792B12B9C200E8225A /* MultiSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiSelector.swift; sourceTree = "<group>"; };
 		C47A3D7B2B12B9FF00E8225A /* ExpenseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpenseManager.swift; sourceTree = "<group>"; };
 		C4960F242B15389E00002155 /* GroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewModel.swift; sourceTree = "<group>"; };
+		C4960F262B15399C00002155 /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
 		C4BCA6552B13A236003D4F42 /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		C4CD80C02AE1B17800A79570 /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
 		C4CD80C22AE1B25300A79570 /* AddExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseView.swift; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 				6CC0F1F72AE056B900627704 /* AuthViewModel.swift */,
 				C4BCA6552B13A236003D4F42 /* UserViewModel.swift */,
 				C4960F242B15389E00002155 /* GroupViewModel.swift */,
+				C4960F262B15399C00002155 /* ExpenseViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				8EAD53C42AF6865900B63851 /* GroupManager.swift in Sources */,
 				1450FE1F2AE2EC91009BE3EC /* GroupModel.swift in Sources */,
 				8E9F60192AE62DA40063227A /* SwiftUIShared.swift in Sources */,
+				C4960F272B15399C00002155 /* ExpenseViewModel.swift in Sources */,
 				8ED068BA2AF8538600991071 /* NewGroupView.swift in Sources */,
 				5FD5BBBA2AFD5A0B00B8C76F /* ExpenseModel.swift in Sources */,
 				C4CD80C92AE1B32700A79570 /* SettingView.swift in Sources */,

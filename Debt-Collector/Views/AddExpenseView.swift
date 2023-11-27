@@ -7,15 +7,6 @@
 
 import SwiftUI
 
-@MainActor
-final class ExpenseViewModel: ObservableObject {
-    @Published private(set) var expenses: [GroupModel] = []
-    
-    func addExpense(name: String, amount: Double, category: String, currency: String, groupId: String, paidBy: User, participants: [User]) async throws {
-        try await ExpenseManager.shared.uploadExpense(name: name, amount: amount, category: category, currency: currency, groupId: groupId, paidBy: paidBy, participants: participants)
-    }
-}
-
 struct AddExpenseView: View {
     @ObservedObject var groupViewModel = GroupViewModel()
     @ObservedObject var expenseViewModel = ExpenseViewModel()
