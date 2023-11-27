@@ -11,10 +11,9 @@ import FirebaseAuth
 @MainActor
 final class UserViewModel: ObservableObject {
     @Published var friends: [User] = []
-
     
     func addGroupMember(groupId: String, userId: String, balance: Double = 0) async throws {
-        try await GroupManager.shared.addUserGroup(groupId: groupId, userId: userId, balance: balance)
+        try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: balance)
     }
     
     func getFriends () {

@@ -41,10 +41,23 @@ struct GroupDetail: View {
                                 .foregroundColor(.gray)
                         }
                     }
-                    
                 }
                 
                 Section("Members") {
+                    ForEach(groupViewModel.members, id: \.self) { member in
+                        HStack {
+                            Image(systemName: "person.fill")
+                                .font(.largeTitle)
+                                .foregroundColor(.purple)
+                            Text(member.fullName)
+                                .font(.headline)
+                            Spacer()
+                            Text("Balance: \(member.balance)$")
+                                .font(.subheadline)
+                                .foregroundColor(member.balance >= 0 ? .green : .red)
+                        }
+                    }
+                    
                     NavigationLink(destination: NewGroupMemberView(group: group)) {
                         Text("Add Member")
                             .padding()
@@ -54,8 +67,11 @@ struct GroupDetail: View {
                     }
                     .navigationBarBackButtonHidden(true)
                 }
-                
-                
+                .onAppear {
+                    print("mrdka")
+                    groupViewModel.getMembers(groupId: group.id)
+                    print(groupViewModel.members)
+                }
                 Section("Expenses") {
                     ForEach(expenses, id: \.id) { expense in
                         HStack{
