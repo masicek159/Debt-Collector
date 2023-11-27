@@ -27,6 +27,7 @@ struct NewGroupMemberView: View {
         .task {
             viewModel.getFriends()
         }
+        .navigationBarBackButtonHidden(true)
 
         
  /*       Button(action: {

@@ -52,7 +52,9 @@ struct GroupDetail: View {
                             .background(Color.blue)
                             .cornerRadius(8)
                     }
+                    .navigationBarBackButtonHidden(true)
                 }
+                
                 
                 Section("Expenses") {
                     ForEach(expenses, id: \.id) { expense in
