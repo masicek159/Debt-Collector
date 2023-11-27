@@ -9,7 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct NewGroupView: View {
-    @ObservedObject var viewModel: GroupsViewModel
+    @ObservedObject var viewModel: GroupViewModel
     @Binding var showPopup: Bool
     @State var uploadingGroup = false
     
@@ -20,7 +20,7 @@ struct NewGroupView: View {
     @State private var selectedItem: PhotosPickerItem? = nil
     @State private var selectedImageData: Data? = nil
     
-    init(viewModel: GroupsViewModel, showPopup: Binding<Bool>) {
+    init(viewModel: GroupViewModel, showPopup: Binding<Bool>) {
         self.viewModel = viewModel
         self._showPopup = showPopup
         self._groupCurrency = State(initialValue: CurrenciesHelper.shared.currencies.first ?? "USD")
@@ -87,6 +87,6 @@ struct NewGroupView: View {
 
 struct NewGroupView_Previews: PreviewProvider {
     static var previews: some View {
-    NewGroupView(viewModel: GroupsViewModel(), showPopup: .constant(false))
+    NewGroupView(viewModel: GroupViewModel(), showPopup: .constant(false))
     }
 }

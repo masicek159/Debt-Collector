@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GroupDetail: View {
-    @ObservedObject var groupsViewModel = GroupsViewModel()
+    @ObservedObject var groupViewModel = GroupViewModel()
     
     var group: GroupModel
     @State var expenses: [ExpenseModel] = []
@@ -69,7 +69,7 @@ struct GroupDetail: View {
         }
         .onAppear {
             Task {
-                expenses = try await groupsViewModel.getExpenses(groupId: group.id)
+                expenses = try await groupViewModel.getExpenses(groupId: group.id)
             }
         }
     }

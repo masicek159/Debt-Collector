@@ -17,7 +17,7 @@ final class ExpenseViewModel: ObservableObject {
 }
 
 struct AddExpenseView: View {
-    @ObservedObject var groupViewModel = GroupsViewModel()
+    @ObservedObject var groupViewModel = GroupViewModel()
     @ObservedObject var expenseViewModel = ExpenseViewModel()
     
     @State var name: String = ""
