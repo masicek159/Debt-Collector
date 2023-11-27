@@ -47,10 +47,10 @@ struct LandingView: View {
                 }
                 .tag(3)
             
-            SettingView()
+            ProfileView()
                 .tabItem{
                     Image(systemName: "circle.grid.2x2.fill")
-                    Text("Settings")
+                    Text("Profile")
                 }
                 .tag(4)
             

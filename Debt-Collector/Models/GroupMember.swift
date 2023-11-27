@@ -12,7 +12,7 @@ struct GroupMember: Codable {
     let balance: Int
 
     enum CodingKeys: String, CodingKey {
-        case memberId = "member_id"
+        case memberId = "memberId"
         case balance = "balance"
     }
 }

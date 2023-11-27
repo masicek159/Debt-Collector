@@ -51,7 +51,7 @@ final class GroupManager {
         try await groupDocument(groupId: groupId).getDocument(as: GroupModel.self)
     }
     
-    func addUserGroup(groupId: String, userId: String, balance: Double) async throws {
+    func addGroupMember(groupId: String, userId: String, balance: Double) async throws {
         let document = groupMembersCollection(groupId: groupId).document()
         
         let data: [String : Any] = [

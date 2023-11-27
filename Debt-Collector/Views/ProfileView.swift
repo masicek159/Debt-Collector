@@ -20,6 +20,7 @@ final class ProfileViewModel: ObservableObject {
 struct ProfileView: View {
     
     @StateObject private var viewModel = ProfileViewModel()
+    @State private var showingSettings = false
     
     init() {
         self.viewModel.loadCurrentUser()
@@ -39,6 +40,19 @@ struct ProfileView: View {
                 viewModel.loadCurrentUser()
             }
             .navigationTitle("Profile")
+            .navigationBarItems(trailing:
+                            Button(action: {
+                                showingSettings = true
+                            }) {
+                                Image(systemName: "gearshape")
+                                    .font(.title2)
+                                    .foregroundColor(.purple)
+                                    .frame(width: 30, height: 30)
+                            }
+                        )
+                        .sheet(isPresented: $showingSettings) {
+                            SettingView()
+                        }
                 
         }
     }

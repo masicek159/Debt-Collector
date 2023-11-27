@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @State var confirmationShown = false
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         VStack {
@@ -19,6 +20,7 @@ struct SettingView: View {
                 confirmationShown = true
             } label: {
                 Text("Sign out")
+                    .foregroundColor(.purple)
             }
             .alert(isPresented: $confirmationShown) {
                 Alert(
@@ -35,4 +37,3 @@ struct SettingView: View {
         }
     }
 }
-
