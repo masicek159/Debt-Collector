@@ -47,6 +47,7 @@
 		C47A3D7C2B12B9FF00E8225A /* ExpenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A3D7B2B12B9FF00E8225A /* ExpenseManager.swift */; };
 		C4960F252B15389E00002155 /* GroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4960F242B15389E00002155 /* GroupViewModel.swift */; };
 		C4960F272B15399C00002155 /* ExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4960F262B15399C00002155 /* ExpenseViewModel.swift */; };
+		C4960F292B1539EB00002155 /* GroupMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4960F282B1539EB00002155 /* GroupMember.swift */; };
 		C4BCA6562B13A236003D4F42 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BCA6552B13A236003D4F42 /* UserViewModel.swift */; };
 		C4CD80C12AE1B17800A79570 /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CD80C02AE1B17800A79570 /* FriendsView.swift */; };
 		C4CD80C32AE1B25300A79570 /* AddExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CD80C22AE1B25300A79570 /* AddExpenseView.swift */; };
@@ -87,6 +88,7 @@
 		C47A3D7B2B12B9FF00E8225A /* ExpenseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpenseManager.swift; sourceTree = "<group>"; };
 		C4960F242B15389E00002155 /* GroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewModel.swift; sourceTree = "<group>"; };
 		C4960F262B15399C00002155 /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
+		C4960F282B1539EB00002155 /* GroupMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMember.swift; sourceTree = "<group>"; };
 		C4BCA6552B13A236003D4F42 /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		C4CD80C02AE1B17800A79570 /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
 		C4CD80C22AE1B25300A79570 /* AddExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseView.swift; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 				1450FE1E2AE2EC91009BE3EC /* GroupModel.swift */,
 				5FD5BBB92AFD5A0B00B8C76F /* ExpenseModel.swift */,
 				5FD5BBBB2AFEE7DE00B8C76F /* FriendshipModel.swift */,
+				C4960F282B1539EB00002155 /* GroupMember.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -332,6 +335,7 @@
 				5FD5BBBC2AFEE7DE00B8C76F /* FriendshipModel.swift in Sources */,
 				6CC0F1EF2AE0552300627704 /* SignUpView.swift in Sources */,
 				8EADEEBC2AE6D0A40030E888 /* CustomGoogleSignInButton.swift in Sources */,
+				C4960F292B1539EB00002155 /* GroupMember.swift in Sources */,
 				8EC66CB42B01BAD800024520 /* GroupDetail.swift in Sources */,
 				C4CD80C12AE1B17800A79570 /* FriendsView.swift in Sources */,
 				6CC0F1FB2AE05A1E00627704 /* LandingView.swift in Sources */,

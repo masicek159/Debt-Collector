@@ -32,7 +32,7 @@ final class GroupViewModel: ObservableObject {
         }
     }
     
-    func getMembers(groupId: String) async throws -> [User] {
+    func getMembers(groupId: String) async throws -> [GroupMember] {
         try await GroupManager.shared.getMembers(groupId: groupId)
     }
     

@@ -55,19 +55,15 @@ final class GroupManager {
         let document = groupMembersCollection(groupId: groupId).document()
         
         let data: [String : Any] = [
-            UserGroup.CodingKeys.userId.rawValue : userId,
-            UserGroup.CodingKeys.balance.rawValue : balance
+            GroupMember.CodingKeys.memberId.rawValue : userId,
+            GroupMember.CodingKeys.balance.rawValue : balance
         ]
         
         try await document.setData(data, merge: false)
     }
     
-    func getAllUserInGroup(groupId: String) async throws -> [UserGroup]{
-        try await groupMembersCollection(groupId: groupId).getDocuments(as: UserGroup.self)
-    }
-    
-    func getMembers(groupId: String) async throws -> [User] {
-        try await groupMembersCollection(groupId: groupId).getDocuments(as: User.self)
+    func getMembers(groupId: String) async throws -> [GroupMember]{
+        try await groupMembersCollection(groupId: groupId).getDocuments(as: GroupMember.self)
     }
     
     func getExpenses(groupId: String) async throws -> [ExpenseModel] {
@@ -81,15 +77,5 @@ extension Query {
         return try snapshot.documents.map({ document in
             try document.data(as: T.self)
         })
-    }
-}
-
-struct UserGroup: Codable {
-    let userId: String
-    let balance: Int
-
-    enum CodingKeys: String, CodingKey {
-        case userId = "user_id"
-        case balance = "balance"
     }
 }
