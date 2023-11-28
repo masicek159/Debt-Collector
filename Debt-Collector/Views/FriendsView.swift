@@ -23,7 +23,7 @@ struct FriendsView: View {
                                 Text("Positive Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("calculateTotalPositiveBalance$")
+                                Text(viewModel.calculateTotalPositiveBalance())
                                     .font(.title)
                                     .foregroundColor(.green)
                             }
@@ -34,7 +34,7 @@ struct FriendsView: View {
                                 Text("Negative Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("calculateTotalNegativeBalance$")
+                                Text(viewModel.calculateTotalNegativeBalance())
                                     .font(.title)
                                     .foregroundColor(.red)
                             }
@@ -43,12 +43,12 @@ struct FriendsView: View {
                     
                     
                     Section(header: Text("Friends")) {
-                        ForEach(viewModel.friends, id: \.self) { friend in
+                        ForEach(viewModel.friendsWithExpenses, id: \.friendId) { friend in
                             HStack {
                                 Image(systemName: "person.fill")
                                     .font(.largeTitle)
                                     .foregroundColor(.purple)
-                                Text(friend.fullName)
+                                Text(friend.friendId)
                                     .font(.headline)
                                 Spacer()
                                 Text("Balance: \(friend.balance)$")
@@ -58,9 +58,10 @@ struct FriendsView: View {
                         }
                     }
                     .onAppear {
-                        viewModel.getFriends()
+                        Task {
+                            await viewModel.fetchFriendsWithExpenses()
+                        }
                     }
-                    
                 }
             }
             .listStyle(GroupedListStyle())

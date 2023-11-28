@@ -9,10 +9,17 @@ import Foundation
 
 class FriendshipModel: Identifiable, Codable {
     var friendId: String
-    var balance: Int
+    var expenses: [ExpenseModel]
+    var balance: Double {
+            calculateBalance()
+        }
     
-    init(friendId: String, balance: Int) {
+    init(friendId: String, expenses: [ExpenseModel]) {
         self.friendId = friendId
-        self.balance = balance
+        self.expenses = expenses
     }
+    
+    func calculateBalance() -> Double {
+            expenses.reduce(0.0) { $0 + $1.amount }
+        }
 }
