@@ -20,6 +20,7 @@ final class ProfileViewModel: ObservableObject {
 struct ProfileView: View {
     
     @StateObject private var viewModel = ProfileViewModel()
+    @StateObject private var friendRequestViewModel: FriendRequestViewModel = FriendRequestViewModel()
     
     init() {
         self.viewModel.loadCurrentUser()
@@ -27,19 +28,31 @@ struct ProfileView: View {
     
     var body: some View {
         NavigationView {
-            
             List {
-                if let user = viewModel.user {
-                    Text("Name: \(user.fullName)")
-                    Text("Email: \(user.email)")
-                    Text("Balance: \(user.balance)")
+                Section() {
+                    if let user = viewModel.user {
+                        Text("Name: \(user.fullName)")
+                        Text("Email: \(user.email)")
+                        Text("Balance: \(user.balance)")
+                    }
+                }
+                
+                Section(header: Text("Friend requests")) {
+                    ForEach(friendRequestViewModel.friendRequests, id: \.self) { friendRequest in
+                        HStack{
+                            Text(friendRequest.senderEmail)
+                            // TODO: finish approve or decline
+                        }
+                    }
                 }
             }
-            .onAppear() {
-                viewModel.loadCurrentUser()
-            }
-            .navigationTitle("Profile")
-                
+        }
+        .onAppear() {
+            viewModel.loadCurrentUser()
+        }
+        .navigationTitle("Profile")
+        .task {
+            await friendRequestViewModel.loadFriendRequests()
         }
     }
 }

@@ -36,6 +36,31 @@ final class UserManager {
         userCollection.document(userId)
     }
     
+    private func userDocument(forEmail email: String) async throws -> DocumentReference? {
+        let querySnapshot = try await userCollection.whereField("email", isEqualTo: email).getDocuments()
+        
+        if let document = querySnapshot.documents.first {
+            return document.reference
+        } else {
+            return nil
+        }
+    }
+    
+    func getUser(email: String) async -> User? {
+        do {
+            let userRef = try await userDocument(forEmail: email)
+            if let userRef = userRef {
+                let documentSnapshot = try await userRef.getDocument()
+                return try documentSnapshot.data(as: User.self)
+            } else {
+                return nil
+            }
+        } catch {
+            print("Error: \(error)")
+            return nil
+        }
+    }
+    
     func createFirestoreUserIfNotExists(uid: String, email: String, fullName: String) async {
         let userRef = Firestore.firestore().collection("users").document(uid)
         let userDoc = try? await userRef.getDocument()
@@ -65,7 +90,7 @@ final class UserManager {
         
         try await document.setData(data, merge: false)
     }
-        
+    
     func getAllUserFriends(userId: String) async throws -> [FriendshipModel] {
         try await friendsCollection(userId: userId).getDocuments(as: FriendshipModel.self)
     }
@@ -76,6 +101,10 @@ final class UserManager {
     
     func getUser(userId: String) async throws -> User {
         try await userDocument(userId: userId).getDocument(as: User.self)
+    }
+    
+    func getUsers(userIds: [String]) async throws -> [User] {
+        try await userCollection.whereField(FieldPath.documentID(), in: userIds).getDocuments(as: User.self)
     }
 }
 

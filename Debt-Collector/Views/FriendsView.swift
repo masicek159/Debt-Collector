@@ -11,6 +11,7 @@ import FirebaseAuth
 struct FriendsView: View {
 
     @ObservedObject var viewModel = UserViewModel()
+    @State var showPopup = false
 
     var body: some View {
         NavigationView {
@@ -41,8 +42,7 @@ struct FriendsView: View {
                         }
                     }
                     
-                    
-                    Section(header: Text("Friends")) {
+                    Section(header: FriendsSectionHeaderView(showPopup: $showPopup)) {
                         ForEach(viewModel.friends, id: \.self) { friend in
                             HStack {
                                 Image(systemName: "person.fill")
@@ -57,6 +57,9 @@ struct FriendsView: View {
                             }
                         }
                     }
+                    .sheet(isPresented: $showPopup, content: {
+                        AddFriendView(showPopup: $showPopup)
+                    })
                     .onAppear {
                         viewModel.getFriends()
                     }
