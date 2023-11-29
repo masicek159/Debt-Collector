@@ -19,21 +19,36 @@ final class ProfileViewModel: ObservableObject {
 
 struct ProfileView: View {
     
-    @StateObject private var viewModel = ProfileViewModel()
+    @StateObject private var profileViewModel = ProfileViewModel()
     @StateObject private var friendRequestViewModel: FriendRequestViewModel = FriendRequestViewModel()
+    @StateObject private var userViewModel: UserViewModel = UserViewModel()
     
     @State private var addFailed: Bool = false
     @State private var showAlert: Bool = false
     
     init() {
-        self.viewModel.loadCurrentUser()
+        self.profileViewModel.loadCurrentUser()
     }
     
-    func acceptFriendRequest() {
-        
+    func acceptFriendRequest(friendRequest: FriendRequest, friendsRequestViewModel: FriendRequestViewModel, userViewModel: UserViewModel) async{
+
+        // add friend to receiver
+        do {
+            try await userViewModel.addFriend(userId: friendRequest.receiverId, friendId: friendRequest.senderId)
+        } catch {
+            print("Cannot add friend \(friendRequest.senderId) to user \(friendRequest.receiverId)")
+        }
+        // add friend to sender
+        do {
+            try await userViewModel.addFriend(userId: friendRequest.senderId, friendId: friendRequest.receiverId)
+        } catch {
+            print("Cannot add friend \(friendRequest.receiverId) to user \(friendRequest.senderId)")
+        }
+        // update the request to accepted
+        friendsRequestViewModel.updateRequestStatus(updatedStatus: "ACCEPTED", requestId: friendRequest.id)
     }
 
-    func declineFriendRequest() {
+    func declineFriendRequest(friendRequest: FriendRequest) {
         
     }
     
@@ -41,7 +56,7 @@ struct ProfileView: View {
         NavigationView {
             List {
                 Section() {
-                    if let user = viewModel.user {
+                    if let user = profileViewModel.user {
                         Text("Name: \(user.fullName)")
                         Text("Email: \(user.email)")
                         Text("Balance: \(user.balance)")
@@ -52,12 +67,14 @@ struct ProfileView: View {
                     ForEach(friendRequestViewModel.friendRequests, id: \.self) { friendRequest in
                         HStack{
                             Text(friendRequest.senderEmail)
+                            Spacer()
                             
                             // accept request
                             Button(action: {
                                 showAlert = true
                             }) {
-                                Text("Accept")
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.green)
                             }
                             .alert(isPresented: $showAlert) {
                                 Alert(
@@ -66,7 +83,9 @@ struct ProfileView: View {
                                     primaryButton: .default(
                                         Text("Accept"),
                                         action: {
-                                            acceptFriendRequest()
+                                            Task {
+                                                await acceptFriendRequest(friendRequest: friendRequest, friendsRequestViewModel: friendRequestViewModel, userViewModel: userViewModel)
+                                            }
                                             showAlert = false
                                         }
                                     ),
@@ -83,7 +102,8 @@ struct ProfileView: View {
                             Button(action: {
                                 showAlert = true
                             }) {
-                                Text("Decline")
+                                Image(systemName: "xmark")
+                                    .foregroundColor(.red)
                             }
                             .alert(isPresented: $showAlert) {
                                 Alert(
@@ -92,7 +112,7 @@ struct ProfileView: View {
                                     primaryButton: .default(
                                         Text("Decline"),
                                         action: {
-                                            declineFriendRequest()
+                                            declineFriendRequest(friendRequest: friendRequest)
                                             showAlert = false
                                         }
                                     ),
@@ -110,7 +130,7 @@ struct ProfileView: View {
             }
         }
         .onAppear() {
-            viewModel.loadCurrentUser()
+            profileViewModel.loadCurrentUser()
         }
         .navigationTitle("Profile")
         .task {

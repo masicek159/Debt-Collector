@@ -47,7 +47,7 @@ struct AddFriendView: View {
                     Button(action: {
                         // add friend
                         Task {
-                            addFailed = await !viewModel.addFriend(email: email)
+                            addFailed = await !viewModel.addFriendRequest(email: email)
                             showAlert = true
                         }
                     }) {

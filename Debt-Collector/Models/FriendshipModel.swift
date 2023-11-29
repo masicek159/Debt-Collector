@@ -11,6 +11,11 @@ class FriendshipModel: Identifiable, Codable {
     var friendId: String
     var balance: Int
     
+    enum CodingKeys: String, CodingKey {
+            case friendId
+            case balance
+        }
+    
     init(friendId: String, balance: Int) {
         self.friendId = friendId
         self.balance = balance

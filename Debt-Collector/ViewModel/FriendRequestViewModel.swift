@@ -18,4 +18,8 @@ final class FriendRequestViewModel: ObservableObject {
             print("Error with auth")
         }
     }
+    
+    func updateRequestStatus(updatedStatus: String, requestId: String) {
+        FriendRequestManager.shared.updateRequestStatus(updatedStatus: updatedStatus, requestId: requestId)
+    }
 }

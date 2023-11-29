@@ -23,8 +23,9 @@ final class FriendRequestManager {
     
     func uploadFriendRequest(receiverId: String, senderId: String) async throws {
         // TODO: check if there is already existing request / if so update sent date
-        let friendRequest = FriendRequest(read: false, receiverId: receiverId, senderId: senderId, sentDate: Timestamp(date: Date()))
-        try friendRequestCollection.document().setData(from: friendRequest, merge: false)
+        let friendRequestRef = friendRequestCollection.document()
+        let friendRequest = FriendRequest(id: friendRequestRef.documentID, read: false, status: "PENDING", receiverId: receiverId, senderId: senderId, sentDate: Timestamp(date: Date()))
+        try friendRequestRef.setData(from: friendRequest, merge: false)
     }
     
     func getFriendRequest(friendRequestId: String) async throws -> FriendRequest {
@@ -46,5 +47,10 @@ final class FriendRequestManager {
             print("Problem fetching friend requests")
             return []
         }
+    }
+    
+    func updateRequestStatus(updatedStatus: String, requestId: String) {
+        let request = friendRequestDocument(friendRequestId: requestId)
+        request.updateData(["status": updatedStatus])
     }
 }

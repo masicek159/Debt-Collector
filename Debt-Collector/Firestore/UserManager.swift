@@ -106,6 +106,18 @@ final class UserManager {
     func getUsers(userIds: [String]) async throws -> [User] {
         try await userCollection.whereField(FieldPath.documentID(), in: userIds).getDocuments(as: User.self)
     }
+    
+    func addFriendToUser(userId: String, friendId: String, balance: Double) async throws {
+        let friendsDoc = friendsCollection(userId: userId).document()
+            
+        let data: [String : Any] = [
+            FriendshipModel.CodingKeys.friendId.rawValue : friendId,
+            FriendshipModel.CodingKeys.balance.rawValue : balance
+        ]
+            
+        try await friendsDoc.setData(data, merge: false)
+        
+    }
 }
 
 struct GroupUser: Codable {

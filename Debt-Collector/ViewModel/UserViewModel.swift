@@ -31,7 +31,7 @@ final class UserViewModel: ObservableObject {
         }
     }
     
-    func addFriend(email: String) async -> Bool {
+    func addFriendRequest(email: String) async -> Bool {
         let user: User? = await UserManager.shared.getUser(email: email)
         if let user = user, let currentUser = AuthViewModel.shared.currentUser {
             // TODO: notify the requested user
@@ -45,5 +45,11 @@ final class UserViewModel: ObservableObject {
         } else {
             return false
         }
+    }
+    
+    func addFriend(userId: String, friendId: String) async throws {
+        //let friend: User? = try await UserManager.shared.getUser(userId: friendId)
+           
+        try await UserManager.shared.addFriendToUser(userId: userId, friendId: friendId, balance: 0)
     }
 }
