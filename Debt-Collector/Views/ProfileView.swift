@@ -22,8 +22,19 @@ struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
     @StateObject private var friendRequestViewModel: FriendRequestViewModel = FriendRequestViewModel()
     
+    @State private var addFailed: Bool = false
+    @State private var showAlert: Bool = false
+    
     init() {
         self.viewModel.loadCurrentUser()
+    }
+    
+    func acceptFriendRequest() {
+        
+    }
+
+    func declineFriendRequest() {
+        
     }
     
     var body: some View {
@@ -41,7 +52,58 @@ struct ProfileView: View {
                     ForEach(friendRequestViewModel.friendRequests, id: \.self) { friendRequest in
                         HStack{
                             Text(friendRequest.senderEmail)
-                            // TODO: finish approve or decline
+                            
+                            // accept request
+                            Button(action: {
+                                showAlert = true
+                            }) {
+                                Text("Accept")
+                            }
+                            .alert(isPresented: $showAlert) {
+                                Alert(
+                                    title: Text("Do you want to add this user as your friend?"),
+                                    message: Text("By clicking on 'Accept' you will become friends with this user"),
+                                    primaryButton: .default(
+                                        Text("Accept"),
+                                        action: {
+                                            acceptFriendRequest()
+                                            showAlert = false
+                                        }
+                                    ),
+                                    secondaryButton: .destructive(
+                                        Text("Cancel"),
+                                        action: {
+                                            showAlert = false
+                                        }
+                                    )
+                                )
+                            }
+                            
+                            // decline request
+                            Button(action: {
+                                showAlert = true
+                            }) {
+                                Text("Decline")
+                            }
+                            .alert(isPresented: $showAlert) {
+                                Alert(
+                                    title: Text("Do you really want to decline this user's request?"),
+                                    message: Text("By clicking on 'Decline' you will remove this user's friend request"),
+                                    primaryButton: .default(
+                                        Text("Decline"),
+                                        action: {
+                                            declineFriendRequest()
+                                            showAlert = false
+                                        }
+                                    ),
+                                    secondaryButton: .destructive(
+                                        Text("Cancel"),
+                                        action: {
+                                            showAlert = false
+                                        }
+                                    )
+                                )
+                            }
                         }
                     }
                 }

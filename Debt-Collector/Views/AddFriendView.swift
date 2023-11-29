@@ -86,7 +86,3 @@ struct AddFriendView: View {
         }
     }
 }
-
-#Preview {
-    AddFriendView(showPopup: .constant(true))
-}
