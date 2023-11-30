@@ -11,6 +11,7 @@ import FirebaseAuth
 struct FriendsView: View {
 
     @ObservedObject var viewModel = UserViewModel()
+    @State var showPopup = false
 
     var body: some View {
         NavigationView {
@@ -23,7 +24,7 @@ struct FriendsView: View {
                                 Text("Positive Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text(viewModel.calculateTotalPositiveBalance())
+                                Text("calculateTotalPositiveBalance$")
                                     .font(.title)
                                     .foregroundColor(.green)
                             }
@@ -34,21 +35,20 @@ struct FriendsView: View {
                                 Text("Negative Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text(viewModel.calculateTotalNegativeBalance())
+                                Text("calculateTotalNegativeBalance$")
                                     .font(.title)
                                     .foregroundColor(.red)
                             }
                         }
                     }
                     
-                    
-                    Section(header: Text("Friends")) {
-                        ForEach(viewModel.friendsWithExpenses, id: \.friendId) { friend in
+                    Section(header: FriendsSectionHeaderView(showPopup: $showPopup)) {
+                        ForEach(viewModel.friends, id: \.self) { friend in
                             HStack {
                                 Image(systemName: "person.fill")
                                     .font(.largeTitle)
                                     .foregroundColor(.purple)
-                                Text(friend.friendId)
+                                Text(friend.fullName)
                                     .font(.headline)
                                 Spacer()
                                 Text("Balance: \(friend.balance)$")
@@ -57,11 +57,13 @@ struct FriendsView: View {
                             }
                         }
                     }
+                    .sheet(isPresented: $showPopup, content: {
+                        AddFriendView(showPopup: $showPopup)
+                    })
                     .onAppear {
-                        Task {
-                            await viewModel.fetchFriendsWithExpenses()
-                        }
+                        viewModel.getFriends()
                     }
+                    
                 }
             }
             .listStyle(GroupedListStyle())

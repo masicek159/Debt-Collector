@@ -68,9 +68,7 @@ struct GroupDetail: View {
                     .navigationBarBackButtonHidden(true)
                 }
                 .onAppear {
-                    print("mrdka")
                     groupViewModel.getMembers(groupId: group.id)
-                    print(groupViewModel.members)
                 }
                 Section("Expenses") {
                     ForEach(expenses, id: \.id) { expense in

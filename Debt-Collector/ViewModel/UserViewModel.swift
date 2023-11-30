@@ -11,11 +11,6 @@ import FirebaseAuth
 @MainActor
 final class UserViewModel: ObservableObject {
     @Published var friends: [User] = []
-    @Published var friendsWithExpenses: [FriendshipModel] = []
-    
-    func addGroupMember(groupId: String, userId: String, balance: Double = 0) async throws {
-        try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: balance)
-    }
     
     func getFriends () {
         Task {
@@ -31,46 +26,34 @@ final class UserViewModel: ObservableObject {
             self.friends = localArray
         }
     }
-    func fetchFriendsWithExpenses() async {
-            do {
-                guard let userId = AuthViewModel.shared.currentUser?.id else { return }
-                
-                let userFriends = try await UserManager.shared.getAllUserFriends(userId: userId)
-                var friendshipModels: [FriendshipModel] = []
-                
-                for userFriend in userFriends {
-                    if let friend = try? await UserManager.shared.getUser(userId: userFriend.friendId) {
-                        let expenses = try await GroupManager.shared.getExpenses(groupId: userFriend.friendId)
-                        associateExpensesWithFriend(expenses: expenses, friend: friend)
-                    }
-                }
-                
-                friendsWithExpenses = friendshipModels
-                calculateFriendBalances()
-            } catch {
-                print("Error fetching friends' expenses: \(error)")
-            }
-        }
-        
-    func associateExpensesWithFriend(expenses: [ExpenseModel], friend: User) {
-        let friendship = FriendshipModel(friendId: friend.id, expenses: expenses)
-        friendsWithExpenses.append(friendship)
-    }
-        
-    func calculateFriendBalances() {
-        friendsWithExpenses.forEach { friendModel in
-            let totalExpense = friendModel.calculateBalance()
+    
+    func addFriendRequest(email: String) async -> Bool {
+        let user: User? = await UserManager.shared.getUser(email: email)
+        if let user = user, let currentUser = AuthViewModel.shared.currentUser {
             
+            // already friends
+            do {
+                guard (try await UserManager.shared.getFriend(userId: currentUser.id, friendId: user.id)) != nil else {return false}
+            } catch {
+                print("Error getting friend")
+                return false
+            }
+            // TODO: notify the requested user
+            do {
+                try await FriendRequestManager.shared.uploadFriendRequest(receiverId: user.id, senderId: currentUser.id)
+            } catch {
+                print("Error creating friend request")
+                return false
+            }
+            return true
+        } else {
+            return false
         }
     }
     
-    func calculateTotalPositiveBalance() -> String {
-            let totalPositiveBalance = friendsWithExpenses.filter { $0.balance >= 0 }.reduce(0) { $0 + $1.balance }
-            return String(totalPositiveBalance)
-        }
-        
-        func calculateTotalNegativeBalance() -> String {
-            let totalNegativeBalance = friendsWithExpenses.filter { $0.balance < 0 }.reduce(0) { $0 + $1.balance }
-            return String(totalNegativeBalance)
-        }
+    func addFriend(userId: String, friendId: String) async throws {
+        //let friend: User? = try await UserManager.shared.getUser(userId: friendId)
+           
+        try await UserManager.shared.addFriendToUser(userId: userId, friendId: friendId, balance: 0)
+    }
 }
