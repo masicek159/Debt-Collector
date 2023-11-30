@@ -46,10 +46,13 @@ struct ProfileView: View {
         }
         // update the request to accepted
         friendsRequestViewModel.updateRequestStatus(updatedStatus: "ACCEPTED", requestId: friendRequest.id)
+        await friendsRequestViewModel.loadFriendRequests()
     }
 
-    func declineFriendRequest(friendRequest: FriendRequest) {
-        
+    func declineFriendRequest(friendRequest: FriendRequest, friendsRequestViewModel: FriendRequestViewModel) async{
+        // update the request to declined
+        friendsRequestViewModel.updateRequestStatus(updatedStatus: "DECLINED", requestId: friendRequest.id)
+        await friendsRequestViewModel.loadFriendRequests()
     }
     
     var body: some View {
@@ -81,7 +84,7 @@ struct ProfileView: View {
                                     title: Text("Do you want to add this user as your friend?"),
                                     message: Text("By clicking on 'Accept' you will become friends with this user"),
                                     primaryButton: .default(
-                                        Text("Accept"),
+                                        Text("Decline"),
                                         action: {
                                             Task {
                                                 await acceptFriendRequest(friendRequest: friendRequest, friendsRequestViewModel: friendRequestViewModel, userViewModel: userViewModel)
@@ -112,7 +115,9 @@ struct ProfileView: View {
                                     primaryButton: .default(
                                         Text("Decline"),
                                         action: {
-                                            declineFriendRequest(friendRequest: friendRequest)
+                                            Task {
+                                                await declineFriendRequest(friendRequest: friendRequest, friendsRequestViewModel: friendRequestViewModel)
+                                            }
                                             showAlert = false
                                         }
                                     ),

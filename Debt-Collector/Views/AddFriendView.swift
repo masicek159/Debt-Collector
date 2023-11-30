@@ -25,7 +25,6 @@ struct AddFriendView: View {
     @State private var showAlert: Bool = false
     @Binding var showPopup: Bool
     
-    
     var body: some View {
         VStack {
             HStack {

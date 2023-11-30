@@ -13,7 +13,8 @@ final class FriendRequestViewModel: ObservableObject {
     
     func loadFriendRequests() async {
         if let currentUser = AuthViewModel.shared.currentUser {
-            friendRequests = await FriendRequestManager.shared.getFriendRequests(receivedBy: currentUser.id)
+            var allRequests = await FriendRequestManager.shared.getFriendRequests(receivedBy: currentUser.id)
+            friendRequests = allRequests.filter{ $0.status == "PENDING"}
         } else {
             print("Error with auth")
         }
