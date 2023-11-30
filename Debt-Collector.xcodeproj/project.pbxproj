@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14354E4B2B17F76C0089BDBD /* UserDataFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14354E4A2B17F76C0089BDBD /* UserDataFetch.swift */; };
 		1450FE1D2AE2EC76009BE3EC /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1450FE1C2AE2EC76009BE3EC /* UserModel.swift */; };
 		1450FE1F2AE2EC91009BE3EC /* GroupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1450FE1E2AE2EC91009BE3EC /* GroupModel.swift */; };
 		5FD5BBB82AFD59A900B8C76F /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 5FD5BBB72AFD59A900B8C76F /* SwiftUICharts */; };
@@ -49,6 +50,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		14354E4A2B17F76C0089BDBD /* UserDataFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataFetch.swift; sourceTree = "<group>"; };
 		1450FE1C2AE2EC76009BE3EC /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		1450FE1E2AE2EC91009BE3EC /* GroupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupModel.swift; sourceTree = "<group>"; };
 		5FD5BBB92AFD5A0B00B8C76F /* ExpenseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseModel.swift; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 			children = (
 				8EAD53C32AF6865900B63851 /* GroupManager.swift */,
 				8EAD53C52AF68E1100B63851 /* UserManager.swift */,
+				14354E4A2B17F76C0089BDBD /* UserDataFetch.swift */,
 			);
 			path = Firestore;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 				8EADFD9F2AF96FD800996F29 /* CurrenciesHelper.swift in Sources */,
 				8EB589F82AE88118005F112B /* SecureInputView.swift in Sources */,
 				6CC0F1F02AE0552300627704 /* LoginView.swift in Sources */,
+				14354E4B2B17F76C0089BDBD /* UserDataFetch.swift in Sources */,
 				C44F23362AF96F5A00BC0976 /* ProfileView.swift in Sources */,
 				6CBCD5222ADF231400F431AA /* Debt_CollectorApp.swift in Sources */,
 			);
