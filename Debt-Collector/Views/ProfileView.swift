@@ -84,7 +84,7 @@ struct ProfileView: View {
                                     title: Text("Do you want to add this user as your friend?"),
                                     message: Text("By clicking on 'Accept' you will become friends with this user"),
                                     primaryButton: .default(
-                                        Text("Decline"),
+                                        Text("Accept"),
                                         action: {
                                             Task {
                                                 await acceptFriendRequest(friendRequest: friendRequest, friendsRequestViewModel: friendRequestViewModel, userViewModel: userViewModel)

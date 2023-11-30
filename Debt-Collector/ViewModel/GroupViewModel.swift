@@ -17,6 +17,10 @@ final class GroupViewModel: ObservableObject {
         try await GroupManager.shared.uploadGroup(name: name, currency: currency, image: image)
     }
     
+    func addGroupMember(groupId: String, userId: String, balance: Double = 0) async throws {
+        try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: balance)
+    }
+    
     func getGroups () {
         Task {
             guard let userId = Auth.auth().currentUser?.uid else { return }

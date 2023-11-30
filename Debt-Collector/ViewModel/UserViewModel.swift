@@ -12,10 +12,6 @@ import FirebaseAuth
 final class UserViewModel: ObservableObject {
     @Published var friends: [User] = []
     
-    func addGroupMember(groupId: String, userId: String, balance: Double = 0) async throws {
-        try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: balance)
-    }
-    
     func getFriends () {
         Task {
             guard let userId = AuthViewModel.shared.currentUser?.id else { return }
@@ -37,7 +33,7 @@ final class UserViewModel: ObservableObject {
             
             // already friends
             do {
-                guard let friend = try await UserManager.shared.getFriend(userId: currentUser.id, friendId: user.id) else {return false}
+                guard (try await UserManager.shared.getFriend(userId: currentUser.id, friendId: user.id)) != nil else {return false}
             } catch {
                 print("Error getting friend")
                 return false
