@@ -9,9 +9,9 @@ import SwiftUI
 import PhotosUI
 
 struct NewGroupView: View {
-    @ObservedObject var viewModel: GroupsViewModel
-    @EnvironmentObject var currenciesHelper: CurrenciesHelper
+    @ObservedObject var viewModel: GroupViewModel
     @Binding var showPopup: Bool
+    @State var uploadingGroup = false
     
     @State private var groupName = ""
     @State private var groupCurrency = ""
@@ -20,14 +20,20 @@ struct NewGroupView: View {
     @State private var selectedItem: PhotosPickerItem? = nil
     @State private var selectedImageData: Data? = nil
     
+    init(viewModel: GroupViewModel, showPopup: Binding<Bool>) {
+        self.viewModel = viewModel
+        self._showPopup = showPopup
+        self._groupCurrency = State(initialValue: CurrenciesHelper.shared.currencies.first ?? "USD")
+    }
+    
     var body: some View {
         Form {
             Section(header: Text("Group Information")) {
                 TextField("Name", text: $groupName)
                 
                 Picker("Select Currency", selection: $groupCurrency) {
-                    ForEach(currenciesHelper.currencies, id: \.self) { currency in
-                        Text(currency)
+                    ForEach(CurrenciesHelper.shared.currencies, id: \.self) { currency in
+                        Text(currency).tag(currency)
                     }
                 }
                 .pickerStyle(.menu)
@@ -64,23 +70,23 @@ struct NewGroupView: View {
             
             Button(action: {
                 Task {
+                    uploadingGroup = true
                     try await viewModel.addGroup(name: groupName, currency: groupCurrency, image: selectedImageData)
                     showPopup = false
+                    uploadingGroup = false
                     viewModel.getGroups()
                 }
             }) {
                 Text("Create Group")
             }
         }
+        .disabled(uploadingGroup)
         .navigationBarTitle("Create Group")
-        .task {
-            groupCurrency = currenciesHelper.currencies.first ?? ""
-        }
     }
 }
 
 struct NewGroupView_Previews: PreviewProvider {
     static var previews: some View {
-    NewGroupView(viewModel: GroupsViewModel(), showPopup: .constant(false))
+    NewGroupView(viewModel: GroupViewModel(), showPopup: .constant(false))
     }
 }

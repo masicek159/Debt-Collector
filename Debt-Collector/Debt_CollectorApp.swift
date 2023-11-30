@@ -12,7 +12,6 @@ import Firebase
 struct Debt_CollectorApp: App {
     @StateObject var authViewModel = AuthViewModel()
     @StateObject var swiftUIShared = SwiftUIShared()
-    @StateObject var currenciesHelper = CurrenciesHelper()
     
     init() {
         FirebaseApp.configure()
@@ -23,8 +22,13 @@ struct Debt_CollectorApp: App {
             ContentView()
                 .environmentObject(authViewModel)
                 .environmentObject(swiftUIShared)
-                .environmentObject(currenciesHelper)
         }
     }
 }
-    
+
+//class AppDelegate: NSObject, UIApplicationDelegate {
+//    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+//        FirebaseApp.configure()
+//        return true
+//    }				
+//}

@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct LandingView: View {
-    
-    @State var selectedTab: Int = 0
-    
+    @State var selectedTab: Int = 1
     var friends: [User] = [
         User(id: "ss", email: "Friend1@gmail.com", fullName: "Friend 1"),
             User(id: "sssdsd", email: "Friend2@gmail.com", fullName: "Friend 2"),
@@ -18,9 +16,10 @@ struct LandingView: View {
         ]
     
     var body: some View {
+        
         TabView(selection: $selectedTab) {
             
-            FriendsView(friends: friends)
+            FriendsView()
                 .tabItem{
                     Image(systemName: "person.fill")
                     Text("Friends")
@@ -48,17 +47,16 @@ struct LandingView: View {
                 }
                 .tag(3)
             
-            SettingView()
+            ProfileView()
                 .tabItem{
                     Image(systemName: "circle.grid.2x2.fill")
-                    Text("Settings")
+                    Text("Profile")
                 }
                 .tag(4)
             
         }.accentColor(.purple)
-        
     }
-    
+        
 }
 
 struct LandingView_Previews: PreviewProvider {

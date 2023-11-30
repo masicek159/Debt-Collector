@@ -21,20 +21,58 @@ final class GroupManager {
         groupCollection.document(groupId)
     }
     
+    private func groupMembersCollection(groupId: String) -> CollectionReference {
+        groupDocument(groupId: groupId).collection("members")
+    }
+    
+    private func groupMemberDocument(memberId: String, groupId: String) -> DocumentReference {
+        groupMembersCollection(groupId: groupId).document(memberId)
+    }
+    
+    private func groupExpenseCollection(groupId: String) -> CollectionReference {
+        groupDocument(groupId: groupId).collection("expenses")
+    }
+    
+    private func groupExpenseDocument(expenseId: String, groupId: String) -> DocumentReference {
+        groupMembersCollection(groupId: groupId).document(expenseId)
+    }
+    
     func uploadGroup(name: String, currency: String, image: Data?) async throws {
-        let groupRef = groupCollection.document()
-        let group = GroupModel(id: groupRef.documentID, name: name, currency: currency, image: image)
-        try groupRef.setData(from: group, merge: false)
-        let userId = Auth.auth().currentUser?.uid ?? ""
-        try await UserManager.shared.addGroupUser(userId: userId, groupId: groupRef.documentID)
+        if let currentUser = await AuthViewModel.shared.currentUser {
+            let groupRef = groupCollection.document()
+            let group = GroupModel(id: groupRef.documentID, name: name, currency: currency, image: image, owner: currentUser)
+            try groupRef.setData(from: group, merge: false)
+            let userId = Auth.auth().currentUser?.uid ?? ""
+            try await UserManager.shared.addGroupUser(userId: userId, groupId: groupRef.documentID)
+        }
     }
     
     func getGroup(groupId: String) async throws -> GroupModel {
         try await groupDocument(groupId: groupId).getDocument(as: GroupModel.self)
     }
     
-    func getAllUserGroups(userId: String) {
-        // TODO:
+    func addGroupMember(groupId: String, userId: String, balance: Double) async throws {
+        let document = groupMembersCollection(groupId: groupId).document()
+        
+        let data: [String : Any] = [
+            GroupMember.CodingKeys.memberId.rawValue : userId,
+            GroupMember.CodingKeys.balance.rawValue : balance
+        ]
+        
+        try await document.setData(data, merge: false)
+    }
+    
+    func getMembers(groupId: String) async throws -> [GroupMember]{
+        try await groupMembersCollection(groupId: groupId).getDocuments(as: GroupMember.self)
+    }
+    
+    func getMember(groupId: String, memberId: String) async throws -> GroupMember? {
+        try await groupMemberDocument(memberId: memberId, groupId: groupId).getDocument(as: GroupMember.self)
+    }
+    
+    
+    func getExpenses(groupId: String) async throws -> [ExpenseModel] {
+        try await groupExpenseCollection(groupId: groupId).getDocuments(as: ExpenseModel.self)
     }
 }
 

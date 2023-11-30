@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct FriendsView: View {
-    var friends: [User]
+
+    @ObservedObject var viewModel = UserViewModel()
+    @State var showPopup = false
 
     var body: some View {
         NavigationView {
@@ -21,7 +24,7 @@ struct FriendsView: View {
                                 Text("Positive Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("\(calculateTotalPositiveBalance())$")
+                                Text("\(viewModel.calculateTotalPositiveBalance())$")
                                     .font(.title)
                                     .foregroundColor(.green)
                             }
@@ -32,28 +35,33 @@ struct FriendsView: View {
                                 Text("Negative Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("-\(calculateTotalNegativeBalance())$")
+                                Text("\(viewModel.calculateTotalNegativeBalance())$")
                                     .font(.title)
                                     .foregroundColor(.red)
                             }
                         }
                     }
                     
-                    
-                    Section(header: Text("Friends")) {
-                        ForEach(friends, id: \.self) { friend in
+                    Section(header: FriendsSectionHeaderView(showPopup: $showPopup)) {
+                        ForEach(viewModel.friendsWithExpenses, id: \.friendId) { friendship in
                             HStack {
                                 Image(systemName: "person.fill")
                                     .font(.largeTitle)
                                     .foregroundColor(.purple)
-                                Text(friend.email)
+                                Text(friendship.friendId)
                                     .font(.headline)
                                 Spacer()
-                                Text("Balance: \(friend.balance)$")
+                                Text("Balance: \(friendship.balance)$")
                                     .font(.subheadline)
-                                    .foregroundColor(friend.balance >= 0 ? .green : .red)
+                                    .foregroundColor(friendship.balance >= 0 ? .green : .red)
                             }
                         }
+                    }
+                    .sheet(isPresented: $showPopup, content: {
+                        AddFriendView(showPopup: $showPopup)
+                    })
+                    .onAppear {
+                        viewModel.getFriends()
                     }
                 }
             }
@@ -74,7 +82,8 @@ struct FriendsView: View {
             
         }
     }
-    func calculateTotalPositiveBalance() -> String {
+    
+/*    func calculateTotalPositiveBalance() -> String {
             let totalPositiveBalance = friends.filter { $0.balance >= 0 }.reduce(0) { $0 + $1.balance }
             return String(totalPositiveBalance)
         }
@@ -82,15 +91,5 @@ struct FriendsView: View {
             let totalNegativeBalance = friends.filter { $0.balance < 0 }.reduce(0) { $0 + $1.balance }
             return String(totalNegativeBalance)
         }
-
-}
-
-struct FriendsView_Previews: PreviewProvider {
-    static var previews: some View {
-        FriendsView(friends: [
-            User(id: "ss", email: "Friend1@gmail.com", fullName: "Friend 1"),
-                User(id: "sssdsd", email: "Friend2@gmail.com", fullName: "Friend 2"),
-                
-            ])
-    }
+*/
 }

@@ -7,12 +7,20 @@
 
 import Foundation
 
-class FriendshipModel: Identifiable, Codable{
-    var friend_id: String
-    var balance: Int
+class FriendshipModel: Identifiable, Codable {
+    var friendId: String
+    var expenses: [ExpenseModel]
+    var balance: Double
     
-    init(friend_id: String, balance: Int) {
-        self.friend_id = friend_id
+    enum CodingKeys: String, CodingKey {
+        case friendId
+        case expenses
+        case balance
+    }
+    
+    init(friendId: String, expenses: [ExpenseModel], balance: Double) {
+        self.friendId = friendId
+        self.expenses = expenses
         self.balance = balance
     }
 }

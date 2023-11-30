@@ -12,7 +12,6 @@ class User: Hashable, Identifiable, Codable {
     var fullName: String
     var id: String
     var balance: Int = 0
-    var friends: [FriendshipModel] = []
     
     enum CodingKeys: String, CodingKey {
             case email
@@ -25,13 +24,8 @@ class User: Hashable, Identifiable, Codable {
         self.email = email
         self.id = id
         self.fullName = fullName
-        
-        loadFriends()
     }
-    
-    func loadFriends() {
-        // TODO: call firestore and get friends
-    }
+
     
     static func == (lhs: User, rhs: User) -> Bool {
         return lhs.email == rhs.email
@@ -51,13 +45,5 @@ class User: Hashable, Identifiable, Codable {
     
     func removeBalance(bal: Int){
         balance -= bal
-    }
-    
-    func getFriends() -> [FriendshipModel]{
-        return(friends)
-    }
-    
-    func addFriend(friend: FriendshipModel){
-        friends.append(friend)
     }
 }

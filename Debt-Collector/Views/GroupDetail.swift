@@ -8,52 +8,85 @@
 import SwiftUI
 
 struct GroupDetail: View {
+    @ObservedObject var groupViewModel = GroupViewModel()
+    
     var group: GroupModel
+    @State var expenses: [ExpenseModel] = []
     
     var body: some View {
-        List {
-            Section {
-                HStack {
-                    if let imageData = group.image, let uiImage = UIImage(data: imageData) {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 72, height: 72)
-                    } else {
-                        // TODO: tmp obrazek postavy
-                        Image(systemName: "person.3")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 72, height: 72)
-                    }
-                    
-                    Spacer()
-                    
-                    VStack {
-                        Text(group.name)
+        NavigationView {
+            List {
+                Section {
+                    HStack {
+                        if let imageData = group.image, let uiImage = UIImage(data: imageData) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 72, height: 72)
+                        } else {
+                            // TODO: tmp obrazek postavy
+                            Image(systemName: "person.3")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 72, height: 72)
+                        }
                         
-                        Text(group.currency)
-                            .font(.footnote)
-                            .foregroundColor(.gray)
+                        Spacer()
+                        
+                        VStack {
+                            Text(group.name)
+                            
+                            Text(group.currency)
+                                .font(.footnote)
+                                .foregroundColor(.gray)
+                        }
                     }
                 }
                 
+                Section("Members") {
+                    ForEach(groupViewModel.members, id: \.self) { member in
+                        HStack {
+                            Image(systemName: "person.fill")
+                                .font(.largeTitle)
+                                .foregroundColor(.purple)
+                            Text(member.fullName)
+                                .font(.headline)
+                            Spacer()
+                            Text("Balance: \(member.balance)$")
+                                .font(.subheadline)
+                                .foregroundColor(member.balance >= 0 ? .green : .red)
+                        }
+                    }
+                    
+                    NavigationLink(destination: NewGroupMemberView(group: group)) {
+                        Text("Add Member")
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.blue)
+                            .cornerRadius(8)
+                    }
+                    .navigationBarBackButtonHidden(true)
+                }
+                .onAppear {
+                    groupViewModel.getMembers(groupId: group.id)
+                }
+                Section("Expenses") {
+                    ForEach(expenses, id: \.id) { expense in
+                        HStack{
+                            Text(expense.name)
+                            
+                            Text("\(expense.amount)")
+                        }
+                    }
+                }
             }
-            
-            Section("Members") {
-                
-            }
-            
-            Section("Expenses") {
-                
+        }
+        .onAppear {
+            Task {
+                expenses = try await groupViewModel.getExpenses(groupId: group.id)
             }
         }
     }
 }
 
-struct GroupDetail_Previews: PreviewProvider {
-    static var previews: some View {
-        GroupDetail(group: GroupModel(id: "1", name: "Group name", currency: "USD", image: nil))
-    }
-}
 
