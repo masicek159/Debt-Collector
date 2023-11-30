@@ -108,7 +108,11 @@ final class UserManager {
     }
     
     func getUsers(userIds: [String]) async throws -> [User] {
-        try await userCollection.whereField(FieldPath.documentID(), in: userIds).getDocuments(as: User.self)
+        if userIds.isEmpty {
+            return []
+        } else {
+            return try await userCollection.whereField(FieldPath.documentID(), in: userIds).getDocuments(as: User.self)
+        }
     }
     
     func addFriendToUser(userId: String, friendId: String, balance: Double) async throws {
