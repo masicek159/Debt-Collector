@@ -14,9 +14,20 @@ struct NewGroupMemberView: View {
     @State var selectedMember: User?
     @State private var addFailed: Bool = false
     @State private var showAlert: Bool = false
+    @State private var existingMember: Bool = false
     
     var group: GroupModel
 
+    func memberAlreadyExists(groupId: String, userId: String, groupViewModel: GroupViewModel) async -> Bool {
+        do {
+            guard (try await groupViewModel.getGroupMember(groupId: groupId, userId: userId)) != nil else {return false}
+        } catch {
+            print("Error fetching member")
+            return false
+        }
+        return true
+    }
+    
     func addMemberIntoGroup(groupId: String, userId: String, groupViewModel: GroupViewModel) async -> Bool{
         do {
             try await groupViewModel.addGroupMember(groupId: groupId, userId: userId)
@@ -41,16 +52,18 @@ struct NewGroupMemberView: View {
                 userViewModel.getFriends()
             }
             .navigationBarBackButtonHidden(true)
-            
-            
-            
+        
             // accept request
             Section {
                 Button(action: {
                     // add friend
                     Task {
                         if let selectedUser = selectedMember {
-                            addFailed = await !addMemberIntoGroup(groupId: group.id, userId: selectedUser.id, groupViewModel: groupViewModel)
+                            if await !memberAlreadyExists(groupId: group.id, userId: selectedUser.id, groupViewModel: groupViewModel) {
+                                existingMember = true
+                            } else {
+                                addFailed = await !addMemberIntoGroup(groupId: group.id, userId: selectedUser.id, groupViewModel: groupViewModel)
+                            }
                             showAlert = true
                         }
                     }
@@ -60,7 +73,16 @@ struct NewGroupMemberView: View {
                 }
                 //        .disabled(!isFormValid)
                 .alert(isPresented: $showAlert) {
-                    if addFailed {
+                    if existingMember {
+                        return Alert(
+                            title: Text("Warning"),
+                            message: Text("This user is already member of the group!"),
+                            dismissButton: .default(Text("OK"), action: {
+                                showAlert = false
+                            })
+                        )
+                    }
+                    else if addFailed {
                         return Alert(
                             title: Text("Warning"),
                             message: Text("Failed to add member!"),

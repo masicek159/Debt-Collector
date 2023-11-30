@@ -21,6 +21,10 @@ final class GroupViewModel: ObservableObject {
         try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: balance)
     }
     
+    func getGroupMember(groupId: String, userId: String) async throws -> GroupMember? {
+        try await GroupManager.shared.getMember(groupId: groupId, memberId: userId)
+    }
+    
     func getGroups () {
         Task {
             guard let userId = Auth.auth().currentUser?.uid else { return }
