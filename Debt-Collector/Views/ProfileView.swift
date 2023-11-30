@@ -18,17 +18,12 @@ final class ProfileViewModel: ObservableObject {
 }
 
 struct ProfileView: View {
-    
     @StateObject private var profileViewModel = ProfileViewModel()
     @StateObject private var friendRequestViewModel: FriendRequestViewModel = FriendRequestViewModel()
     @StateObject private var userViewModel: UserViewModel = UserViewModel()
     
     @State private var addFailed: Bool = false
     @State private var showAlert: Bool = false
-    
-    init() {
-        self.profileViewModel.loadCurrentUser()
-    }
     
     func acceptFriendRequest(friendRequest: FriendRequest, friendsRequestViewModel: FriendRequestViewModel, userViewModel: UserViewModel) async{
 
@@ -65,69 +60,76 @@ struct ProfileView: View {
                         Text("Balance: \(user.balance)")
                     }
                 }
+                .task{
+                    self.profileViewModel.loadCurrentUser()
+                }
                 
                 Section(header: Text("Friend requests")) {
-                    ForEach(friendRequestViewModel.friendRequests, id: \.self) { friendRequest in
-                        HStack{
-                            Text(friendRequest.senderEmail)
-                            Spacer()
-                            
-                            // accept request
-                            Button(action: {
-                                showAlert = true
-                            }) {
-                                Image(systemName: "checkmark")
-                                    .foregroundColor(.green)
-                            }
-                            .alert(isPresented: $showAlert) {
-                                Alert(
-                                    title: Text("Do you want to add this user as your friend?"),
-                                    message: Text("By clicking on 'Accept' you will become friends with this user"),
-                                    primaryButton: .default(
-                                        Text("Accept"),
-                                        action: {
-                                            Task {
-                                                await acceptFriendRequest(friendRequest: friendRequest, friendsRequestViewModel: friendRequestViewModel, userViewModel: userViewModel)
+                    if friendRequestViewModel.friendRequests.isEmpty {
+                            Text("You do not have any friend requests")
+                    } else {
+                        ForEach(friendRequestViewModel.friendRequests, id: \.self) { friendRequest in
+                            HStack{
+                                Text(friendRequest.senderEmail)
+                                Spacer()
+                                
+                                // accept request
+                                Button(action: {
+                                    showAlert = true
+                                }) {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.green)
+                                }
+                                .alert(isPresented: $showAlert) {
+                                    Alert(
+                                        title: Text("Do you want to add this user as your friend?"),
+                                        message: Text("By clicking on 'Accept' you will become friends with this user"),
+                                        primaryButton: .default(
+                                            Text("Accept"),
+                                            action: {
+                                                Task {
+                                                    await acceptFriendRequest(friendRequest: friendRequest, friendsRequestViewModel: friendRequestViewModel, userViewModel: userViewModel)
+                                                }
+                                                showAlert = false
                                             }
-                                            showAlert = false
-                                        }
-                                    ),
-                                    secondaryButton: .destructive(
-                                        Text("Cancel"),
-                                        action: {
-                                            showAlert = false
-                                        }
-                                    )
-                                )
-                            }
-                            
-                            // decline request
-                            Button(action: {
-                                showAlert = true
-                            }) {
-                                Image(systemName: "xmark")
-                                    .foregroundColor(.red)
-                            }
-                            .alert(isPresented: $showAlert) {
-                                Alert(
-                                    title: Text("Do you really want to decline this user's request?"),
-                                    message: Text("By clicking on 'Decline' you will remove this user's friend request"),
-                                    primaryButton: .default(
-                                        Text("Decline"),
-                                        action: {
-                                            Task {
-                                                await declineFriendRequest(friendRequest: friendRequest, friendsRequestViewModel: friendRequestViewModel)
+                                        ),
+                                        secondaryButton: .destructive(
+                                            Text("Cancel"),
+                                            action: {
+                                                showAlert = false
                                             }
-                                            showAlert = false
-                                        }
-                                    ),
-                                    secondaryButton: .destructive(
-                                        Text("Cancel"),
-                                        action: {
-                                            showAlert = false
-                                        }
+                                        )
                                     )
-                                )
+                                }
+                                
+                                // decline request
+                                Button(action: {
+                                    showAlert = true
+                                }) {
+                                    Image(systemName: "xmark")
+                                        .foregroundColor(.red)
+                                }
+                                .alert(isPresented: $showAlert) {
+                                    Alert(
+                                        title: Text("Do you really want to decline this user's request?"),
+                                        message: Text("By clicking on 'Decline' you will remove this user's friend request"),
+                                        primaryButton: .default(
+                                            Text("Decline"),
+                                            action: {
+                                                Task {
+                                                    await declineFriendRequest(friendRequest: friendRequest, friendsRequestViewModel: friendRequestViewModel)
+                                                }
+                                                showAlert = false
+                                            }
+                                        ),
+                                        secondaryButton: .destructive(
+                                            Text("Cancel"),
+                                            action: {
+                                                showAlert = false
+                                            }
+                                        )
+                                    )
+                                }
                             }
                         }
                     }

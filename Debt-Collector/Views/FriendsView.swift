@@ -43,17 +43,21 @@ struct FriendsView: View {
                     }
                     
                     Section(header: FriendsSectionHeaderView(showPopup: $showPopup)) {
-                        ForEach(viewModel.friendsWithExpenses, id: \.friendId) { friendship in
-                            HStack {
-                                Image(systemName: "person.fill")
-                                    .font(.largeTitle)
-                                    .foregroundColor(.purple)
-                                Text(friendship.friendId)
-                                    .font(.headline)
-                                Spacer()
-                                Text("Balance: \(friendship.balance)$")
-                                    .font(.subheadline)
-                                    .foregroundColor(friendship.balance >= 0 ? .green : .red)
+                        if viewModel.friendsWithExpenses.isEmpty {
+                            Text("You do not have any friends.")
+                        } else {
+                            ForEach(viewModel.friendsWithExpenses, id: \.friendId) { friendship in
+                                HStack {
+                                    Image(systemName: "person.fill")
+                                        .font(.largeTitle)
+                                        .foregroundColor(.purple)
+                                    Text(friendship.friendId)
+                                        .font(.headline)
+                                    Spacer()
+                                    Text("Balance: \(friendship.balance)$")
+                                        .font(.subheadline)
+                                        .foregroundColor(friendship.balance >= 0 ? .green : .red)
+                                }
                             }
                         }
                     }
