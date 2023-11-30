@@ -95,6 +95,10 @@ final class UserManager {
         try await friendsCollection(userId: userId).getDocuments(as: FriendshipModel.self)
     }
     
+    func getFriend(userId: String, friendId: String) async throws -> FriendshipModel? {
+        try await friendsDocument(userId: userId, friendId: friendId).getDocument(as: FriendshipModel.self)
+    }
+    
     func getAllUserGroups(userId: String) async throws -> [GroupUser] {
         try await groupUserCollection(userId: userId).getDocuments(as: GroupUser.self)
     }

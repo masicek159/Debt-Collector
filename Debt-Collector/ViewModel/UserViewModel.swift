@@ -34,6 +34,14 @@ final class UserViewModel: ObservableObject {
     func addFriendRequest(email: String) async -> Bool {
         let user: User? = await UserManager.shared.getUser(email: email)
         if let user = user, let currentUser = AuthViewModel.shared.currentUser {
+            
+            // already friends
+            do {
+                guard let friend = try await UserManager.shared.getFriend(userId: currentUser.id, friendId: user.id) else {return false}
+            } catch {
+                print("Error getting friend")
+                return false
+            }
             // TODO: notify the requested user
             do {
                 try await FriendRequestManager.shared.uploadFriendRequest(receiverId: user.id, senderId: currentUser.id)
