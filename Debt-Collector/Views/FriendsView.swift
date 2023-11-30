@@ -24,7 +24,7 @@ struct FriendsView: View {
                                 Text("Positive Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("calculateTotalPositiveBalance$")
+                                Text("\(viewModel.calculateTotalPositiveBalance())$")
                                     .font(.title)
                                     .foregroundColor(.green)
                             }
@@ -35,7 +35,7 @@ struct FriendsView: View {
                                 Text("Negative Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("calculateTotalNegativeBalance$")
+                                Text("\(viewModel.calculateTotalNegativeBalance())$")
                                     .font(.title)
                                     .foregroundColor(.red)
                             }
@@ -43,17 +43,17 @@ struct FriendsView: View {
                     }
                     
                     Section(header: FriendsSectionHeaderView(showPopup: $showPopup)) {
-                        ForEach(viewModel.friends, id: \.self) { friend in
+                        ForEach(viewModel.friendsWithExpenses, id: \.friendId) { friendship in
                             HStack {
                                 Image(systemName: "person.fill")
                                     .font(.largeTitle)
                                     .foregroundColor(.purple)
-                                Text(friend.fullName)
+                                Text(friendship.friendId)
                                     .font(.headline)
                                 Spacer()
-                                Text("Balance: \(friend.balance)$")
+                                Text("Balance: \(friendship.balance)$")
                                     .font(.subheadline)
-                                    .foregroundColor(friend.balance >= 0 ? .green : .red)
+                                    .foregroundColor(friendship.balance >= 0 ? .green : .red)
                             }
                         }
                     }
@@ -63,7 +63,6 @@ struct FriendsView: View {
                     .onAppear {
                         viewModel.getFriends()
                     }
-                    
                 }
             }
             .listStyle(GroupedListStyle())

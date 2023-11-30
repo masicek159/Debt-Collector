@@ -9,15 +9,18 @@ import Foundation
 
 class FriendshipModel: Identifiable, Codable {
     var friendId: String
-    var balance: Int
+    var expenses: [ExpenseModel]
+    var balance: Double
     
     enum CodingKeys: String, CodingKey {
-            case friendId
-            case balance
-        }
+        case friendId
+        case expenses
+        case balance
+    }
     
-    init(friendId: String, balance: Int) {
+    init(friendId: String, expenses: [ExpenseModel], balance: Double) {
         self.friendId = friendId
+        self.expenses = expenses
         self.balance = balance
     }
 }

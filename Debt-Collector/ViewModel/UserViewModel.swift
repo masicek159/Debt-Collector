@@ -11,6 +11,7 @@ import FirebaseAuth
 @MainActor
 final class UserViewModel: ObservableObject {
     @Published var friends: [User] = []
+    @Published var friendsWithExpenses: [FriendshipModel] = []
     
     func getFriends () {
         Task {
@@ -55,5 +56,36 @@ final class UserViewModel: ObservableObject {
         //let friend: User? = try await UserManager.shared.getUser(userId: friendId)
            
         try await UserManager.shared.addFriendToUser(userId: userId, friendId: friendId, balance: 0)
+    }
+    
+    func fetchFriendsWithExpenses() async {
+            guard let currentUser = AuthViewModel.shared.currentUser else { return }
+            
+            do {
+                let userFriends = try await UserManager.shared.getAllUserFriends(userId: currentUser.id)
+                var updatedFriendships: [FriendshipModel] = []
+
+                for userFriend in userFriends {
+                    if let friend = try? await UserManager.shared.getUser(userId: userFriend.friendId) {
+                        let expenses = try await GroupManager.shared.getExpenses(groupId: userFriend.friendId)
+                        let totalExpense = expenses.reduce(0.0) { $0 + $1.amount }
+                        let friendship = FriendshipModel(friendId: friend.id, expenses: expenses, balance: totalExpense)
+                        updatedFriendships.append(friendship)
+                    }
+                }
+                self.friendsWithExpenses = updatedFriendships
+            } catch {
+                print("Error fetching friends' expenses: \(error)")
+            }
+        }
+    
+    func calculateTotalPositiveBalance() -> String {
+            let totalPositiveBalance = friendsWithExpenses.filter { $0.balance >= 0 }.reduce(0.0) { $0 + $1.balance }
+            return String(format: "%.2f", totalPositiveBalance)
+        }
+        
+    func calculateTotalNegativeBalance() -> String {
+        let totalNegativeBalance = friendsWithExpenses.filter { $0.balance < 0 }.reduce(0.0) { $0 + $1.balance }
+        return String(format: "%.2f", totalNegativeBalance)
     }
 }
