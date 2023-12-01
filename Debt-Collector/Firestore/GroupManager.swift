@@ -14,7 +14,7 @@ final class GroupManager {
     
     static let shared = GroupManager()
     private init () {}
-        
+    
     private let groupCollection = Firestore.firestore().collection("groups")
     
     private func groupDocument(groupId: String) -> DocumentReference {
@@ -44,6 +44,16 @@ final class GroupManager {
             try groupRef.setData(from: group, merge: false)
             let userId = Auth.auth().currentUser?.uid ?? ""
             try await UserManager.shared.addGroupUser(userId: userId, groupId: groupRef.documentID)
+        }
+    }
+    
+    func deleteGroup(groupId: String) {
+        groupDocument(groupId: groupId).delete { error in
+            if let error = error {
+                print("Error deleting document: \(error)")
+            } else {
+                print("Document successfully deleted!")
+            }
         }
     }
     

@@ -17,6 +17,13 @@ final class GroupViewModel: ObservableObject {
         try await GroupManager.shared.uploadGroup(name: name, currency: currency, image: image)
     }
     
+    func deleteGroup(groupId: String) {
+        GroupManager.shared.deleteGroup(groupId: groupId)
+        if let index = self.groups.firstIndex(where: { $0.id == groupId }) {
+            self.groups.remove(at: index)
+        }
+    }
+    
     func addGroupMember(groupId: String, userId: String, balance: Double = 0) async throws {
         try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: balance)
     }
@@ -45,13 +52,13 @@ final class GroupViewModel: ObservableObject {
         Task {
             let groupMembers = try await GroupManager.shared.getMembers(groupId: groupId)
             var localArray: [User] = []
-
+            
             for groupMember in groupMembers {
                 if let member = try? await UserManager.shared.getUser(userId: groupMember.memberId) {
                     localArray.append(member)
                 }
             }
- 
+            
             self.members = localArray
         }
     }
