@@ -95,8 +95,8 @@ final class UserManager {
         try await friendsCollection(userId: userId).getDocuments(as: FriendshipModel.self)
     }
     
-    func getFriend(userId: String, friendId: String) async throws -> FriendshipModel? {
-        try await friendsDocument(userId: userId, friendId: friendId).getDocument(as: FriendshipModel.self)
+    func getFriend(userId: String, friendId: String) async throws -> DocumentSnapshot {
+        return try await friendsDocument(userId: userId, friendId: friendId).getDocument()
     }
     
     func getAllUserGroups(userId: String) async throws -> [GroupUser] {
@@ -116,7 +116,7 @@ final class UserManager {
     }
     
     func addFriendToUser(userId: String, friendId: String, balance: Double) async throws {
-        let friendsDoc = friendsCollection(userId: userId).document()
+        let friendsDoc = friendsCollection(userId: userId).document(friendId)
             
         let data: [String : Any] = [
             FriendshipModel.CodingKeys.friendId.rawValue : friendId,
