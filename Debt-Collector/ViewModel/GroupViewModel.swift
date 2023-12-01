@@ -13,8 +13,8 @@ final class GroupViewModel: ObservableObject {
     @Published private(set) var groups: [GroupModel] = []
     @Published private(set) var members: [User] = []
     
-    func addGroup(name: String, currency: String, image: Data?) async throws {
-        try await GroupManager.shared.uploadGroup(name: name, currency: currency, image: image)
+    func addGroup(name: String, currency: String, color: Data) async throws {
+        try await GroupManager.shared.uploadGroup(name: name, currency: currency, color: color)
     }
     
     func deleteGroup(groupId: String) {

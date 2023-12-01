@@ -21,11 +21,11 @@ class GroupModel: Codable, Identifiable, Hashable {
     var members: [User] = []
     var name: String
     var currency: String // TODO: add currency model or currency enum
-    var image: Data?
+    var color: String
     
-    init(id: String, name: String, currency: String, image: Data?, owner: User) {
+    init(id: String, name: String, currency: String, color: String, owner: User) {
         self.id = id
-        self.image = image
+        self.color = color
         self.name = name
         self.currency = currency
     }
@@ -39,8 +39,11 @@ class GroupModel: Codable, Identifiable, Hashable {
     func getGroupCurrency() -> String {
         return currency
     }
-    func getGroupImage() -> Data? {
-        return image
+    func getGroupColor() -> UIColor {
+        if let data = Data(base64Encoded: self.color) {
+            return UIColor.color(data: data)
+        }
+        return UIColor.blue
     }
     func setGroupName(newName: String) {
         name = newName
@@ -48,7 +51,7 @@ class GroupModel: Codable, Identifiable, Hashable {
     func setGroupCurrency(newCurrency: String) {
         currency = newCurrency
     }
-    func setGroupImage(newImage: Data?) {
-        image = newImage
+    func setGroupColor(newColor: String) {
+        color = newColor
     }
 }

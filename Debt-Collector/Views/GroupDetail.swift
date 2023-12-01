@@ -18,18 +18,11 @@ struct GroupDetail: View {
             List {
                 Section {
                     HStack {
-                        if let imageData = group.image, let uiImage = UIImage(data: imageData) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 72, height: 72)
-                        } else {
-                            // TODO: tmp obrazek postavy
-                            Image(systemName: "person.3")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 72, height: 72)
-                        }
+                        Image(systemName: "person.3")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 72, height: 72)
+                        
                         
                         Spacer()
                         
@@ -84,9 +77,11 @@ struct GroupDetail: View {
         .onAppear {
             Task {
                 expenses = try await groupViewModel.getExpenses(groupId: group.id)
+                
             }
         }
     }
 }
+
 
 
