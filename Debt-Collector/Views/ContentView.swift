@@ -13,10 +13,15 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            if authViewModel.userSession != nil {
-                LandingView()
-            } else {
-                LoginView()
+            Group {
+                if authViewModel.userSession != nil {
+                    LandingView()
+                } else {
+                    LoginView()
+                }
+            }
+            .onAppear {
+                swiftUIShared.showLoadingPage(showLoadingPage: false)
             }
             
             if swiftUIShared.showLoadingPage {
