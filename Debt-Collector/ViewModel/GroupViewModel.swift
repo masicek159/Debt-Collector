@@ -13,6 +13,11 @@ final class GroupViewModel: ObservableObject {
     @Published private(set) var groups: [GroupModel] = []
     @Published private(set) var members: [User] = []
     
+    private func getMembersIds(groupId: String) async throws -> [String] {
+        var members = try await GroupManager.shared.getMembers(groupId: groupId)
+        return members.map { $0.memberId }
+    }
+    
     func addGroup(name: String, currency: String, color: Data) async throws {
         try await GroupManager.shared.uploadGroup(name: name, currency: currency, color: color)
         await fetchDataAndWriteToFile()
@@ -30,8 +35,24 @@ final class GroupViewModel: ObservableObject {
         await fetchDataAndWriteToFile()
     }
     
-    func getGroupMember(groupId: String, userId: String) async throws -> GroupMember? {
-        try await GroupManager.shared.getMember(groupId: groupId, memberId: userId)
+    func memberAlreadyExists(groupId: String, userId: String) async -> Bool {
+        do {
+            guard !(try await GroupManager.shared.getMember(groupId: groupId, memberId: userId).exists) else {return false}
+        } catch {
+            print("Error fetching member")
+            return false
+        }
+        return true
+    }
+    
+    func addMemberIntoGroup(groupId: String, userId: String) async -> Bool{
+        do {
+            try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: 0)
+        } catch {
+            print("Error adding member")
+            return false
+        }
+        return true
     }
     func readGroupFile() throws -> [GroupModel] {
         let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("groupFile.json")

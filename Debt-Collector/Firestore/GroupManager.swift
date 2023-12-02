@@ -44,7 +44,29 @@ final class GroupManager {
             try groupRef.setData(from: group, merge: false)
             let userId = Auth.auth().currentUser?.uid ?? ""
             try await UserManager.shared.addGroupUser(userId: userId, groupId: groupRef.documentID)
+            try await addGroupMember(groupId: group.id, userId: currentUser.id, balance: 0)
         }
+    }
+    
+    func deleteGroupInUsers(groupId: String) {
+        Firestore.firestore().collectionGroup("groups")
+            .whereField(FieldPath.documentID(), isEqualTo: groupId)
+            .getDocuments { (querySnapshot, error) in
+                if let error = error {
+                    print("Error getting documents to delete: \(error)")
+                } else {
+                    for document in querySnapshot!.documents {
+                        // Delete each document
+                        document.reference.delete { deleteError in
+                            if let deleteError = deleteError {
+                                print("Error deleting document: \(deleteError)")
+                            } else {
+                                print("Document successfully deleted")
+                            }
+                        }
+                    }
+                }
+            }
     }
     
     func deleteGroup(groupId: String) {
@@ -53,10 +75,11 @@ final class GroupManager {
                 print("Error deleting document: \(error)")
             } else {
                 print("Document successfully deleted!")
+                self.deleteGroupInUsers(groupId: groupId)
             }
         }
     }
-    
+        
     func getGroup(groupId: String) async throws -> GroupModel {
         try await groupDocument(groupId: groupId).getDocument(as: GroupModel.self)
     }
@@ -75,11 +98,11 @@ final class GroupManager {
     func getMembers(groupId: String) async throws -> [GroupMember]{
         try await groupMembersCollection(groupId: groupId).getDocuments(as: GroupMember.self)
     }
+
     
-    func getMember(groupId: String, memberId: String) async throws -> GroupMember? {
-        try await groupMemberDocument(memberId: memberId, groupId: groupId).getDocument(as: GroupMember.self)
+    func getMember(groupId: String, memberId: String) async throws -> DocumentSnapshot {
+        return try await groupMemberDocument(memberId: memberId, groupId: groupId).getDocument()
     }
-    
     
     func getExpenses(groupId: String) async throws -> [ExpenseModel] {
         try await groupExpenseCollection(groupId: groupId).getDocuments(as: ExpenseModel.self)

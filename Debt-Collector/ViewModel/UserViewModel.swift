@@ -32,7 +32,6 @@ final class UserViewModel: ObservableObject {
         let user: User? = await UserManager.shared.getUser(email: email)
         if let user = user, let currentUser = AuthViewModel.shared.currentUser {
             // already friends
-            print("User id: \(currentUser.id), friendId: \(user.id)")
             do {
                 guard !(try await UserManager.shared.getFriend(userId: currentUser.id, friendId: user.id).exists) else {
                     print("Already have this friend")
@@ -42,7 +41,6 @@ final class UserViewModel: ObservableObject {
                 print("Error getting friend: \(error)")
                 return false
             }
-            print("Dont have this friend yet")
             // TODO: notify the requested user
             do {
                 try await FriendRequestManager.shared.uploadFriendRequest(receiverId: user.id, senderId: currentUser.id)
