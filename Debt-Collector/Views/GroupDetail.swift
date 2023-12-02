@@ -14,7 +14,7 @@ struct GroupDetail: View {
     @State var isMemberListExpanded = true
     @State var isExpenseListExpanded = true
     
-    var group: GroupModel
+    @State var group: GroupModel
     @State var expenses: [ExpenseModel] = []
     
     var body: some View {
@@ -58,10 +58,10 @@ struct GroupDetail: View {
                     }
                 }) {
                     if isMemberListExpanded {
-                        if groupViewModel.members.isEmpty {
+                        if group.members.isEmpty {
                             Text("Group does not have any members")
                         } else {
-                            ForEach(groupViewModel.members, id: \.self) { member in
+                            ForEach(group.members, id: \.self) { member in
                                 HStack {
                                     Image(systemName: "person.fill")
                                         .font(.largeTitle)
@@ -76,9 +76,6 @@ struct GroupDetail: View {
                             }
                         }
                     }
-                }
-                .onAppear {
-                    groupViewModel.getMembers(groupId: group.id)
                 }
                 .sheet(isPresented: $showAddMemberPopUp) {
                     NewGroupMemberView(showAddMemberPopUp: $showAddMemberPopUp, group: group)

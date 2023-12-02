@@ -31,7 +31,8 @@ struct NewGroupMemberView: View {
             }) {
                 Text("Cancel")
             }
-        }) {
+        }) 
+        {
             Form {
                 Section {
                     Picker("Select a member", selection: $selectedMember) {
@@ -46,56 +47,60 @@ struct NewGroupMemberView: View {
                 userViewModel.getFriends()
             }
             .navigationBarBackButtonHidden(true)
-        }
+        
         // accept request
-        Section {
-            Button(action: {
-                // add friend
-                Task {
-                    if let selectedUser = selectedMember {
-                        if await !groupViewModel.memberAlreadyExists(groupId: group.id, userId: selectedUser.id) {
-                            existingMember = true
-                        } else {
-                            addFailed = await !groupViewModel.addMemberIntoGroup(groupId: group.id, userId: selectedUser.id)
+            Section {
+                Button(action: {
+                    // add friend
+                    Task {
+                        if let selectedUser = selectedMember {
+                            if await groupViewModel.memberAlreadyExists(groupId: group.id, userId: selectedUser.id) {
+                                existingMember = true
+                            } else {
+                                addFailed = await !groupViewModel.addMemberIntoGroup(groupId: group.id, userId: selectedUser.id)
+                            }
+                            showAlert = true
                         }
                     }
+                }) {
+                    Text("Add member")
+                        .foregroundColor(.blue)
                 }
-            }) {
-                Text("Add member")
-                    .foregroundColor(.blue)
+                .alert(isPresented: $showAlert) {
+                    if existingMember {
+                        return Alert(
+                            title: Text("Warning"),
+                            message: Text("This user is already member of the group!"),
+                            dismissButton: .default(Text("OK"), action: {
+                                showAlert = false
+                            })
+                        )
+                    }
+                    else if addFailed {
+                        return Alert(
+                            title: Text("Warning"),
+                            message: Text("Failed to add member!"),
+                            dismissButton: .default(Text("OK"), action: {
+                                showAlert = false
+                            })
+                        )
+                    } else {
+                        return Alert(
+                            title: Text("Success"),
+                            message: Text("Member added successfully!"),
+                            dismissButton: .default(Text("Cancel"), action: {
+                                showAlert = false
+                                showAddMemberPopUp = false
+                                if let selectedMember = selectedMember {
+                                    group.members.append(selectedMember)
+                                }
+                            })
+                        )
+                    }
+                }
             }
-            .alert(isPresented: $showAlert) {
-                if existingMember {
-                    return Alert(
-                        title: Text("Warning"),
-                        message: Text("This user is already member of the group!"),
-                        dismissButton: .default(Text("OK"), action: {
-                            showAlert = false
-                        })
-                    )
-                }
-                else if addFailed {
-                    return Alert(
-                        title: Text("Warning"),
-                        message: Text("Failed to add member!"),
-                        dismissButton: .default(Text("OK"), action: {
-                            showAlert = false
-                        })
-                    )
-                } else {
-                    return Alert(
-                        title: Text("Success"),
-                        message: Text("Member added successfully!"),
-                        dismissButton: .default(Text("Cancel"), action: {
-                            showAlert = false
-                        })
-                    )
-                }
-            }
-            
-            
-            .padding()
         }
+        .padding()
     }
     /*       Button(action: {
      if let selectedUser = selectedMember {
