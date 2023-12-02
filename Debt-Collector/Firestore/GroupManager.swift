@@ -48,12 +48,34 @@ final class GroupManager {
         }
     }
     
+    func deleteGroupInUsers(groupId: String) {
+        Firestore.firestore().collectionGroup("groups")
+            .whereField(FieldPath.documentID(), isEqualTo: groupId)
+            .getDocuments { (querySnapshot, error) in
+                if let error = error {
+                    print("Error getting documents to delete: \(error)")
+                } else {
+                    for document in querySnapshot!.documents {
+                        // Delete each document
+                        document.reference.delete { deleteError in
+                            if let deleteError = deleteError {
+                                print("Error deleting document: \(deleteError)")
+                            } else {
+                                print("Document successfully deleted")
+                            }
+                        }
+                    }
+                }
+            }
+    }
+    
     func deleteGroup(groupId: String) {
         groupDocument(groupId: groupId).delete { error in
             if let error = error {
                 print("Error deleting document: \(error)")
             } else {
                 print("Document successfully deleted!")
+                self.deleteGroupInUsers(groupId: groupId)
             }
         }
     }

@@ -10,8 +10,9 @@ import FirebaseAuth
 
 struct FriendsView: View {
 
-    @ObservedObject var viewModel = UserViewModel()
+    @ObservedObject var userViewModel = UserViewModel()
     @State var showPopup = false
+    @State var isFriendListExpanded = true
 
     var body: some View {
         NavigationView {
@@ -24,7 +25,7 @@ struct FriendsView: View {
                                 Text("Positive Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("\(viewModel.calculateTotalPositiveBalance())$")
+                                Text("\(userViewModel.calculateTotalPositiveBalance())$")
                                     .font(.title)
                                     .foregroundColor(.green)
                             }
@@ -35,7 +36,7 @@ struct FriendsView: View {
                                 Text("Negative Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("\(viewModel.calculateTotalNegativeBalance())$")
+                                Text("\(userViewModel.calculateTotalNegativeBalance())$")
                                     .font(.title)
                                     .foregroundColor(.red)
                             }
@@ -66,7 +67,7 @@ struct FriendsView: View {
                         AddFriendView(showPopup: $showPopup)
                     })
                     .onAppear {
-                        viewModel.getFriends()
+                        userViewModel.getFriends()
                     }
                 }
             }

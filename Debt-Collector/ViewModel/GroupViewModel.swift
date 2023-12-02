@@ -20,6 +20,7 @@ final class GroupViewModel: ObservableObject {
     
     func addGroup(name: String, currency: String, color: Data) async throws {
         try await GroupManager.shared.uploadGroup(name: name, currency: currency, color: color)
+        await fetchDataAndWriteToFile()
     }
     
     func deleteGroup(groupId: String) {
@@ -31,6 +32,7 @@ final class GroupViewModel: ObservableObject {
     
     func addGroupMember(groupId: String, userId: String, balance: Double = 0) async throws {
         try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: balance)
+        await fetchDataAndWriteToFile()
     }
     
     func memberAlreadyExists(groupId: String, userId: String) async -> Bool {
@@ -52,42 +54,50 @@ final class GroupViewModel: ObservableObject {
         }
         return true
     }
+    func readGroupFile() throws -> [GroupModel] {
+        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("groupFile.json")
+
+        do {
+            let data = try Data(contentsOf: fileURL)
+            let decoder = JSONDecoder()
+            let groupModels = try decoder.decode([GroupModel].self, from: data)
+            return groupModels
+        } catch {
+            throw error
+        }
+    }
     
     func getGroups () {
         Task {
-            guard let userId = Auth.auth().currentUser?.uid else { return }
-            let userGroups = try await UserManager.shared.getAllUserGroups(userId: userId)
-            
-            var localArray: [GroupModel] = []
-            
-            for userGroup in userGroups {
-                if let group = try? await GroupManager.shared.getGroup(groupId: userGroup.groupId) {
-                    // load members of the group
-                    var memberIds = try await getMembersIds(groupId: group.id)
-                    for id in memberIds {
-                        group.members.append(try await UserManager.shared.getUser(userId: id))
-                    }
-                    
-                    localArray.append( group)
+                do {
+                    // Read the contents of the groupFile.json file
+                    let groupModels = try readGroupFile()
+
+                    // Update the groups array
+                    self.groups = groupModels
+                } catch {
+                    print("Error reading group file: \(error)")
                 }
             }
-            self.groups = localArray
-        }
     }
     
     func getMembers(groupId: String) {
         Task {
-            let groupMembers = try await GroupManager.shared.getMembers(groupId: groupId)
-            var localArray: [User] = []
-            
-            for groupMember in groupMembers {
-                if let member = try? await UserManager.shared.getUser(userId: groupMember.memberId) {
-                    localArray.append(member)
+                do {
+                    // Read the contents of the groupFile.json file
+                    let groupModels = try readGroupFile()
+
+                    // Find the group with the specified groupId
+                    if let targetGroup = groupModels.first(where: { $0.id == groupId }) {
+                        // Update the members array with the members of the target group
+                        self.members = targetGroup.members
+                    } else {
+                        print("Group with ID \(groupId) not found in groupFile.json")
+                    }
+                } catch {
+                    print("Error reading group file: \(error)")
                 }
             }
-            
-            self.members = localArray
-        }
     }
     
     func getExpenses(groupId: String) async throws -> [ExpenseModel] {
