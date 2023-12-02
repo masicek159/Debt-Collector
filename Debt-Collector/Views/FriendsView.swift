@@ -43,11 +43,11 @@ struct FriendsView: View {
                         }
                     }
                     
-                    Section(header: FriendsSectionHeaderView(showPopup: $showPopup)) {
-                        if viewModel.friends.isEmpty {
+                    Section(header: FriendsSectionHeaderView(showPopup: $showPopup, isFriendListExpanded: $isFriendListExpanded)) {
+                        if userViewModel.friends.isEmpty {
                             Text("You do not have any friends.")
                         } else {
-                            ForEach(viewModel.friends, id: \.id) { friend in
+                            ForEach(userViewModel.friends, id: \.id) { friend in
                                 HStack {
                                     Image(systemName: "person.fill")
                                         .font(.largeTitle)
