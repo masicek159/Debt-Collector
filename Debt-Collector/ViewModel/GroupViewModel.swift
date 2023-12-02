@@ -13,6 +13,11 @@ final class GroupViewModel: ObservableObject {
     @Published private(set) var groups: [GroupModel] = []
     @Published private(set) var members: [User] = []
     
+    private func getMembersIds(groupId: String) async throws -> [String] {
+        var members = try await GroupManager.shared.getMembers(groupId: groupId)
+        return members.map { $0.memberId }
+    }
+    
     func addGroup(name: String, currency: String, color: Data) async throws {
         try await GroupManager.shared.uploadGroup(name: name, currency: currency, color: color)
     }
@@ -57,6 +62,12 @@ final class GroupViewModel: ObservableObject {
             
             for userGroup in userGroups {
                 if let group = try? await GroupManager.shared.getGroup(groupId: userGroup.groupId) {
+                    // load members of the group
+                    var memberIds = try await getMembersIds(groupId: group.id)
+                    for id in memberIds {
+                        group.members.append(try await UserManager.shared.getUser(userId: id))
+                    }
+                    
                     localArray.append( group)
                 }
             }

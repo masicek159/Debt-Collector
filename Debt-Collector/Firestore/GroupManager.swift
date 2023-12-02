@@ -57,7 +57,7 @@ final class GroupManager {
             }
         }
     }
-    
+        
     func getGroup(groupId: String) async throws -> GroupModel {
         try await groupDocument(groupId: groupId).getDocument(as: GroupModel.self)
     }
@@ -76,6 +76,7 @@ final class GroupManager {
     func getMembers(groupId: String) async throws -> [GroupMember]{
         try await groupMembersCollection(groupId: groupId).getDocuments(as: GroupMember.self)
     }
+
     
     func getMember(groupId: String, memberId: String) async throws -> DocumentSnapshot {
         return try await groupMemberDocument(memberId: memberId, groupId: groupId).getDocument()
