@@ -38,6 +38,7 @@ final class AuthViewModel: ObservableObject {
         self.errorMessage = nil
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
+            await fetchDataAndWriteToFile()
             self.userSession = result.user
             self.currentUser = await UserManager.shared.fetchFirestoreUser()
         } catch {
