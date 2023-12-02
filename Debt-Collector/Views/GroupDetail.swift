@@ -81,7 +81,7 @@ struct GroupDetail: View {
                     groupViewModel.getMembers(groupId: group.id)
                 }
                 .sheet(isPresented: $showAddMemberPopUp) {
-                    NewGroupMemberView(group: group, showAddMemberPopUp: $showAddMemberPopUp)
+                    NewGroupMemberView(showAddMemberPopUp: $showAddMemberPopUp, group: group)
                 }
                 
                 
