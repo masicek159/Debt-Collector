@@ -69,7 +69,7 @@ final class UserViewModel: ObservableObject {
 
                 for userFriend in userFriends {
                     if let friend = try? await UserManager.shared.getUser(userId: userFriend.friendId) {
-                        let expenses = try await GroupManager.shared.getExpenses(groupId: userFriend.friendId)
+                        let expenses = try await GroupManager.shared.getExpensesInvolvingFriend(userId: currentUser.id, friendId: userFriend.friendId)
                         let totalExpense = expenses.reduce(0.0) { $0 + $1.amount }
                         let friendship = FriendshipModel(friendId: friend.id, balance: totalExpense)
                         updatedFriendships.append(friendship)

@@ -85,6 +85,15 @@ final class GroupManager {
     func getExpenses(groupId: String) async throws -> [ExpenseModel] {
         try await groupExpenseCollection(groupId: groupId).getDocuments(as: ExpenseModel.self)
     }
+    
+    func getExpensesInvolvingFriend(userId: String, friendId: String) async throws -> [ExpenseModel] {
+        let expenses = try await groupExpenseCollection(groupId: userId).getDocuments(as: ExpenseModel.self)
+        let expensesInvolvingFriend = expenses.filter { expense in
+            let participantsIds = expense.participants.map { $0.id }
+            return participantsIds.contains(userId) && participantsIds.contains(friendId)
+        }
+        return expensesInvolvingFriend
+    }
 }
 
 extension Query {

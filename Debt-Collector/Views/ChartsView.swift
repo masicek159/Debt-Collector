@@ -10,8 +10,13 @@ import SwiftUICharts
 
 struct ChartsView: View {
     
-    
     var body: some View {
         Text("Charts")
+    }
+}
+
+struct ChartsView_Previews: PreviewProvider {
+    static var previews: some View {
+        ChartsView()
     }
 }
