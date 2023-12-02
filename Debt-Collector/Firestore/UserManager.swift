@@ -80,7 +80,7 @@ final class UserManager {
     }
     
     func addGroupUser(userId: String, groupId: String, role: String = "member") async throws {
-        let document = groupUserCollection(userId: userId).document()
+        let document = groupUserCollection(userId: userId).document(groupId)
         
         let data: [String : Any] = [
             GroupUser.CodingKeys.dateCreated.rawValue : Timestamp(),
