@@ -16,6 +16,7 @@ struct NewGroupMemberView: View {
     @State private var showAlert: Bool = false
     @State private var existingMember: Bool = false
     
+    @Binding var showAddMemberPopUp: Bool
     var group: GroupModel
     
     var body: some View {
@@ -45,65 +46,65 @@ struct NewGroupMemberView: View {
                 userViewModel.getFriends()
             }
             .navigationBarBackButtonHidden(true)
-        
-            // accept request
-            Section {
-                Button(action: {
-                    // add friend
-                    Task {
-                        if let selectedUser = selectedMember {
-                            if await !groupViewModel.memberAlreadyExists(groupId: group.id, userId: selectedUser.id) {
-                                existingMember = true
-                            } else {
-                                addFailed = await !groupViewModel.addMemberIntoGroup(groupId: group.id, userId: selectedUser.id)
-                            }
-                        }
-                    }) {
-                        Text("Add member")
-                            .foregroundColor(.blue)
-                    }
-                    //        .disabled(!isFormValid)
-                    .alert(isPresented: $showAlert) {
-                        if existingMember {
-                            return Alert(
-                                title: Text("Warning"),
-                                message: Text("This user is already member of the group!"),
-                                dismissButton: .default(Text("OK"), action: {
-                                    showAlert = false
-                                })
-                            )
-                        }
-                        else if addFailed {
-                            return Alert(
-                                title: Text("Warning"),
-                                message: Text("Failed to add member!"),
-                                dismissButton: .default(Text("OK"), action: {
-                                    showAlert = false
-                                })
-                            )
+        }
+        // accept request
+        Section {
+            Button(action: {
+                // add friend
+                Task {
+                    if let selectedUser = selectedMember {
+                        if await !groupViewModel.memberAlreadyExists(groupId: group.id, userId: selectedUser.id) {
+                            existingMember = true
                         } else {
-                            return Alert(
-                                title: Text("Success"),
-                                message: Text("Member added successfully!"),
-                                dismissButton: .default(Text("Cancel"), action: {
-                                    showAlert = false
-                                })
-                            )
+                            addFailed = await !groupViewModel.addMemberIntoGroup(groupId: group.id, userId: selectedUser.id)
                         }
                     }
                 }
+            }) {
+                Text("Add member")
+                    .foregroundColor(.blue)
             }
+            .alert(isPresented: $showAlert) {
+                if existingMember {
+                    return Alert(
+                        title: Text("Warning"),
+                        message: Text("This user is already member of the group!"),
+                        dismissButton: .default(Text("OK"), action: {
+                            showAlert = false
+                        })
+                    )
+                }
+                else if addFailed {
+                    return Alert(
+                        title: Text("Warning"),
+                        message: Text("Failed to add member!"),
+                        dismissButton: .default(Text("OK"), action: {
+                            showAlert = false
+                        })
+                    )
+                } else {
+                    return Alert(
+                        title: Text("Success"),
+                        message: Text("Member added successfully!"),
+                        dismissButton: .default(Text("Cancel"), action: {
+                            showAlert = false
+                        })
+                    )
+                }
+            }
+            
+            
+            .padding()
         }
-        .padding()
     }
- /*       Button(action: {
-            if let selectedUser = selectedMember {
-                try await viewModel.addGroupMember(groupId: group.id, userId: selectedUser.id, balance: 0)
-            } else {
-                // Handle the case where selectedMember is nil
-                print("No member selected")
-            }
-        } {
-            Text("Add member")
-        } */
+    /*       Button(action: {
+     if let selectedUser = selectedMember {
+     try await viewModel.addGroupMember(groupId: group.id, userId: selectedUser.id, balance: 0)
+     } else {
+     // Handle the case where selectedMember is nil
+     print("No member selected")
+     }
+     } {
+     Text("Add member")
+     } */
 }
