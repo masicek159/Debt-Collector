@@ -9,10 +9,17 @@ import SwiftUI
 
 struct FriendsSectionHeaderView: View {
     @Binding var showPopup: Bool
+    @Binding var isFriendListExpanded: Bool
     
     var body: some View {
         HStack {
             Text("Friends")
+            
+            Button(action: {
+                isFriendListExpanded.toggle()
+            }) {
+                Image(systemName: isFriendListExpanded ? "chevron.down" : "chevron.up")
+            }
             
             Spacer()
             
@@ -27,6 +34,6 @@ struct FriendsSectionHeaderView: View {
 
 struct FriendsSectionHeaderView_Previews: PreviewProvider {
     static var previews: some View {
-        FriendsSectionHeaderView(showPopup: .constant(false))
+        FriendsSectionHeaderView(showPopup: .constant(false), isFriendListExpanded: .constant(false))
     }
 }

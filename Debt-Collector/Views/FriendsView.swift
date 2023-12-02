@@ -10,8 +10,9 @@ import FirebaseAuth
 
 struct FriendsView: View {
 
-    @ObservedObject var viewModel = UserViewModel()
+    @ObservedObject var userViewModel = UserViewModel()
     @State var showPopup = false
+    @State var isFriendListExpanded = true
 
     var body: some View {
         NavigationView {
@@ -24,7 +25,7 @@ struct FriendsView: View {
                                 Text("Positive Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("\(viewModel.calculateTotalPositiveBalance())$")
+                                Text("\(userViewModel.calculateTotalPositiveBalance())$")
                                     .font(.title)
                                     .foregroundColor(.green)
                             }
@@ -35,28 +36,30 @@ struct FriendsView: View {
                                 Text("Negative Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("\(viewModel.calculateTotalNegativeBalance())$")
+                                Text("\(userViewModel.calculateTotalNegativeBalance())$")
                                     .font(.title)
                                     .foregroundColor(.red)
                             }
                         }
                     }
                     
-                    Section(header: FriendsSectionHeaderView(showPopup: $showPopup)) {
-                        if viewModel.friendsWithExpenses.isEmpty {
-                            Text("You do not have any friends.")
-                        } else {
-                            ForEach(viewModel.friendsWithExpenses, id: \.friendId) { friendship in
-                                HStack {
-                                    Image(systemName: "person.fill")
-                                        .font(.largeTitle)
-                                        .foregroundColor(.purple)
-                                    Text(friendship.friendId)
-                                        .font(.headline)
-                                    Spacer()
-                                    Text("Balance: \(friendship.balance)$")
-                                        .font(.subheadline)
-                                        .foregroundColor(friendship.balance >= 0 ? .green : .red)
+                    Section(header: FriendsSectionHeaderView(showPopup: $showPopup, isFriendListExpanded: $isFriendListExpanded)) {
+                        if isFriendListExpanded {
+                            if userViewModel.friendsWithExpenses.isEmpty {
+                                Text("You do not have any friends.")
+                            } else {
+                                ForEach(userViewModel.friendsWithExpenses, id: \.friendId) { friendship in
+                                    HStack {
+                                        Image(systemName: "person.fill")
+                                            .font(.largeTitle)
+                                            .foregroundColor(.purple)
+                                        Text(friendship.friendId)
+                                            .font(.headline)
+                                        Spacer()
+                                        Text("Balance: \(friendship.balance)$")
+                                            .font(.subheadline)
+                                            .foregroundColor(friendship.balance >= 0 ? .green : .red)
+                                    }
                                 }
                             }
                         }
@@ -65,7 +68,7 @@ struct FriendsView: View {
                         AddFriendView(showPopup: $showPopup)
                     })
                     .onAppear {
-                        viewModel.getFriends()
+                        userViewModel.getFriends()
                     }
                 }
             }

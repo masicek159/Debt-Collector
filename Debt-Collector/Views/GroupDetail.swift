@@ -9,6 +9,10 @@ import SwiftUI
 
 struct GroupDetail: View {
     @ObservedObject var groupViewModel = GroupViewModel()
+    @State var showAddExpensePopUp = false
+    @State var showAddMemberPopUp = false
+    @State var isMemberListExpanded = true
+    @State var isExpenseListExpanded = true
     
     var group: GroupModel
     @State var expenses: [ExpenseModel] = []
@@ -36,48 +40,90 @@ struct GroupDetail: View {
                     }
                 }
                 
-                Section("Members") {
-                    ForEach(groupViewModel.members, id: \.self) { member in
-                        HStack {
-                            Image(systemName: "person.fill")
-                                .font(.largeTitle)
-                                .foregroundColor(.purple)
-                            Text(member.fullName)
-                                .font(.headline)
-                            Spacer()
-                            Text("Balance: \(member.balance)$")
-                                .font(.subheadline)
-                                .foregroundColor(member.balance >= 0 ? .green : .red)
-                        }
+                Section(header: HStack {
+                    Text("Members")
+                    
+                    Button(action: {
+                        isMemberListExpanded.toggle()
+                    }) {
+                        Image(systemName: isMemberListExpanded ? "chevron.down" : "chevron.up")
                     }
                     
-                    NavigationLink(destination: NewGroupMemberView(group: group)) {
-                        Text("Add Member")
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(Color.blue)
-                            .cornerRadius(8)
+                    Spacer()
+                    
+                    Button(action: {
+                        showAddMemberPopUp = true
+                    }) {
+                        Image(systemName: "plus")
                     }
-                    .navigationBarBackButtonHidden(true)
+                }) {
+                    if isMemberListExpanded {
+                        if groupViewModel.members.isEmpty {
+                            Text("Group does not have any members")
+                        } else {
+                            ForEach(groupViewModel.members, id: \.self) { member in
+                                HStack {
+                                    Image(systemName: "person.fill")
+                                        .font(.largeTitle)
+                                        .foregroundColor(.purple)
+                                    Text(member.fullName)
+                                        .font(.headline)
+                                    Spacer()
+                                    Text("Balance: \(member.balance)$")
+                                        .font(.subheadline)
+                                        .foregroundColor(member.balance >= 0 ? .green : .red)
+                                }
+                            }
+                        }
+                    }
                 }
                 .onAppear {
                     groupViewModel.getMembers(groupId: group.id)
                 }
-                Section("Expenses") {
-                    ForEach(expenses, id: \.id) { expense in
-                        HStack{
-                            Text(expense.name)
-                            
-                            Text("\(expense.amount)")
+                .sheet(isPresented: $showAddMemberPopUp) {
+                    NewGroupMemberView(group: group, showAddMemberPopUp: $showAddMemberPopUp)
+                }
+                
+                
+                Section(header: HStack {
+                    Text("Expeneses")
+                    
+                    Button(action: {
+                        isExpenseListExpanded.toggle()
+                    }) {
+                        Image(systemName: isExpenseListExpanded ? "chevron.down" : "chevron.up")
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        showAddExpensePopUp = true
+                    }) {
+                        Image(systemName: "plus")
+                    }
+                }) {
+                    if isExpenseListExpanded {
+                        if expenses.isEmpty {
+                            Text("Group does not have any expenses")
+                        } else {
+                            ForEach(expenses, id: \.id) { expense in
+                                HStack{
+                                    Text(expense.name)
+                                    
+                                    Text("\(expense.amount)")
+                                }
+                            }
                         }
                     }
+                }
+                .sheet(isPresented: $showAddExpensePopUp) {
+                    AddExpenseInGroupView(group: group, showAddExpensePopUp: $showAddExpensePopUp)
                 }
             }
         }
         .onAppear {
             Task {
                 expenses = try await groupViewModel.getExpenses(groupId: group.id)
-                
             }
         }
     }

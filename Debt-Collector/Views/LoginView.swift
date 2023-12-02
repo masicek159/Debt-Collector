@@ -50,9 +50,11 @@ struct LoginView: View {
                         Button {
                             print("Logging in")
                             Task {
+                                swiftUIShared.showLoadingPage(showLoadingPage: true)
                                 self.loading = true
                                 try await  authViewModel.singIn(withEmail: email, password: password)
                                 self.loading = false
+                                swiftUIShared.showLoadingPage(showLoadingPage: false)
                             }
                         } label: {
                             Group{

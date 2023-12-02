@@ -17,6 +17,7 @@ struct SignUpView: View {
     @State private var loading = false
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var swiftUIShared: SwiftUIShared
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -53,9 +54,11 @@ struct SignUpView: View {
             Button {
                 print("Logging in")
                 Task {
+                    swiftUIShared.showLoadingPage(showLoadingPage: true)
                     self.loading = true
                     try await authViewModel.createUser(withEmail: email, password: password, fullName: fullName)
                     self.loading = false
+                    swiftUIShared.showLoadingPage(showLoadingPage: false)
                 }
             } label: {
                 Group {
