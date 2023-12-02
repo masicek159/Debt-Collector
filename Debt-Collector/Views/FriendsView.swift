@@ -43,25 +43,24 @@ struct FriendsView: View {
                         }
                     }
                     
-                    Section(header: FriendsSectionHeaderView(showPopup: $showPopup, isFriendListExpanded: $isFriendListExpanded)) {
-                        if isFriendListExpanded {
-                            if userViewModel.friendsWithExpenses.isEmpty {
-                                Text("You do not have any friends.")
-                            } else {
-                                ForEach(userViewModel.friendsWithExpenses, id: \.friendId) { friendship in
-                                    HStack {
-                                        Image(systemName: "person.fill")
-                                            .font(.largeTitle)
-                                            .foregroundColor(.purple)
-                                        Text(friendship.friendId)
-                                            .font(.headline)
-                                        Spacer()
-                                        Text("Balance: \(friendship.balance)$")
-                                            .font(.subheadline)
-                                            .foregroundColor(friendship.balance >= 0 ? .green : .red)
-                                    }
+                    Section(header: FriendsSectionHeaderView(showPopup: $showPopup)) {
+                        if viewModel.friends.isEmpty {
+                            Text("You do not have any friends.")
+                        } else {
+                            ForEach(viewModel.friends, id: \.id) { friend in
+                                HStack {
+                                    Image(systemName: "person.fill")
+                                        .font(.largeTitle)
+                                        .foregroundColor(.purple)
+                                    Text("\(friend.fullName)")
+                                        .font(.headline)
+                                    Spacer()
+                                    Text("Balance: \(friend.balance)$")
+                                        .font(.subheadline)
+                                        .foregroundColor(friend.balance >= 0 ? .green : .red)
                                 }
                             }
+
                         }
                     }
                     .sheet(isPresented: $showPopup, content: {
@@ -83,11 +82,10 @@ struct FriendsView: View {
                         Image(systemName: "person.fill")
                             .font(.headline)
                     }
-                    
                 }
             }
-            
         }
+                        
     }
     
 /*    func calculateTotalPositiveBalance() -> String {
@@ -99,4 +97,10 @@ struct FriendsView: View {
             return String(totalNegativeBalance)
         }
 */
+}
+
+struct FriendsView_Previews: PreviewProvider {
+    static var previews: some View {
+        FriendsView()
+    }
 }

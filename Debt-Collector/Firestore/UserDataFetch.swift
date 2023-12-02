@@ -9,6 +9,8 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 import FirebaseAuth
+let userFileURL = FileManager.default.temporaryDirectory.appendingPathComponent("userFile.json")
+let groupFileURL = FileManager.default.temporaryDirectory.appendingPathComponent("groupFile.json")
 private let userCollection: CollectionReference = Firestore.firestore().collection("users")
 private func userDocument(userId: String) -> DocumentReference {
     userCollection.document(userId)
@@ -46,6 +48,7 @@ func getAllUserDataForCurrentUser() async throws -> (User, [GroupModel]) {
         return (userData, groupModels)
     }
 func fetchDataAndWriteToFile() async {
+
     do {
         let (userData, groupModels) = try await getAllUserDataForCurrentUser()
 
@@ -56,18 +59,11 @@ func fetchDataAndWriteToFile() async {
         let userDataJSON = try jsonEncoder.encode(userData)
         let groupModelsJSON = try jsonEncoder.encode(groupModels)
 
-        // Get the document directory
-        if let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-            // Create a URL for your JSON file
-            let userDataURL = documentDirectory.appendingPathComponent("userData.json")
-            let groupModelsURL = documentDirectory.appendingPathComponent("groupModels.json")
+        // Write data to the existing JSON files
+        try userDataJSON.write(to: userFileURL, options: .atomic)
+        try groupModelsJSON.write(to: groupFileURL, options: .atomic)
 
-            // Write data to the JSON files
-            try userDataJSON.write(to: userDataURL, options: .atomic)
-            try groupModelsJSON.write(to: groupModelsURL, options: .atomic)
-
-            print("Data written to \(userDataURL.path) and \(groupModelsURL.path)")
-        }
+        print("Data written to \(userFileURL.path) and \(groupFileURL.path)")
     } catch {
         print("Error fetching or writing data: \(error)")
     }

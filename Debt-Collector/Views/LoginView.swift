@@ -53,6 +53,7 @@ struct LoginView: View {
                                 swiftUIShared.showLoadingPage(showLoadingPage: true)
                                 self.loading = true
                                 try await  authViewModel.singIn(withEmail: email, password: password)
+                            await fetchDataAndWriteToFile()
                                 self.loading = false
                                 swiftUIShared.showLoadingPage(showLoadingPage: false)
                             }
