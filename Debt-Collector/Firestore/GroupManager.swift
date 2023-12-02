@@ -44,6 +44,7 @@ final class GroupManager {
             try groupRef.setData(from: group, merge: false)
             let userId = Auth.auth().currentUser?.uid ?? ""
             try await UserManager.shared.addGroupUser(userId: userId, groupId: groupRef.documentID)
+            try await addGroupMember(groupId: group.id, userId: currentUser.id, balance: 0)
         }
     }
     
