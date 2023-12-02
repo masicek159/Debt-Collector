@@ -43,22 +43,23 @@ struct FriendsView: View {
                     }
                     
                     Section(header: FriendsSectionHeaderView(showPopup: $showPopup)) {
-                        if viewModel.friendsWithExpenses.isEmpty {
+                        if viewModel.friends.isEmpty {
                             Text("You do not have any friends.")
                         } else {
-                            ForEach(viewModel.friendsWithExpenses, id: \.friendId) { friendship in
+                            ForEach(viewModel.friends, id: \.id) { friend in
                                 HStack {
                                     Image(systemName: "person.fill")
                                         .font(.largeTitle)
                                         .foregroundColor(.purple)
-                                    Text(friendship.friendId)
+                                    Text("\(friend.fullName)")
                                         .font(.headline)
                                     Spacer()
-                                    Text("Balance: \(friendship.balance)$")
+                                    Text("Balance: \(friend.balance)$")
                                         .font(.subheadline)
-                                        .foregroundColor(friendship.balance >= 0 ? .green : .red)
+                                        .foregroundColor(friend.balance >= 0 ? .green : .red)
                                 }
                             }
+
                         }
                     }
                     .sheet(isPresented: $showPopup, content: {
@@ -80,11 +81,10 @@ struct FriendsView: View {
                         Image(systemName: "person.fill")
                             .font(.headline)
                     }
-                    
                 }
             }
-            
         }
+                        
     }
     
 /*    func calculateTotalPositiveBalance() -> String {
@@ -96,4 +96,10 @@ struct FriendsView: View {
             return String(totalNegativeBalance)
         }
 */
+}
+
+struct FriendsView_Previews: PreviewProvider {
+    static var previews: some View {
+        FriendsView()
+    }
 }
