@@ -50,6 +50,7 @@ final class GroupViewModel: ObservableObject {
     func addMemberIntoGroup(groupId: String, userId: String) async -> Bool{
         do {
             try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: 0)
+            await fetchDataAndWriteToFile()
         } catch {
             print("Error adding member")
             return false
