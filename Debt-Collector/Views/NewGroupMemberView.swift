@@ -17,27 +17,6 @@ struct NewGroupMemberView: View {
     @State private var existingMember: Bool = false
     
     var group: GroupModel
-    @Binding var showAddMemberPopUp: Bool
-
-    func memberAlreadyExists(groupId: String, userId: String, groupViewModel: GroupViewModel) async -> Bool {
-        do {
-            guard (try await groupViewModel.getGroupMember(groupId: groupId, userId: userId)) != nil else {return false}
-        } catch {
-            print("Error fetching member")
-            return false
-        }
-        return true
-    }
-    
-    func addMemberIntoGroup(groupId: String, userId: String, groupViewModel: GroupViewModel) async -> Bool{
-        do {
-            try await groupViewModel.addGroupMember(groupId: groupId, userId: userId)
-        } catch {
-            print("Error adding member")
-            return false
-        }
-        return true
-    }
     
     var body: some View {
         Section (header: HStack {
@@ -59,27 +38,24 @@ struct NewGroupMemberView: View {
                             Text(user.fullName).tag(user as User?)
                         }
                     }
-                    .pickerStyle(.menu)
                 }
-                .task {
-                    userViewModel.getFriends()
-                }
-                
-                // accept request
-                Section {
-                    Button(action: {
-                        // add friend
-                        Task {
-                            if let selectedUser = selectedMember {
-                                if await !memberAlreadyExists(groupId: group.id, userId: selectedUser.id, groupViewModel: groupViewModel) {
-                                    existingMember = true
-                                } else {
-                                    addFailed = await !addMemberIntoGroup(groupId: group.id, userId: selectedUser.id, groupViewModel: groupViewModel)
-                                    if !addFailed {
-                                        showAddMemberPopUp = false
-                                    }
-                                }
-                                showAlert = true
+                .pickerStyle(.menu)
+            }
+            .task {
+                userViewModel.getFriends()
+            }
+            .navigationBarBackButtonHidden(true)
+        
+            // accept request
+            Section {
+                Button(action: {
+                    // add friend
+                    Task {
+                        if let selectedUser = selectedMember {
+                            if await !groupViewModel.memberAlreadyExists(groupId: group.id, userId: selectedUser.id) {
+                                existingMember = true
+                            } else {
+                                addFailed = await !groupViewModel.addMemberIntoGroup(groupId: group.id, userId: selectedUser.id)
                             }
                         }
                     }) {

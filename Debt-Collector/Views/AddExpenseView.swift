@@ -87,7 +87,6 @@ struct AddExpenseView: View {
                             selected: $participants
                         )
                         
-                        
                         Button(action: {
                             Task {
                                 if let group = group, let paidBy = paidBy {
