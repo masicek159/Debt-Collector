@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct GroupsView: View {
-    @ObservedObject var groupViewModel = GroupViewModel()
+    @ObservedObject var groupViewModel: GroupViewModel = GroupViewModel()
     @State private var showPopup = false
+    @State private var groupToDelete: GroupModel?
+    @State private var showDeleteAlert = false
     
     var body: some View {
         NavigationView {
@@ -17,7 +19,19 @@ struct GroupsView: View {
                 ForEach(groupViewModel.groups, id: \.id) { group in
                     NavigationLink(destination: GroupDetail(group: group)) {
                         HStack {
+                            Circle()    
+                                .fill(Color(group.getGroupColor()))
+                                .frame(width: 20, height: 20)
                             Text(group.name)
+                        }
+                        .swipeActions {
+                            Button {
+                                groupToDelete = group
+                                showDeleteAlert = true
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                            .tint(.red)
                         }
                     }
                     .navigationBarBackButtonHidden(true)
@@ -32,6 +46,18 @@ struct GroupsView: View {
             .sheet(isPresented: $showPopup, content: {
                 NewGroupView(viewModel: groupViewModel, showPopup: $showPopup)
             })
+            .alert(isPresented: $showDeleteAlert) {
+                Alert(
+                    title: Text("Delete Group"),
+                    message: Text("Are you sure you want to delete \(groupToDelete?.name ?? "this group")?"),
+                    primaryButton: .destructive(Text("Delete"), action: {
+                        if let groupToDelete = groupToDelete {
+                            groupViewModel.deleteGroup(groupId: groupToDelete.id)
+                        }
+                    }),
+                    secondaryButton: .cancel()
+                )
+            }
             .task {
                 groupViewModel.getGroups()
             }

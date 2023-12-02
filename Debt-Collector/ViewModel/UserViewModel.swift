@@ -1,5 +1,5 @@
 //
-//  GroupMemberViewModel.swift
+//  UserViewModel.swift
 //  Debt-Collector
 //
 //  Created by user248815 on 11/26/23.
@@ -31,14 +31,18 @@ final class UserViewModel: ObservableObject {
     func addFriendRequest(email: String) async -> Bool {
         let user: User? = await UserManager.shared.getUser(email: email)
         if let user = user, let currentUser = AuthViewModel.shared.currentUser {
-            
             // already friends
+            print("User id: \(currentUser.id), friendId: \(user.id)")
             do {
-                guard (try await UserManager.shared.getFriend(userId: currentUser.id, friendId: user.id)) != nil else {return false}
+                guard !(try await UserManager.shared.getFriend(userId: currentUser.id, friendId: user.id).exists) else {
+                    print("Already have this friend")
+                    return false
+                }
             } catch {
-                print("Error getting friend")
+                print("Error getting friend: \(error)")
                 return false
             }
+            print("Dont have this friend yet")
             // TODO: notify the requested user
             do {
                 try await FriendRequestManager.shared.uploadFriendRequest(receiverId: user.id, senderId: currentUser.id)
@@ -69,7 +73,7 @@ final class UserViewModel: ObservableObject {
                     if let friend = try? await UserManager.shared.getUser(userId: userFriend.friendId) {
                         let expenses = try await GroupManager.shared.getExpensesInvolvingFriend(userId: currentUser.id, friendId: userFriend.friendId)
                         let totalExpense = expenses.reduce(0.0) { $0 + $1.amount }
-                        let friendship = FriendshipModel(friendId: friend.id, expenses: expenses, balance: totalExpense)
+                        let friendship = FriendshipModel(friendId: friend.id, balance: totalExpense)
                         updatedFriendships.append(friendship)
                     }
                 }

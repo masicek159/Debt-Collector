@@ -6,7 +6,15 @@
 //
 
 import SwiftUI
-import PhotosUI
+
+extension UIColor {
+    class func color(data: Data) -> UIColor {
+        try! NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! UIColor
+    }
+    func encode() -> Data {
+        try! NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: false)
+    }
+}
 
 struct NewGroupView: View {
     @ObservedObject var viewModel: GroupViewModel
@@ -17,9 +25,8 @@ struct NewGroupView: View {
     @State private var groupCurrency = ""
     @State private var groupImage = ""
     
-    @State private var selectedItem: PhotosPickerItem? = nil
-    @State private var selectedImageData: Data? = nil
-    
+    @State private var selectedColor: Color = Color.blue
+
     init(viewModel: GroupViewModel, showPopup: Binding<Bool>) {
         self.viewModel = viewModel
         self._showPopup = showPopup
@@ -39,39 +46,15 @@ struct NewGroupView: View {
                 .pickerStyle(.menu)
             }
             
-            Section(header: Text("Group Image")) {
-                PhotosPicker(
-                           selection: $selectedItem,
-                           matching: .images,
-                           photoLibrary: .shared()) {
-                               Text("Select a photo")
-                           }
-                           .onChange(of: selectedItem) { newItem in
-                               Task {
-                                   // Retrieve selected asset in the form of Data
-                                   if let data = try? await newItem?.loadTransferable(type: Data.self) {
-                                       selectedImageData = data
-                                   }
-                               }
-                           }
-                       
-                       if let selectedImageData,
-                          let uiImage = UIImage(data: selectedImageData) {
-                           HStack {
-                               Spacer()
-                               Image(uiImage: uiImage)
-                                   .resizable()
-                                   .scaledToFit()
-                                   .frame(width: 250, height: 250)
-                               Spacer()
-                           }
-                       }
+            Section(header: Text("Group Color")) {
+                ColorPicker("Select a color", selection: $selectedColor)
             }
+            
             
             Button(action: {
                 Task {
                     uploadingGroup = true
-                    try await viewModel.addGroup(name: groupName, currency: groupCurrency, image: selectedImageData)
+                    try await viewModel.addGroup(name: groupName, currency: groupCurrency, color: UIColor(selectedColor).encode())
                     showPopup = false
                     uploadingGroup = false
                     viewModel.getGroups()
@@ -83,6 +66,7 @@ struct NewGroupView: View {
         .disabled(uploadingGroup)
         .navigationBarTitle("Create Group")
     }
+
 }
 
 struct NewGroupView_Previews: PreviewProvider {

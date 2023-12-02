@@ -14,7 +14,7 @@ final class GroupManager {
     
     static let shared = GroupManager()
     private init () {}
-        
+    
     private let groupCollection = Firestore.firestore().collection("groups")
     
     private func groupDocument(groupId: String) -> DocumentReference {
@@ -37,13 +37,23 @@ final class GroupManager {
         groupMembersCollection(groupId: groupId).document(expenseId)
     }
     
-    func uploadGroup(name: String, currency: String, image: Data?) async throws {
+    func uploadGroup(name: String, currency: String, color: Data) async throws {
         if let currentUser = await AuthViewModel.shared.currentUser {
             let groupRef = groupCollection.document()
-            let group = GroupModel(id: groupRef.documentID, name: name, currency: currency, image: image, owner: currentUser)
+            let group = GroupModel(id: groupRef.documentID, name: name, currency: currency, color: color.base64EncodedString(), owner: currentUser)
             try groupRef.setData(from: group, merge: false)
             let userId = Auth.auth().currentUser?.uid ?? ""
             try await UserManager.shared.addGroupUser(userId: userId, groupId: groupRef.documentID)
+        }
+    }
+    
+    func deleteGroup(groupId: String) {
+        groupDocument(groupId: groupId).delete { error in
+            if let error = error {
+                print("Error deleting document: \(error)")
+            } else {
+                print("Document successfully deleted!")
+            }
         }
     }
     
