@@ -28,8 +28,24 @@ final class GroupViewModel: ObservableObject {
         try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: balance)
     }
     
-    func getGroupMember(groupId: String, userId: String) async throws -> GroupMember? {
-        try await GroupManager.shared.getMember(groupId: groupId, memberId: userId)
+    func memberAlreadyExists(groupId: String, userId: String) async -> Bool {
+        do {
+            guard !(try await GroupManager.shared.getMember(groupId: groupId, memberId: userId).exists) else {return false}
+        } catch {
+            print("Error fetching member")
+            return false
+        }
+        return true
+    }
+    
+    func addMemberIntoGroup(groupId: String, userId: String) async -> Bool{
+        do {
+            try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: 0)
+        } catch {
+            print("Error adding member")
+            return false
+        }
+        return true
     }
     
     func getGroups () {

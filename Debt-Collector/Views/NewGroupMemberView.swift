@@ -17,26 +17,6 @@ struct NewGroupMemberView: View {
     @State private var existingMember: Bool = false
     
     var group: GroupModel
-
-    func memberAlreadyExists(groupId: String, userId: String, groupViewModel: GroupViewModel) async -> Bool {
-        do {
-            guard (try await groupViewModel.getGroupMember(groupId: groupId, userId: userId)) != nil else {return false}
-        } catch {
-            print("Error fetching member")
-            return false
-        }
-        return true
-    }
-    
-    func addMemberIntoGroup(groupId: String, userId: String, groupViewModel: GroupViewModel) async -> Bool{
-        do {
-            try await groupViewModel.addGroupMember(groupId: groupId, userId: userId)
-        } catch {
-            print("Error adding member")
-            return false
-        }
-        return true
-    }
     
     var body: some View {
         Form {
@@ -59,10 +39,10 @@ struct NewGroupMemberView: View {
                     // add friend
                     Task {
                         if let selectedUser = selectedMember {
-                            if await !memberAlreadyExists(groupId: group.id, userId: selectedUser.id, groupViewModel: groupViewModel) {
+                            if await !groupViewModel.memberAlreadyExists(groupId: group.id, userId: selectedUser.id) {
                                 existingMember = true
                             } else {
-                                addFailed = await !addMemberIntoGroup(groupId: group.id, userId: selectedUser.id, groupViewModel: groupViewModel)
+                                addFailed = await !groupViewModel.addMemberIntoGroup(groupId: group.id, userId: selectedUser.id)
                             }
                             showAlert = true
                         }
