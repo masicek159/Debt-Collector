@@ -52,6 +52,7 @@ struct LoginView: View {
                             Task {
                                 self.loading = true
                                 try await  authViewModel.singIn(withEmail: email, password: password)
+                            await fetchDataAndWriteToFile()
                                 self.loading = false
                             }
                         } label: {
