@@ -19,10 +19,9 @@ struct GroupsView: View {
                 ForEach(groupViewModel.groups, id: \.id) { group in
                     NavigationLink(destination: GroupDetail(group: group)) {
                         HStack {
-                            Circle()
-                            // add color
-                                .fill(Color.blue) // Change the color as needed
-                                .frame(width: 20, height: 20) // Adjust size if necessary
+                            Circle()    
+                                .fill(Color(group.getGroupColor()))
+                                .frame(width: 20, height: 20)
                             Text(group.name)
                         }
                         .swipeActions {
