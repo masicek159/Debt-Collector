@@ -9,23 +9,20 @@ import SwiftUI
 import FirebaseAuth
 
 struct FriendsView: View {
-
     @ObservedObject var userViewModel = UserViewModel()
     @State var showPopup = false
     @State var isFriendListExpanded = true
-
     var body: some View {
         NavigationView {
             VStack {
                 List {
                     Section(header: Text("Balances")) {
-                        
-                        HStack{
+                        HStack {
                             VStack {
                                 Text("Positive Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("\(userViewModel.calculateTotalPositiveBalance())$")
+                                Text("\(userViewModel.positiveBalance)$")
                                     .font(.title)
                                     .foregroundColor(.green)
                             }
@@ -36,13 +33,13 @@ struct FriendsView: View {
                                 Text("Negative Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("\(userViewModel.calculateTotalNegativeBalance())$")
+                                Text("\(userViewModel.negativeBalance)$")
                                     .font(.title)
                                     .foregroundColor(.red)
                             }
                         }
                     }
-                    
+
                     Section(header: FriendsSectionHeaderView(showPopup: $showPopup, isFriendListExpanded: $isFriendListExpanded)) {
                         if userViewModel.friends.isEmpty {
                             Text("You do not have any friends.")
@@ -60,7 +57,6 @@ struct FriendsView: View {
                                         .foregroundColor(friend.balance >= 0 ? .green : .red)
                                 }
                             }
-
                         }
                     }
                     .sheet(isPresented: $showPopup, content: {
@@ -68,6 +64,7 @@ struct FriendsView: View {
                     })
                     .onAppear {
                         userViewModel.getFriends()
+                        userViewModel.fetchBalances() // Fetch balances when the view appears
                     }
                 }
             }
@@ -85,18 +82,7 @@ struct FriendsView: View {
                 }
             }
         }
-                        
     }
-    
-/*    func calculateTotalPositiveBalance() -> String {
-            let totalPositiveBalance = friends.filter { $0.balance >= 0 }.reduce(0) { $0 + $1.balance }
-            return String(totalPositiveBalance)
-        }
-    func calculateTotalNegativeBalance() -> String {
-            let totalNegativeBalance = friends.filter { $0.balance < 0 }.reduce(0) { $0 + $1.balance }
-            return String(totalNegativeBalance)
-        }
-*/
 }
 
 struct FriendsView_Previews: PreviewProvider {
