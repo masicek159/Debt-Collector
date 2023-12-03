@@ -7,12 +7,16 @@
 
 import Foundation
 import FirebaseAuth
-
+import FirebaseFirestore
 @MainActor
 final class GroupViewModel: ObservableObject {
     @Published private(set) var groups: [GroupModel] = []
-    @Published private(set) var members: [User] = []
-    
+    @Published private(set) var members: [GroupMember] = []
+    private let groupCollection = Firestore.firestore().collection("groups")
+
+   private func groupDocument(groupId: String) -> DocumentReference {
+       groupCollection.document(groupId)
+   }
     private func getMembersIds(groupId: String) async throws -> [String] {
         var members = try await GroupManager.shared.getMembers(groupId: groupId)
         return members.map { $0.memberId }
@@ -84,24 +88,11 @@ final class GroupViewModel: ObservableObject {
                 }
             }
     }
-    
-    func getMembers(groupId: String) {
-        Task {
-                do {
-                    // Read the contents of the groupFile.json file
-                    let groupModels = try readGroupFile()
-
-                    // Find the group with the specified groupId
-                    if let targetGroup = groupModels.first(where: { $0.id == groupId }) {
-                        // Update the members array with the members of the target group
-                        self.members = targetGroup.members
-                    } else {
-                        print("Group with ID \(groupId) not found in groupFile.json")
-                    }
-                } catch {
-                    print("Error reading group file: \(error)")
-                }
-            }
+    private func groupMembersCollection(groupId: String) -> CollectionReference {
+            groupDocument(groupId: groupId).collection("members")
+        }
+    func getMembers(groupId: String) async throws -> [GroupMember] {
+        try await groupMembersCollection(groupId: groupId).getDocuments(as: GroupMember.self)
     }
     
     func getExpenses(groupId: String) async throws -> [ExpenseModel] {
