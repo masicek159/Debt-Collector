@@ -46,6 +46,8 @@
 		C47A3D782B12B9B400E8225A /* MultiSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A3D772B12B9B400E8225A /* MultiSelectionView.swift */; };
 		C47A3D7A2B12B9C200E8225A /* MultiSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A3D792B12B9C200E8225A /* MultiSelector.swift */; };
 		C47A3D7C2B12B9FF00E8225A /* ExpenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A3D7B2B12B9FF00E8225A /* ExpenseManager.swift */; };
+		C481408D2B1BC7D00004A877 /* ParticipantModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C481408C2B1BC7D00004A877 /* ParticipantModel.swift */; };
+		C481408F2B1BD5D20004A877 /* PopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C481408E2B1BD5D20004A877 /* PopupView.swift */; };
 		C4960F252B15389E00002155 /* GroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4960F242B15389E00002155 /* GroupViewModel.swift */; };
 		C4960F272B15399C00002155 /* ExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4960F262B15399C00002155 /* ExpenseViewModel.swift */; };
 		C4960F292B1539EB00002155 /* GroupMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4960F282B1539EB00002155 /* GroupMember.swift */; };
@@ -93,6 +95,8 @@
 		C47A3D772B12B9B400E8225A /* MultiSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiSelectionView.swift; sourceTree = "<group>"; };
 		C47A3D792B12B9C200E8225A /* MultiSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiSelector.swift; sourceTree = "<group>"; };
 		C47A3D7B2B12B9FF00E8225A /* ExpenseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpenseManager.swift; sourceTree = "<group>"; };
+		C481408C2B1BC7D00004A877 /* ParticipantModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantModel.swift; sourceTree = "<group>"; };
+		C481408E2B1BD5D20004A877 /* PopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupView.swift; sourceTree = "<group>"; };
 		C4960F242B15389E00002155 /* GroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewModel.swift; sourceTree = "<group>"; };
 		C4960F262B15399C00002155 /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
 		C4960F282B1539EB00002155 /* GroupMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMember.swift; sourceTree = "<group>"; };
@@ -192,6 +196,7 @@
 				8ED068B92AF8538600991071 /* NewGroupView.swift */,
 				C44F23352AF96F5A00BC0976 /* ProfileView.swift */,
 				C4522BB12B124C1900C4CE6B /* NewGroupMemberView.swift */,
+				C481408E2B1BD5D20004A877 /* PopupView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -249,6 +254,7 @@
 				5FD5BBB92AFD5A0B00B8C76F /* ExpenseModel.swift */,
 				5FD5BBBB2AFEE7DE00B8C76F /* FriendshipModel.swift */,
 				C4960F282B1539EB00002155 /* GroupMember.swift */,
+				C481408C2B1BC7D00004A877 /* ParticipantModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -343,6 +349,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C4E70DA22B17C6E300463815 /* AddFriendView.swift in Sources */,
+				C481408D2B1BC7D00004A877 /* ParticipantModel.swift in Sources */,
 				C4CD80C32AE1B25300A79570 /* AddExpenseView.swift in Sources */,
 				C4E70D9A2B17C68E00463815 /* FriendRequestManager.swift in Sources */,
 				1450FE1D2AE2EC76009BE3EC /* UserModel.swift in Sources */,
@@ -373,6 +380,7 @@
 				5FD5BBBA2AFD5A0B00B8C76F /* ExpenseModel.swift in Sources */,
 				C4CD80C92AE1B32700A79570 /* SettingView.swift in Sources */,
 				8EADFD9F2AF96FD800996F29 /* CurrenciesHelper.swift in Sources */,
+				C481408F2B1BD5D20004A877 /* PopupView.swift in Sources */,
 				8EB589F82AE88118005F112B /* SecureInputView.swift in Sources */,
 				6CC0F1F02AE0552300627704 /* LoginView.swift in Sources */,
 				14354E4B2B17F76C0089BDBD /* UserDataFetch.swift in Sources */,

@@ -15,9 +15,9 @@ class ExpenseModel: Identifiable, Codable {
     var currency: String
     var groupId: String
     var paidBy: User
-    var participants: [User]
+    var participants: [Participant]
 
-    init(id: String, name: String, amount: Double, category: String, currency: String, groupId: String, paidBy: User, participants: [User]) {
+    init(id: String, name: String, amount: Double, category: String, currency: String, groupId: String, paidBy: User, participants: [Participant]) {
         self.id = id
         self.name = name
         self.amount = amount
@@ -64,10 +64,10 @@ class ExpenseModel: Identifiable, Codable {
     func setExpensePaidBy(newPaidBy: User) {
         paidBy = newPaidBy
     }
-    func getExpenseParticipants() -> [User] {
+    func getExpenseParticipants() -> [Participant] {
         return participants
     }
-    func setExpenseParticipants(newParticipants: [User]) {
+    func setExpenseParticipants(newParticipants: [Participant]) {
         participants = newParticipants
     }
     static func == (lhs: ExpenseModel, rhs: ExpenseModel) -> Bool {
