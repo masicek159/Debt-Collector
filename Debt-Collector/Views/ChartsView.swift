@@ -75,29 +75,25 @@ struct ChartsView: View {
                 }
             }
             
-            LineChartView(
-                data: extractChartData(from: filteredExpenses),
-                title: "Expense Chart",
-                legend: "Expenses",
-                style: ChartStyle(
-                    backgroundColor: .white,
-                    accentColor: .blue,
-                    gradientColor: GradientColor(start: .blue, end: .red),
-                    textColor: .black,
-                    legendTextColor: .green,
-                    dropShadowColor: .gray
+            if !filteredExpenses.isEmpty {
+                LineChartView(
+                    data: extractChartData(from: filteredExpenses),
+                    title: "Expense Chart",
+                    legend: "Expenses",
+                    style: ChartStyle(
+                        backgroundColor: .white,
+                        accentColor: .blue,
+                        gradientColor: GradientColor(start: .blue, end: .red),
+                        textColor: .black,
+                        legendTextColor: .green,
+                        dropShadowColor: .gray
+                    )
                 )
-            )
-            .padding()
-            
-            List(groups, id: \.id) { group in
-                Text(group.name)
             }
         }
     }
     
     private func filterExpenses() {
-        // TODO: filter expenses
         if let selectedGroup = selectedGroup {
             filteredExpenses = selectedGroup.expenses
         } else {
@@ -123,10 +119,11 @@ struct ChartsView: View {
                 !$0.participants.filter{ $0.userId == selectedParticipantId}.isEmpty
             }
         }
+        print(filteredExpenses)
     }
     
     private func extractChartData(from expenses: [ExpenseModel]) -> [Double] {
-            // Sort expenses by creation date
+            // TODO: Sort expenses by creation date
 //            let sortedExpenses = expenses.sorted(by: { $0.creationDate < $1.creationDate })
 
         
