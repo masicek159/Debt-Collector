@@ -47,10 +47,22 @@ class GroupModel: Codable, Identifiable, Hashable {
 
     func loadExpensesToGroup() async {
         do {
-            try self.expenses =  await ExpenseManager.shared.getExpenses(withinGroup: id)
+            self.expenses = try await ExpenseManager.shared.getExpenses(withinGroup: id)
         } catch {
             self.expenses = []
         }
+    }
+    
+    func loadMembersToGroup() async {
+        do {
+            self.members = try await GroupManager.shared.getMembers(groupId: self.id)
+            for member in self.members {
+                self.membersAsUsers.append(try await UserManager.shared.getUser(userId: member.memberId))
+            }
+        } catch {
+            self.membersAsUsers = []
+        }
+        
     }
     
     func getGroupID() -> String {

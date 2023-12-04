@@ -81,13 +81,9 @@ final class GroupViewModel: ObservableObject {
             // Update the groups array
             self.groups = groupModels
             
-            // get members to groups
             for group in groups {
-                group.members = try await GroupManager.shared.getMembers(groupId: group.id)
-                for member in group.members {
-                    group.membersAsUsers.append(try await UserManager.shared.getUser(userId: member.memberId))
-                }
                 await group.loadExpensesToGroup()
+                await group.loadMembersToGroup()
             }
             
         } catch {
