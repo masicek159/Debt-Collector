@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseAuth
 import FirebaseFirestore
+
 @MainActor
 final class GroupViewModel: ObservableObject {
     @Published private(set) var groups: [GroupModel] = []
@@ -17,6 +18,7 @@ final class GroupViewModel: ObservableObject {
    private func groupDocument(groupId: String) -> DocumentReference {
        groupCollection.document(groupId)
    }
+    
     private func getMembersIds(groupId: String) async throws -> [String] {
         var members = try await GroupManager.shared.getMembers(groupId: groupId)
         return members.map { $0.memberId }
@@ -83,19 +85,18 @@ final class GroupViewModel: ObservableObject {
 
                     // Update the groups array
                     self.groups = groupModels
+                    
+                    // get members to groups
+                    for group in groups {
+                        var memberIds: [String] = try await getMembersIds(groupId: group.id)
+                        for memberId in memberIds {
+                            group.members.append(try await UserManager.shared.getUser(userId: memberId))
+                        }
+                    }
+                    
                 } catch {
                     print("Error reading group file: \(error)")
                 }
             }
-    }
-    private func groupMembersCollection(groupId: String) -> CollectionReference {
-            groupDocument(groupId: groupId).collection("members")
-        }
-    func getMembers(groupId: String) async throws -> [GroupMember] {
-        try await groupMembersCollection(groupId: groupId).getDocuments(as: GroupMember.self)
-    }
-    
-    func getExpenses(groupId: String) async throws -> [ExpenseModel] {
-        try await GroupManager.shared.getExpenses(groupId: groupId)
     }
 }

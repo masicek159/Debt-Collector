@@ -76,6 +76,16 @@ struct AddExpenseInGroupView: View {
                     Task {
                         if let paidBy = paidBy {
                             uploadingExpense = true
+                            
+                            var total: Double = 0
+                            for participant in selectedParticipants {
+                                total += participant.amountToPay
+                            }
+                            
+                            if total != amount {
+                                // change the totalAmounts
+                                amount = total
+                            }
                             try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: Array(participants))
                             uploadingExpense = false
                             showAddExpensePopUp = false

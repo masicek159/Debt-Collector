@@ -99,6 +99,16 @@ final class GroupManager {
         try await groupMembersCollection(groupId: groupId).getDocuments(as: GroupMember.self)
     }
 
+    func updateBalance(groupId: String, memberId: String, addAmount: Bool, amount: Double) async throws {
+        let member = groupMemberDocument(memberId: memberId, groupId: groupId)
+        var newAmount: Double = try await member.getDocument(as: GroupMember.self).balance
+        if addAmount {
+            newAmount += amount
+        } else {
+            newAmount -= amount
+        }
+        try await member.updateData(["balance": newAmount])
+    }
     
     func getMember(groupId: String, memberId: String) async throws -> DocumentSnapshot {
         return try await groupMemberDocument(memberId: memberId, groupId: groupId).getDocument()

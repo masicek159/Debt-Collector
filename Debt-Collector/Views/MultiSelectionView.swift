@@ -65,11 +65,6 @@ struct MultiSelectionView: View {
                             participants[idx].share = Double(participants[idx].amountToPay / totalAmount) * total
                         }
                         
-                        if total != totalAmount {
-                            // change the totalAmounts
-                            //totalAmount = total
-                        }
-                        
                         isPopupVisibleForAmounts = false
                     }
                 }

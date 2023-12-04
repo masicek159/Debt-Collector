@@ -9,7 +9,7 @@ import Foundation
 
 struct GroupMember: Codable {
     let memberId: String
-    let balance: Int
+    let balance: Double
 
     enum CodingKeys: String, CodingKey {
         case memberId = "memberId"
