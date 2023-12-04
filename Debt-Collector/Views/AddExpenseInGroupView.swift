@@ -85,7 +85,6 @@ struct AddExpenseInGroupView: View {
                     selection: $dateCreated,
                     displayedComponents: [.date]
                 )
-                .datePickerStyle(.graphical)
                 
                 Button(action: {
                     Task {
