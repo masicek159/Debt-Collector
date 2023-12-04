@@ -12,12 +12,6 @@ import FirebaseFirestore
 @MainActor
 final class GroupViewModel: ObservableObject {
     @Published private(set) var groups: [GroupModel] = []
-    @Published private(set) var members: [GroupMember] = []
-    private let groupCollection = Firestore.firestore().collection("groups")
-
-   private func groupDocument(groupId: String) -> DocumentReference {
-       groupCollection.document(groupId)
-   }
     
     private func getMembersIds(groupId: String) async throws -> [String] {
         var members = try await GroupManager.shared.getMembers(groupId: groupId)
@@ -37,7 +31,8 @@ final class GroupViewModel: ObservableObject {
     }
     
     func addGroupMember(groupId: String, userId: String, balance: Double = 0) async throws {
-        try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: balance)
+        let user = try await UserManager.shared.getUser(userId: userId)
+        try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: balance, fullName: user.fullName)
         try await UserManager.shared.addGroupUser(userId: userId, groupId: groupId)
         await fetchDataAndWriteToFile()
     }
@@ -56,7 +51,8 @@ final class GroupViewModel: ObservableObject {
     
     func addMemberIntoGroup(groupId: String, userId: String) async -> Bool{
         do {
-            try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: 0)
+            let user = try await UserManager.shared.getUser(userId: userId)
+            try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: 0, fullName: user.fullName)
             await fetchDataAndWriteToFile()
         } catch {
             print("Error adding member")
@@ -88,9 +84,9 @@ final class GroupViewModel: ObservableObject {
                     
                     // get members to groups
                     for group in groups {
-                        var memberIds: [String] = try await getMembersIds(groupId: group.id)
-                        for memberId in memberIds {
-                            group.members.append(try await UserManager.shared.getUser(userId: memberId))
+                        group.members = try await GroupManager.shared.getMembers(groupId: group.id)
+                        for member in group.members {
+                            group.membersAsUsers.append(try await UserManager.shared.getUser(userId: member.memberId))
                         }
                     }
                     

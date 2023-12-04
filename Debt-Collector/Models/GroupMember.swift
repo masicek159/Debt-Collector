@@ -7,12 +7,14 @@
 
 import Foundation
 
-struct GroupMember: Codable {
+struct GroupMember: Codable, Hashable {
     let memberId: String
     let balance: Double
+    let fullName: String
 
     enum CodingKeys: String, CodingKey {
         case memberId = "memberId"
         case balance = "balance"
+        case fullName = "fullName"
     }
 }

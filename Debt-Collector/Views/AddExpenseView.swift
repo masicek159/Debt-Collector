@@ -58,7 +58,7 @@ struct AddExpenseView: View {
                         .onChange(of: group) { newGroup in
                             paidBy = AuthViewModel.shared.currentUser
                             participants = []
-                            for member in newGroup?.members ?? [] {
+                            for member in newGroup?.membersAsUsers ?? [] {
                                 participants.append(Participant(userId: member.id, fullName: member.fullName))
                             }
                             expenseCurrency = newGroup?.currency ?? "USD"
@@ -78,7 +78,7 @@ struct AddExpenseView: View {
                         .pickerStyle(.menu)
                         
                         Picker("Select Who Paid", selection: $paidBy) {
-                            ForEach(Array(group?.members ?? []), id: \.id) { user in
+                            ForEach(Array(group?.membersAsUsers ?? []), id: \.id) { user in
                                 Text(user.fullName)
                                     .tag(user as User?)
                             }
@@ -119,7 +119,7 @@ struct AddExpenseView: View {
                 }
                 .task {
                     groupViewModel.getGroups()
-                    for member in group?.members ?? [] {
+                    for member in group?.membersAsUsers ?? [] {
                         participants.append(Participant(userId: member.id, fullName: member.fullName))
                     }
                 }

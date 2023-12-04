@@ -59,7 +59,7 @@ struct AddExpenseInGroupView: View {
                 .pickerStyle(.menu)
                 
                 Picker("Select Who Paid", selection: $paidBy) {
-                    ForEach(Array(group.members), id: \.id) { user in
+                    ForEach(group.membersAsUsers, id: \.id) { user in
                         Text(user.fullName)
                             .tag(user as User?)
                     }

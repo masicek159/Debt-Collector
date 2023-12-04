@@ -92,7 +92,7 @@ struct NewGroupMemberView: View {
                                 showAlert = false
                                 showAddMemberPopUp = false
                                 if let selectedMember = selectedMember {
-                                    group.members.append(selectedMember)
+                                    group.members.append(GroupMember(memberId: selectedMember.id, balance: selectedMember.balance, fullName: selectedMember.fullName))
                                 }
                             })
                         )

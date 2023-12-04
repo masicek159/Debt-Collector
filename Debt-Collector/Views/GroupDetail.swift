@@ -69,7 +69,7 @@ struct GroupDetail: View {
                                     Text(member.fullName)
                                         .font(.headline)
                                     Spacer()
-                                    Text("Balance: \(member.balance)$")
+                                    Text("\(member.balance)$")
                                         .font(.subheadline)
                                         .foregroundColor(member.balance >= 0 ? .green : .red)
                                 }
