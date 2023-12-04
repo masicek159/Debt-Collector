@@ -13,6 +13,7 @@ struct Debt_CollectorApp: App {
     @StateObject var authViewModel = AuthViewModel()
     @StateObject var swiftUIShared = SwiftUIShared()
     @StateObject var categoryViewModel = CategoryViewModel()
+    @StateObject var groupViewModel = GroupViewModel()
     
     init() {
         FirebaseApp.configure()
@@ -24,6 +25,7 @@ struct Debt_CollectorApp: App {
                 .environmentObject(authViewModel)
                 .environmentObject(swiftUIShared)
                 .environmentObject(categoryViewModel)
+                .environmentObject(groupViewModel)
         }
     }
 }
