@@ -103,7 +103,7 @@ struct AddExpenseInGroupView: View {
                                 // change the totalAmounts
                                 amount = total
                             }
-                            try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: Array(participants), dateCreated: dateCreated)
+                            try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: selectedParticipants, dateCreated: dateCreated)
                             uploadingExpense = false
                             showAddExpensePopUp = false
                         }

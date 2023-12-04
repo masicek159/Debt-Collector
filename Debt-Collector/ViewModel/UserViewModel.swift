@@ -15,6 +15,7 @@ final class UserViewModel: ObservableObject {
     @Published var friendsWithExpenses: [FriendshipModel] = []
     @Published var positiveBalance: String = ""
     @Published var negativeBalance: String = ""
+    
     func getFriends () {
         Task {
             guard let userId = AuthViewModel.shared.currentUser?.id else { return }
@@ -43,7 +44,7 @@ final class UserViewModel: ObservableObject {
                 print("Error getting friend: \(error)")
                 return false
             }
-            // TODO: notify the requested user
+            
             do {
                 try await FriendRequestManager.shared.uploadFriendRequest(receiverId: user.id, senderId: currentUser.id)
             } catch {
@@ -93,9 +94,8 @@ final class UserViewModel: ObservableObject {
     }
     
     func fetchPositiveBalances(completion: @escaping (Float) -> Void) {
-        var userId = Auth.auth().currentUser?.uid
-        userId = userId!
-        Firestore.firestore().collection("users").document(userId!).collection("friends")
+        if let userId = Auth.auth().currentUser?.uid {
+            Firestore.firestore().collection("users").document(userId).collection("friends")
                 .whereField("balance", isGreaterThanOrEqualTo: 0)
                 .getDocuments { snapshot, error in
                     guard let snapshot = snapshot, error == nil else {
@@ -103,28 +103,30 @@ final class UserViewModel: ObservableObject {
                         completion(0.0)
                         return
                     }
-
+                    
                     let positiveBalance = snapshot.documents.reduce(0.0) { $0 + ($1["balance"] as? Double ?? 0.0) }
                     completion(Float(positiveBalance))
                 }
         }
+    }
 
         func fetchNegativeBalances(completion: @escaping (Float) -> Void) {
-            var userId = Auth.auth().currentUser?.uid
-            userId = userId!
-            Firestore.firestore().collection("users").document(userId!).collection("friends")
-                .whereField("balance", isLessThan: 0)
-                .getDocuments { snapshot, error in
-                    guard let snapshot = snapshot, error == nil else {
-                        print("Error fetching negative balances: \(error?.localizedDescription ?? "Unknown error")")
-                        completion(0.0)
-                        return
+            if let userId = Auth.auth().currentUser?.uid {
+                Firestore.firestore().collection("users").document(userId).collection("friends")
+                    .whereField("balance", isLessThan: 0)
+                    .getDocuments { snapshot, error in
+                        guard let snapshot = snapshot, error == nil else {
+                            print("Error fetching negative balances: \(error?.localizedDescription ?? "Unknown error")")
+                            completion(0.0)
+                            return
+                        }
+                        
+                        let negativeBalance = snapshot.documents.reduce(0.0) { $0 + ($1["balance"] as? Double ?? 0.0) }
+                        completion(Float(negativeBalance))
                     }
-
-                    let negativeBalance = snapshot.documents.reduce(0.0) { $0 + ($1["balance"] as? Double ?? 0.0) }
-                    completion(Float(negativeBalance))
-                }
+            }
         }
+    
     func fetchBalances() {
             fetchPositiveBalances { positiveBalance in
                 self.positiveBalance = String(positiveBalance)
@@ -134,5 +136,5 @@ final class UserViewModel: ObservableObject {
                 self.negativeBalance = String(negativeBalance)
             }
         self.negativeBalance = self.negativeBalance
-        }
+    }
 }
