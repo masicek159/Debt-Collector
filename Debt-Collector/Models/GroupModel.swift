@@ -23,6 +23,7 @@ class GroupModel: Codable, Identifiable, Hashable {
     var color: String
     var members: [GroupMember] = []
     var membersAsUsers: [User] = []
+    var expenses: [ExpenseModel] = []
     
     init(id: String, name: String, currency: String, color: String, owner: User, members: [GroupMember] = [], membersAsUsers: [User] = []) {
         self.id = id
@@ -48,7 +49,7 @@ class GroupModel: Codable, Identifiable, Hashable {
         self.color = try values.decode(String.self, forKey: .color)
         self.members = [] // loaded later from user collection
         self.membersAsUsers = [] // loaded later from user collection
-
+        // TODO: load expenses from expense subcollection
     }
 
     func getGroupID() -> String {
