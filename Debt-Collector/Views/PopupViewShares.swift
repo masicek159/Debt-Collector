@@ -1,10 +1,16 @@
 import SwiftUI
 
-struct PopupView: View {
+struct PopupViewShares: View {
     @Binding var shareValues: [Double]
     @Binding var selectedParticipants: [Participant]
     
     let actionHandler: () -> Void
+    
+    let decimalFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
     
     var body: some View {
         VStack {
@@ -17,7 +23,7 @@ struct PopupView: View {
                     HStack {
                         Text(selectedParticipants[index].fullName)
                         Spacer()
-                        TextField("", value: $shareValues[index], formatter: NumberFormatter())
+                        TextField("", value: $shareValues[index], formatter: decimalFormatter)
                     }
                 }
             }

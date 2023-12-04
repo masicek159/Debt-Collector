@@ -86,7 +86,7 @@ struct AddExpenseView: View {
                         .pickerStyle(.menu)
                         
                         MultiSelector(
-                            totalAmount: amount,
+                            totalAmount: $amount,
                             participants: participants,
                             selectedParticipants: $selectedParticipants
                         )

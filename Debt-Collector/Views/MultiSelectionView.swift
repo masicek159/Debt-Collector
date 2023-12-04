@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct MultiSelectionView: View {
-    let totalAmount: Double
+    @Binding var totalAmount: Double
     let participants: [Participant]
     
     @State var isPopupVisibleForShares = false
-    @State var isPopupVisibleForPercentages = false
     @State var isPopupVisibleForAmounts = false
     @State var shareValues: [Double] = []
+    @State var amounts: [Double] = []
 
 
     @Binding var selectedParticipants: [Participant]
@@ -33,50 +33,44 @@ struct MultiSelectionView: View {
                 .cornerRadius(8)
                 .sheet(isPresented: $isPopupVisibleForShares) {
                     // PopupView for Shares
-                    PopupView(shareValues: $shareValues, selectedParticipants: $selectedParticipants) {
+                    PopupViewShares(shareValues: $shareValues, selectedParticipants: $selectedParticipants) {
                         
-                        var totalShares = shareValues.reduce(0, +)
+                        let totalShares: Double = shareValues.reduce(0, +)
                         for idx in 0..<selectedParticipants.count {
                             participants[idx].share = shareValues[idx]
-                            participants[idx].amountToPay = (totalAmount / totalShares) * participants[idx].share
+                            participants[idx].amountToPay = Double(totalAmount / totalShares) * participants[idx].share
                         }
                         
                         isPopupVisibleForShares = false
                         
                     }
                 }
-                
+
                 Button(action: {
                     isPopupVisibleForAmounts = true
                 }) {
-                    Text("Amounts")
+                    Text("Amount")
                         .padding()
                         .foregroundColor(.white)
                 }
                 .background(Color.blue)
                 .cornerRadius(8)
                 .sheet(isPresented: $isPopupVisibleForAmounts) {
-                    // PopupView for Shares
-                    PopupView(shareValues: $shareValues, selectedParticipants: $selectedParticipants) {
-                        isPopupVisibleForAmounts = false
-                        // Action logic when "Done" is tapped
-                    }
-                }
+                    PopupViewAmounts(amounts: $amounts, selectedParticipants: $selectedParticipants) {
+                        
+                        let total: Double = amounts.reduce(0, +)
 
-                Button(action: {
-                    isPopupVisibleForPercentages = true
-                }) {
-                    Text("%")
-                        .padding()
-                        .foregroundColor(.white)
-                }
-                .background(Color.blue)
-                .cornerRadius(8)
-                .sheet(isPresented: $isPopupVisibleForPercentages) {
-                    // PopupView for Percentages
-                    PopupView(shareValues: $shareValues, selectedParticipants: $selectedParticipants) {
-                        isPopupVisibleForPercentages = false
-                        // Action logic when "Done" is tapped
+                        for idx in 0..<selectedParticipants.count {
+                            participants[idx].amountToPay = amounts[idx]
+                            participants[idx].share = Double(participants[idx].amountToPay / totalAmount) * total
+                        }
+                        
+                        if total != totalAmount {
+                            // change the totalAmounts
+                            //totalAmount = total
+                        }
+                        
+                        isPopupVisibleForAmounts = false
                     }
                 }
 
@@ -106,9 +100,11 @@ struct MultiSelectionView: View {
         if let existingIndex = selectedParticipants.firstIndex(where: { $0.id == participant.id }) {
             selectedParticipants.remove(at: existingIndex)
             shareValues.remove(at: existingIndex)
+            amounts.remove(at: existingIndex)
         } else {
             selectedParticipants.append(participant)
             shareValues.append(1)
+            amounts.append(0)
         }
     }
 }
