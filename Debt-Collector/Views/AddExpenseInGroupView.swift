@@ -23,6 +23,7 @@ struct AddExpenseInGroupView: View {
     @State var selectedParticipants: [Participant] = []
     @State var expenseAdded = false
     @State var participants: [Participant] = []
+    @State var dateCreated: Date = Date()
     
     let decimalFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -79,6 +80,13 @@ struct AddExpenseInGroupView: View {
                     selectedParticipants: $selectedParticipants
                 )
                 
+                DatePicker(
+                    "Date",
+                    selection: $dateCreated,
+                    displayedComponents: [.date]
+                )
+                .datePickerStyle(.graphical)
+                
                 Button(action: {
                     Task {
                         if let paidBy = paidBy {
@@ -93,7 +101,7 @@ struct AddExpenseInGroupView: View {
                                 // change the totalAmounts
                                 amount = total
                             }
-                            try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: Array(participants))
+                            try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: Array(participants), dateCreated: dateCreated)
                             uploadingExpense = false
                             showAddExpensePopUp = false
                         }

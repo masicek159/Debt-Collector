@@ -21,8 +21,9 @@ struct AddExpenseView: View {
     @State var paidBy: User? = AuthViewModel.shared.currentUser
     @State var selectedParticipants: [Participant] = []
     @State var expenseAdded = false
+    @State var dateCreated: Date = Date()
     @State var participants: [Participant] = []
-
+    
     
     init() {
         group = groupViewModel.groups.first
@@ -98,6 +99,13 @@ struct AddExpenseView: View {
                             selectedParticipants: $selectedParticipants
                         )
                         
+                        DatePicker(
+                            "Date",
+                            selection: $dateCreated,
+                            displayedComponents: [.date]
+                        )
+                        .datePickerStyle(.graphical)
+                        
                         Button(action: {
                             Task {
                                 if let group = group, let paidBy = paidBy {
@@ -113,7 +121,7 @@ struct AddExpenseView: View {
                                         amount = total
                                     }
                                     
-                                    try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: selectedParticipants)
+                                    try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: selectedParticipants, dateCreated: dateCreated)
                                     uploadingExpense = false
                                     expenseAdded = true
                                 }

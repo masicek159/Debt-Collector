@@ -15,9 +15,10 @@ class ExpenseModel: Identifiable, Codable {
     var currency: String
     var groupId: String
     var paidBy: User
+    var dateCreated: Date
     var participants: [Participant]
 
-    init(id: String, name: String, amount: Double, category: Category?, currency: String, groupId: String, paidBy: User, participants: [Participant]) {
+    init(id: String, name: String, amount: Double, category: Category?, currency: String, groupId: String, paidBy: User, dateCreated: Date = Date(), participants: [Participant]) {
         self.id = id
         self.name = name
         self.amount = amount
@@ -26,6 +27,7 @@ class ExpenseModel: Identifiable, Codable {
         self.groupId = groupId
         self.paidBy = paidBy
         self.participants = participants
+        self.dateCreated = dateCreated
     }
     func getExpenseID() -> String {
         return id
