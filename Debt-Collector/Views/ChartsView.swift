@@ -9,8 +9,8 @@ import SwiftUI
 import SwiftUICharts
 
 struct ChartsView: View {
-    @ObservedObject var groupViewModel = GroupViewModel()
-    @ObservedObject var categoryViewModel = CategoryViewModel()
+    @EnvironmentObject var groupViewModel: GroupViewModel
+    @EnvironmentObject var categoryViewModel: CategoryViewModel
     @State var groups: [GroupModel] = []
     @State var selectedGroup: GroupModel? = nil
     @State var selectedParticipantId: String? = nil
@@ -23,10 +23,14 @@ struct ChartsView: View {
             Section(header: Text("Filter Options")) {
                 Picker("Group", selection: $selectedGroup) {
                     Text("All Groups").tag(nil as String?)
-                    ForEach(groups, id: \.id) { group in
+                    ForEach(groupViewModel.groups, id: \.id) { group in
                         Text(group.name).tag(group as GroupModel?)
                     }
                 }
+                .task {
+                    groups = groupViewModel.groups
+                }
+                
                 
                 if let selectedGroup = selectedGroup {
                     Picker("Paid by", selection: $selectedPaidByUserId) {
@@ -50,10 +54,13 @@ struct ChartsView: View {
                     ForEach(categoryViewModel.categories, id: \.self) { category in
                         Text(category.name).tag(category as Category?)
                     }
+                    .task {
+                        await categoryViewModel.loadCategories()
+                    }
                 }
                 
                 Button(action: {
-                    print("Filters submitted!")
+                    filterExpenses()
                 }) {
                     Text("Apply filters")
                         .padding()
@@ -66,13 +73,42 @@ struct ChartsView: View {
             }
         }
         
+        LineChartView(
+            data: extractChartData(from: filteredExpenses),
+            title: "Expense Chart",
+            legend: "Expenses",
+            style: ChartStyle(
+                backgroundColor: .white,
+                accentColor: .blue,
+                gradientColor: GradientColor(start: .blue, end: .red),
+                textColor: .black,
+                legendTextColor: .green,
+                dropShadowColor: .gray
+            )
+        )
+        .padding()
+        
         List(groups, id: \.id) { group in
             Text(group.name)
         }
-        .onAppear {
-            groups = groupViewModel.groups
-        }
     }
+    
+    private func filterExpenses() {
+        // TODO: filter expenses
+    }
+    
+    private func extractChartData(from expenses: [ExpenseModel]) -> [Double] {
+            // Sort expenses by creation date
+//            let sortedExpenses = expenses.sorted(by: { $0.creationDate < $1.creationDate })
+
+        
+            var chartData: [Double] = []
+            for expense in expenses {
+                chartData.append(expense.amount)
+            }
+
+            return chartData
+        }
 }
 
 struct ChartsView_Previews: PreviewProvider {
