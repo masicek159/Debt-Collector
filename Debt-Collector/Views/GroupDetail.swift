@@ -78,10 +78,12 @@ struct GroupDetail: View {
                                 }
                             }
                             
-                            Button(action: {
-                                showAllMembers.toggle()
-                            }) {
-                                Text(showAllMembers ? "Show Less" : "Show All")
+                            if group.members.count >= 3 {
+                                Button(action: {
+                                    showAllMembers.toggle()
+                                }) {
+                                    Text(showAllMembers ? "Show Less" : "Show All")
+                                }
                             }
                         }
                     }
