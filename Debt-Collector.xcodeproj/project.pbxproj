@@ -31,6 +31,8 @@
 		6CC0F2072AE05C2C00627704 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC0F2062AE05C2C00627704 /* FirebaseAuth */; };
 		6CC0F2092AE05C2C00627704 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC0F2082AE05C2C00627704 /* FirebaseFirestore */; };
 		6CC0F20B2AE05C9D00627704 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC0F20A2AE05C9D00627704 /* FirebaseFirestoreSwift */; };
+		893C1C182B1D0406006E7634 /* AddExpenseInGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893C1C162B1D0406006E7634 /* AddExpenseInGroupView.swift */; };
+		893C1C192B1D0406006E7634 /* LoadingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893C1C172B1D0406006E7634 /* LoadingPageView.swift */; };
 		8E9F60192AE62DA40063227A /* SwiftUIShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9F60182AE62DA40063227A /* SwiftUIShared.swift */; };
 		8EAD53C42AF6865900B63851 /* GroupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EAD53C32AF6865900B63851 /* GroupManager.swift */; };
 		8EAD53C62AF68E1100B63851 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EAD53C52AF68E1100B63851 /* UserManager.swift */; };
@@ -83,6 +85,8 @@
 		6CC0F1F22AE0553000627704 /* InputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
 		6CC0F1F72AE056B900627704 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		6CC0F1FA2AE05A1E00627704 /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
+		893C1C162B1D0406006E7634 /* AddExpenseInGroupView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddExpenseInGroupView.swift; sourceTree = "<group>"; };
+		893C1C172B1D0406006E7634 /* LoadingPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingPageView.swift; sourceTree = "<group>"; };
 		8E9F60182AE62DA40063227A /* SwiftUIShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIShared.swift; sourceTree = "<group>"; };
 		8EAD53C32AF6865900B63851 /* GroupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupManager.swift; sourceTree = "<group>"; };
 		8EAD53C52AF68E1100B63851 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
@@ -184,7 +188,8 @@
 		6CC0F1EA2AE0552300627704 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				8EB181422B1D24420055E204 /* AddExpenseInGroupView.swift */,
+				893C1C162B1D0406006E7634 /* AddExpenseInGroupView.swift */,
+				893C1C172B1D0406006E7634 /* LoadingPageView.swift */,
 				C4E70DA12B17C6E300463815 /* AddFriendView.swift */,
 				C47A3D792B12B9C200E8225A /* MultiSelector.swift */,
 				C47A3D772B12B9B400E8225A /* MultiSelectionView.swift */,
@@ -379,6 +384,7 @@
 				C4CD80C52AE1B2AC00A79570 /* ChartsView.swift in Sources */,
 				C47A3D7C2B12B9FF00E8225A /* ExpenseManager.swift in Sources */,
 				8EAD53C42AF6865900B63851 /* GroupManager.swift in Sources */,
+				893C1C192B1D0406006E7634 /* LoadingPageView.swift in Sources */,
 				1450FE1F2AE2EC91009BE3EC /* GroupModel.swift in Sources */,
 				8E9F60192AE62DA40063227A /* SwiftUIShared.swift in Sources */,
 				8EB1813D2B1D23610055E204 /* CategoryManager.swift in Sources */,
@@ -388,6 +394,7 @@
 				8ED068BA2AF8538600991071 /* NewGroupView.swift in Sources */,
 				5FD5BBBA2AFD5A0B00B8C76F /* ExpenseModel.swift in Sources */,
 				C4CD80C92AE1B32700A79570 /* SettingView.swift in Sources */,
+				893C1C182B1D0406006E7634 /* AddExpenseInGroupView.swift in Sources */,
 				8EADFD9F2AF96FD800996F29 /* CurrenciesHelper.swift in Sources */,
 				8EB589F82AE88118005F112B /* SecureInputView.swift in Sources */,
 				6CC0F1F02AE0552300627704 /* LoginView.swift in Sources */,
