@@ -87,6 +87,7 @@ final class GroupViewModel: ObservableObject {
                 for member in group.members {
                     group.membersAsUsers.append(try await UserManager.shared.getUser(userId: member.memberId))
                 }
+                await group.loadExpensesToGroup()
             }
             
         } catch {

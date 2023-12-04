@@ -10,13 +10,6 @@ import Firebase
 import FirebaseFirestoreSwift
 
 class GroupModel: Codable, Identifiable, Hashable {
-    static func == (lhs: GroupModel, rhs: GroupModel) -> Bool {
-        lhs.id == rhs.id
-    }
-    public func hash(into hasher: inout Hasher) {
-        return hasher.combine(id)
-    }
-    
     var id: String = ""
     var name: String
     var currency: String // TODO: add currency model or currency enum
@@ -25,7 +18,7 @@ class GroupModel: Codable, Identifiable, Hashable {
     var membersAsUsers: [User] = []
     var expenses: [ExpenseModel] = []
     
-    init(id: String, name: String, currency: String, color: String, owner: User, members: [GroupMember] = [], membersAsUsers: [User] = []) {
+    init(id: String, name: String, currency: String, color: String, owner: User, members: [GroupMember] = [], membersAsUsers: [User] = [], expenses: [ExpenseModel] = []) {
         self.id = id
         self.color = color
         self.name = name
@@ -49,9 +42,17 @@ class GroupModel: Codable, Identifiable, Hashable {
         self.color = try values.decode(String.self, forKey: .color)
         self.members = [] // loaded later from user collection
         self.membersAsUsers = [] // loaded later from user collection
-        // TODO: load expenses from expense subcollection
+        self.expenses = [] // loaded later from expenses subcollection
     }
 
+    func loadExpensesToGroup() async {
+        do {
+            try self.expenses =  await ExpenseManager.shared.getExpenses(withinGroup: id)
+        } catch {
+            self.expenses = []
+        }
+    }
+    
     func getGroupID() -> String {
         return id
     }
@@ -79,5 +80,12 @@ class GroupModel: Codable, Identifiable, Hashable {
     
     func getMembers() -> [GroupMember] {
         return self.members
+    }
+    
+    static func == (lhs: GroupModel, rhs: GroupModel) -> Bool {
+        lhs.id == rhs.id
+    }
+    public func hash(into hasher: inout Hasher) {
+        return hasher.combine(id)
     }
 }

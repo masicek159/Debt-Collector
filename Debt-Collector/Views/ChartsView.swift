@@ -14,87 +14,115 @@ struct ChartsView: View {
     @State var groups: [GroupModel] = []
     @State var selectedGroup: GroupModel? = nil
     @State var selectedParticipantId: String? = nil
+    @State var selectedParticipant: Participant? = nil
     @State var selectedPaidByUserId: String? = nil
     @State var selectedCategory: Category? = nil
     @State var filteredExpenses: [ExpenseModel] = []
     
     var body: some View {
-        Form {
-            Section(header: Text("Filter Options")) {
-                Picker("Group", selection: $selectedGroup) {
-                    Text("All Groups").tag(nil as String?)
-                    ForEach(groupViewModel.groups, id: \.id) { group in
-                        Text(group.name).tag(group as GroupModel?)
+        VStack {
+            Form {
+                Section(header: Text("Filter Options")) {
+                    Picker("Group", selection: $selectedGroup) {
+                        Text("All Groups").tag(nil as String?)
+                        ForEach(groupViewModel.groups, id: \.id) { group in
+                            Text(group.name).tag(group as GroupModel?)
+                        }
                     }
-                }
-                .task {
-                    groups = groupViewModel.groups
-                }
-                
-                
-                if let selectedGroup = selectedGroup {
-                    Picker("Paid by", selection: $selectedPaidByUserId) {
-                        Text("Paid by - not selected").tag(nil as String?)
-                        ForEach(selectedGroup.membersAsUsers, id: \.id) { member in
-                            Text(member.fullName)
-                                .tag(member.id as String?)
+                    .task {
+                        groups = groupViewModel.groups
+                    }
+                    
+                    
+                    if let selectedGroup = selectedGroup {
+                        Picker("Paid by", selection: $selectedPaidByUserId) {
+                            Text("Paid by - not selected").tag(nil as String?)
+                            ForEach(selectedGroup.membersAsUsers, id: \.id) { member in
+                                Text(member.fullName)
+                                    .tag(member.id as String?)
+                            }
+                        }
+                        
+                        Picker("Participant", selection: $selectedParticipantId) {
+                            Text("All Participants").tag(nil as String?)
+                            ForEach(selectedGroup.membersAsUsers, id: \.self) { member in
+                                Text(member.fullName).tag(member.id as String?)
+                            }
                         }
                     }
                     
-                    Picker("Participant", selection: $selectedParticipantId) {
-                        Text("All Participants").tag(nil as String?)
-                        ForEach(selectedGroup.membersAsUsers, id: \.self) { member in
-                            Text(member.fullName).tag(member.id as String?)
+                    Picker("Category", selection: $selectedCategory) {
+                        Text("All Categories").tag(nil as String?)
+                        ForEach(categoryViewModel.categories, id: \.self) { category in
+                            Text(category.name).tag(category as Category?)
+                        }
+                        .task {
+                            await categoryViewModel.loadCategories()
                         }
                     }
-                }
-                
-                Picker("Category", selection: $selectedCategory) {
-                    Text("All Categories").tag(nil as String?)
-                    ForEach(categoryViewModel.categories, id: \.self) { category in
-                        Text(category.name).tag(category as Category?)
+                    
+                    Button(action: {
+                        filterExpenses()
+                    }) {
+                        Text("Apply filters")
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.blue)
+                            .cornerRadius(8)
                     }
-                    .task {
-                        await categoryViewModel.loadCategories()
-                    }
+                    .padding()
+                    
                 }
-                
-                Button(action: {
-                    filterExpenses()
-                }) {
-                    Text("Apply filters")
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(Color.blue)
-                        .cornerRadius(8)
-                }
-                .padding()
-                
             }
-        }
-        
-        LineChartView(
-            data: extractChartData(from: filteredExpenses),
-            title: "Expense Chart",
-            legend: "Expenses",
-            style: ChartStyle(
-                backgroundColor: .white,
-                accentColor: .blue,
-                gradientColor: GradientColor(start: .blue, end: .red),
-                textColor: .black,
-                legendTextColor: .green,
-                dropShadowColor: .gray
+            
+            LineChartView(
+                data: extractChartData(from: filteredExpenses),
+                title: "Expense Chart",
+                legend: "Expenses",
+                style: ChartStyle(
+                    backgroundColor: .white,
+                    accentColor: .blue,
+                    gradientColor: GradientColor(start: .blue, end: .red),
+                    textColor: .black,
+                    legendTextColor: .green,
+                    dropShadowColor: .gray
+                )
             )
-        )
-        .padding()
-        
-        List(groups, id: \.id) { group in
-            Text(group.name)
+            .padding()
+            
+            List(groups, id: \.id) { group in
+                Text(group.name)
+            }
         }
     }
     
     private func filterExpenses() {
         // TODO: filter expenses
+        if let selectedGroup = selectedGroup {
+            filteredExpenses = selectedGroup.expenses
+        } else {
+            for group in groups {
+                filteredExpenses += group.expenses
+            }
+        }
+        
+        if let selectedCategory = selectedCategory {
+            filteredExpenses = filteredExpenses.filter {
+                $0.category == selectedCategory
+            }
+        }
+        
+        if let selectedPaidByUserId = selectedPaidByUserId {
+            filteredExpenses = filteredExpenses.filter {
+                $0.paidBy.id == selectedPaidByUserId
+            }
+        }
+        
+        if let selectedParticipantId = selectedParticipantId {
+            filteredExpenses = filteredExpenses.filter {
+                !$0.participants.filter{ $0.userId == selectedParticipantId}.isEmpty
+            }
+        }
     }
     
     private func extractChartData(from expenses: [ExpenseModel]) -> [Double] {
