@@ -30,7 +30,6 @@ final class ExpenseManager {
     }
     
     func uploadExpense(name: String, amount: Double, category: Category?, currency: String, groupId: String, paidBy: User, participants: [User]) async throws {
-        let expenseRef = groupExpenseCollection(groupId: groupId).document()
         let expense = ExpenseModel(id: expenseRef.documentID, name: name, amount: amount, category: category, currency: currency, groupId: groupId, paidBy: paidBy, participants: participants)
         try expenseRef.setData(from: expense, merge: false)
     }

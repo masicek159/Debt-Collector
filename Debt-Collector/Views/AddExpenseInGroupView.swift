@@ -20,7 +20,9 @@ struct AddExpenseInGroupView: View {
     @State var category: Category? = nil
     @State var expenseCurrency: String = "USD"
     @State var paidBy: User? = AuthViewModel.shared.currentUser
-    @State var participants: Set<User> = []
+    @State var selectedParticipants: [Participant] = []
+    @State var expenseAdded = false
+    @State var participants: [Participant] = []
     
     let decimalFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -64,24 +66,33 @@ struct AddExpenseInGroupView: View {
                 .pickerStyle(.menu)
                 
                 Picker("Select Who Paid", selection: $paidBy) {
-                    ForEach(Array(group.members), id: \.id) { user in
+                    ForEach(group.membersAsUsers, id: \.id) { user in
                         Text(user.fullName)
                             .tag(user as User?)
                     }
                 }
                 .pickerStyle(.menu)
                 
-                MultiSelector<Text, User>(
-                    label: Text("For whom"),
-                    options: Array(group.members),
-                    optionToString: { $0.fullName },
-                    selected: $participants
+                MultiSelector(
+                    totalAmount: $amount,
+                    participants: participants,
+                    selectedParticipants: $selectedParticipants
                 )
                 
                 Button(action: {
                     Task {
                         if let paidBy = paidBy {
                             uploadingExpense = true
+                            
+                            var total: Double = 0
+                            for participant in selectedParticipants {
+                                total += participant.amountToPay
+                            }
+                            
+                            if total != amount {
+                                // change the totalAmounts
+                                amount = total
+                            }
                             try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: Array(participants))
                             uploadingExpense = false
                             showAddExpensePopUp = false

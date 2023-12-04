@@ -21,14 +21,16 @@ class GroupModel: Codable, Identifiable, Hashable {
     var name: String
     var currency: String // TODO: add currency model or currency enum
     var color: String
-    var members: [User] = []
+    var members: [GroupMember] = []
+    var membersAsUsers: [User] = []
     
-    init(id: String, name: String, currency: String, color: String, owner: User, members: [User] = []) {
+    init(id: String, name: String, currency: String, color: String, owner: User, members: [GroupMember] = [], membersAsUsers: [User] = []) {
         self.id = id
         self.color = color
         self.name = name
         self.currency = currency
         self.members = members
+        self.membersAsUsers = membersAsUsers
     }
     
     enum CodingKeys: String, CodingKey {
@@ -45,6 +47,7 @@ class GroupModel: Codable, Identifiable, Hashable {
         self.currency = try values.decode(String.self, forKey: .currency)
         self.color = try values.decode(String.self, forKey: .color)
         self.members = [] // loaded later from user collection
+        self.membersAsUsers = [] // loaded later from user collection
 
     }
 
@@ -73,7 +76,7 @@ class GroupModel: Codable, Identifiable, Hashable {
         color = newColor
     }
     
-    func getMembers() -> [User] {
+    func getMembers() -> [GroupMember] {
         return self.members
     }
 }

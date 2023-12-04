@@ -7,33 +7,99 @@
 
 import SwiftUI
 
-struct MultiSelectionView<Selectable: Identifiable & Hashable>: View {
-    let options: [Selectable]
-    let optionToString: (Selectable) -> String
+struct MultiSelectionView: View {
+    @Binding var totalAmount: Double
+    let participants: [Participant]
+    
+    @State var isPopupVisibleForShares = false
+    @State var isPopupVisibleForAmounts = false
+    @State var shareValues: [Double] = []
+    @State var amounts: [Double] = []
 
-    @Binding var selected: Set<Selectable>
+
+    @Binding var selectedParticipants: [Participant]
 
     var body: some View {
-        List {
-            ForEach(options) { selectable in
-                Button(action: { toggleSelection(selectable: selectable) }) {
-                    HStack {
-                        Text(optionToString(selectable)).foregroundColor(.white)
-                        Spacer()
-                        if selected.contains(where: { $0.id == selectable.id }) {
-                            Image(systemName: "checkmark").foregroundColor(.accentColor)
+        VStack {
+            HStack {
+                Button(action: {
+                    isPopupVisibleForShares = true
+                }) {
+                    Text("Shares")
+                        .padding()
+                        .foregroundColor(.white)
+                }
+                .background(Color.blue)
+                .cornerRadius(8)
+                .sheet(isPresented: $isPopupVisibleForShares) {
+                    // PopupView for Shares
+                    PopupViewShares(shareValues: $shareValues, selectedParticipants: $selectedParticipants) {
+                        
+                        let totalShares: Double = shareValues.reduce(0, +)
+                        for idx in 0..<selectedParticipants.count {
+                            participants[idx].share = shareValues[idx]
+                            participants[idx].amountToPay = Double(totalAmount / totalShares) * participants[idx].share
                         }
+                        
+                        isPopupVisibleForShares = false
+                        
                     }
-                }.tag(selectable.id)
+                }
+
+                Button(action: {
+                    isPopupVisibleForAmounts = true
+                }) {
+                    Text("Amount")
+                        .padding()
+                        .foregroundColor(.white)
+                }
+                .background(Color.blue)
+                .cornerRadius(8)
+                .sheet(isPresented: $isPopupVisibleForAmounts) {
+                    PopupViewAmounts(amounts: $amounts, selectedParticipants: $selectedParticipants) {
+                        
+                        let total: Double = amounts.reduce(0, +)
+
+                        for idx in 0..<selectedParticipants.count {
+                            participants[idx].amountToPay = amounts[idx]
+                            participants[idx].share = Double(participants[idx].amountToPay / totalAmount) * total
+                        }
+                        
+                        isPopupVisibleForAmounts = false
+                    }
+                }
+
             }
-        }.listStyle(GroupedListStyle())
+            .padding()
+            .frame(maxWidth: .infinity)
+            
+            List {
+                ForEach(participants) { participant in
+                    Button(action: { toggleSelection(participant: participant) }) {
+                        HStack {
+                            Text(participant.fullName)
+                            Spacer()
+                            if selectedParticipants.contains(where: { $0.userId == participant.userId }) {
+                                Image(systemName: "checkmark").foregroundColor(.accentColor)
+                            }
+                        }
+                    }.tag(participant.id)
+                }
+            }
+        }
+        .listStyle(GroupedListStyle())
     }
 
-    private func toggleSelection(selectable: Selectable) {
-        if let existingIndex = selected.firstIndex(where: { $0.id == selectable.id }) {
-            selected.remove(at: existingIndex)
+
+    private func toggleSelection(participant: Participant) {
+        if let existingIndex = selectedParticipants.firstIndex(where: { $0.id == participant.id }) {
+            selectedParticipants.remove(at: existingIndex)
+            shareValues.remove(at: existingIndex)
+            amounts.remove(at: existingIndex)
         } else {
-            selected.insert(selectable)
+            selectedParticipants.append(participant)
+            shareValues.append(1)
+            amounts.append(0)
         }
     }
 }

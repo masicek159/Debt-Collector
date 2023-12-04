@@ -16,7 +16,6 @@ final class UserViewModel: ObservableObject {
     @Published var positiveBalance: String = ""
     @Published var negativeBalance: String = ""
     func getFriends () {
-        print("zzzzzzz")
         Task {
             guard let userId = AuthViewModel.shared.currentUser?.id else { return }
             let userFriends = try await UserManager.shared.getAllUserFriends(userId: userId)
@@ -24,7 +23,6 @@ final class UserViewModel: ObservableObject {
             
             for userFriend in userFriends {
                 if let friend = try? await UserManager.shared.getUser(userId: userFriend.friendId) {
-                    print("mmmmmmmm")
                     localArray.append(friend)
                 }
             }
@@ -59,13 +57,10 @@ final class UserViewModel: ObservableObject {
     }
     
     func addFriend(userId: String, friendId: String) async throws {
-        //let friend: User? = try await UserManager.shared.getUser(userId: friendId)
-           
         try await UserManager.shared.addFriendToUser(userId: userId, friendId: friendId, balance: 0)
     }
     
     func fetchFriendsWithExpenses() async {
-        print("aaaaaa")
             guard let currentUser = AuthViewModel.shared.currentUser else { return }
             
             do {
@@ -74,7 +69,6 @@ final class UserViewModel: ObservableObject {
 
                 for userFriend in userFriends {
                     if let friend = try? await UserManager.shared.getUser(userId: userFriend.friendId) {
-                        print("bbbbbb")
                         let expenses = try await GroupManager.shared.getExpensesInvolvingFriend(userId: currentUser.id, friendId: userFriend.friendId)
                         let totalExpense = expenses.reduce(0.0) { $0 + $1.amount }
                         let friendship = FriendshipModel(friendId: friend.id, balance: totalExpense)

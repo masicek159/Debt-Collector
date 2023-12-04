@@ -19,8 +19,10 @@ struct AddExpenseView: View {
     @State var category: Category? = nil
     @State var expenseCurrency: String = ""
     @State var paidBy: User? = AuthViewModel.shared.currentUser
-    @State var participants: Set<User> = []
+    @State var selectedParticipants: [Participant] = []
     @State var expenseAdded = false
+    @State var participants: [Participant] = []
+
     
     init() {
         group = groupViewModel.groups.first
@@ -56,7 +58,10 @@ struct AddExpenseView: View {
                         .pickerStyle(.menu)
                         .onChange(of: group) { newGroup in
                             paidBy = AuthViewModel.shared.currentUser
-                            participants = Set(Array(newGroup?.members ?? []))
+                            participants = []
+                            for member in newGroup?.membersAsUsers ?? [] {
+                                participants.append(Participant(userId: member.id, fullName: member.fullName))
+                            }
                             expenseCurrency = newGroup?.currency ?? "USD"
                         }
                         
@@ -80,25 +85,35 @@ struct AddExpenseView: View {
                         .pickerStyle(.menu)
                         
                         Picker("Select Who Paid", selection: $paidBy) {
-                            ForEach(Array(group?.members ?? []), id: \.id) { user in
+                            ForEach(Array(group?.membersAsUsers ?? []), id: \.id) { user in
                                 Text(user.fullName)
                                     .tag(user as User?)
                             }
                         }
                         .pickerStyle(.menu)
                         
-                        MultiSelector<Text, User>(
-                            label: Text("For whom"),
-                            options: Array(group?.members ?? []),
-                            optionToString: { $0.fullName },
-                            selected: $participants
+                        MultiSelector(
+                            totalAmount: $amount,
+                            participants: participants,
+                            selectedParticipants: $selectedParticipants
                         )
                         
                         Button(action: {
                             Task {
                                 if let group = group, let paidBy = paidBy {
                                     uploadingExpense = true
-                                    try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: Array(participants))
+                                    
+                                    var total: Double = 0
+                                    for participant in selectedParticipants {
+                                        total += participant.amountToPay
+                                    }
+                                    
+                                    if total != amount {
+                                        // change the totalAmounts
+                                        amount = total
+                                    }
+                                    
+                                    try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: selectedParticipants)
                                     uploadingExpense = false
                                     expenseAdded = true
                                 }
@@ -112,6 +127,9 @@ struct AddExpenseView: View {
                 .task {
                     groupViewModel.getGroups()
                     category = categoryViewModel.categories.filter{$0.name == "General"}.first
+                    for member in group?.membersAsUsers ?? [] {
+                        participants.append(Participant(userId: member.id, fullName: member.fullName))
+                    }
                 }
             }
         }

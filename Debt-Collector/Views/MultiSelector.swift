@@ -7,25 +7,24 @@
 
 import SwiftUI
 
-struct MultiSelector<LabelView: View, Selectable: Identifiable & Hashable>: View {
-    let label: LabelView
-    let options: [Selectable]
-    let optionToString: (Selectable) -> String
+struct MultiSelector: View {
+    let totalAmount: Binding<Double>
+    let participants: [Participant]
 
-    var selected: Binding<Set<Selectable>>
+    var selectedParticipants: Binding<[Participant]>
 
     private var formattedSelectedListString: String {
-        ListFormatter.localizedString(byJoining: selected.wrappedValue.map { optionToString($0) })
+        ListFormatter.localizedString(byJoining: selectedParticipants.wrappedValue.map { $0.fullName })
     }
 
     var body: some View {
         NavigationLink(destination: multiSelectionView()) {
             HStack {
-                label
+                Text("For whom")
                 Spacer()
                 
                 Group {
-                    if options.count == selected.wrappedValue.count {
+                    if participants.count == selectedParticipants.wrappedValue.count {
                         Text("All members")
                     } else {
                         Text(formattedSelectedListString)
@@ -39,9 +38,9 @@ struct MultiSelector<LabelView: View, Selectable: Identifiable & Hashable>: View
 
     private func multiSelectionView() -> some View {
         MultiSelectionView(
-            options: options,
-            optionToString: optionToString,
-            selected: selected
+            totalAmount: totalAmount,
+            participants: participants,
+            selectedParticipants: selectedParticipants
         )
     }
 }

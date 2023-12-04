@@ -49,9 +49,13 @@
 		8ED068BA2AF8538600991071 /* NewGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED068B92AF8538600991071 /* NewGroupView.swift */; };
 		C44F23362AF96F5A00BC0976 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44F23352AF96F5A00BC0976 /* ProfileView.swift */; };
 		C4522BB22B124C1900C4CE6B /* NewGroupMemberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4522BB12B124C1900C4CE6B /* NewGroupMemberView.swift */; };
+		C476B07D2B1D744100503FA6 /* PopupViewAmounts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C476B07C2B1D744100503FA6 /* PopupViewAmounts.swift */; };
+		C476B0802B1D89DD00503FA6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C476B07F2B1D89DD00503FA6 /* Assets.xcassets */; };
 		C47A3D782B12B9B400E8225A /* MultiSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A3D772B12B9B400E8225A /* MultiSelectionView.swift */; };
 		C47A3D7A2B12B9C200E8225A /* MultiSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A3D792B12B9C200E8225A /* MultiSelector.swift */; };
 		C47A3D7C2B12B9FF00E8225A /* ExpenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A3D7B2B12B9FF00E8225A /* ExpenseManager.swift */; };
+		C481408D2B1BC7D00004A877 /* ParticipantModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C481408C2B1BC7D00004A877 /* ParticipantModel.swift */; };
+		C481408F2B1BD5D20004A877 /* PopupViewShares.swift in Sources */ = {isa = PBXBuildFile; fileRef = C481408E2B1BD5D20004A877 /* PopupViewShares.swift */; };
 		C4960F252B15389E00002155 /* GroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4960F242B15389E00002155 /* GroupViewModel.swift */; };
 		C4960F272B15399C00002155 /* ExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4960F262B15399C00002155 /* ExpenseViewModel.swift */; };
 		C4960F292B1539EB00002155 /* GroupMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4960F282B1539EB00002155 /* GroupMember.swift */; };
@@ -102,9 +106,13 @@
 		8ED068B92AF8538600991071 /* NewGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupView.swift; sourceTree = "<group>"; };
 		C44F23352AF96F5A00BC0976 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		C4522BB12B124C1900C4CE6B /* NewGroupMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupMemberView.swift; sourceTree = "<group>"; };
+		C476B07C2B1D744100503FA6 /* PopupViewAmounts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupViewAmounts.swift; sourceTree = "<group>"; };
+		C476B07F2B1D89DD00503FA6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C47A3D772B12B9B400E8225A /* MultiSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiSelectionView.swift; sourceTree = "<group>"; };
 		C47A3D792B12B9C200E8225A /* MultiSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiSelector.swift; sourceTree = "<group>"; };
 		C47A3D7B2B12B9FF00E8225A /* ExpenseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpenseManager.swift; sourceTree = "<group>"; };
+		C481408C2B1BC7D00004A877 /* ParticipantModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantModel.swift; sourceTree = "<group>"; };
+		C481408E2B1BD5D20004A877 /* PopupViewShares.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupViewShares.swift; sourceTree = "<group>"; };
 		C4960F242B15389E00002155 /* GroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewModel.swift; sourceTree = "<group>"; };
 		C4960F262B15399C00002155 /* ExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewModel.swift; sourceTree = "<group>"; };
 		C4960F282B1539EB00002155 /* GroupMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMember.swift; sourceTree = "<group>"; };
@@ -162,6 +170,7 @@
 		6CBCD5202ADF231400F431AA /* Debt-Collector */ = {
 			isa = PBXGroup;
 			children = (
+				C476B07F2B1D89DD00503FA6 /* Assets.xcassets */,
 				8EAD53C22AF685BF00B63851 /* Firestore */,
 				8EB2BB742AEC2E1600E8A18B /* Models */,
 				8E9F60172AE62D7D0063227A /* Shared */,
@@ -206,6 +215,8 @@
 				8ED068B92AF8538600991071 /* NewGroupView.swift */,
 				C44F23352AF96F5A00BC0976 /* ProfileView.swift */,
 				C4522BB12B124C1900C4CE6B /* NewGroupMemberView.swift */,
+				C481408E2B1BD5D20004A877 /* PopupViewShares.swift */,
+				C476B07C2B1D744100503FA6 /* PopupViewAmounts.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -266,6 +277,7 @@
 				5FD5BBB92AFD5A0B00B8C76F /* ExpenseModel.swift */,
 				5FD5BBBB2AFEE7DE00B8C76F /* FriendshipModel.swift */,
 				C4960F282B1539EB00002155 /* GroupMember.swift */,
+				C481408C2B1BC7D00004A877 /* ParticipantModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -348,6 +360,7 @@
 			files = (
 				6CBCD5292ADF231600F431AA /* Preview Assets.xcassets in Resources */,
 				6CBCD5262ADF231600F431AA /* Assets.xcassets in Resources */,
+				C476B0802B1D89DD00503FA6 /* Assets.xcassets in Resources */,
 				6CBCD54C2ADF23A200F431AA /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -360,6 +373,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C4E70DA22B17C6E300463815 /* AddFriendView.swift in Sources */,
+				C481408D2B1BC7D00004A877 /* ParticipantModel.swift in Sources */,
 				C4CD80C32AE1B25300A79570 /* AddExpenseView.swift in Sources */,
 				C4E70D9A2B17C68E00463815 /* FriendRequestManager.swift in Sources */,
 				1450FE1D2AE2EC76009BE3EC /* UserModel.swift in Sources */,
@@ -371,6 +385,7 @@
 				C4BCA6562B13A236003D4F42 /* UserViewModel.swift in Sources */,
 				C4522BB22B124C1900C4CE6B /* NewGroupMemberView.swift in Sources */,
 				5FD5BBBC2AFEE7DE00B8C76F /* FriendshipModel.swift in Sources */,
+				C476B07D2B1D744100503FA6 /* PopupViewAmounts.swift in Sources */,
 				6CC0F1EF2AE0552300627704 /* SignUpView.swift in Sources */,
 				8EADEEBC2AE6D0A40030E888 /* CustomGoogleSignInButton.swift in Sources */,
 				C4960F292B1539EB00002155 /* GroupMember.swift in Sources */,
@@ -396,6 +411,7 @@
 				C4CD80C92AE1B32700A79570 /* SettingView.swift in Sources */,
 				893C1C182B1D0406006E7634 /* AddExpenseInGroupView.swift in Sources */,
 				8EADFD9F2AF96FD800996F29 /* CurrenciesHelper.swift in Sources */,
+				C481408F2B1BD5D20004A877 /* PopupViewShares.swift in Sources */,
 				8EB589F82AE88118005F112B /* SecureInputView.swift in Sources */,
 				6CC0F1F02AE0552300627704 /* LoginView.swift in Sources */,
 				14354E4B2B17F76C0089BDBD /* UserDataFetch.swift in Sources */,

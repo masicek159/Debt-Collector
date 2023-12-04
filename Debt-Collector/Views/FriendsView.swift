@@ -51,10 +51,6 @@ struct FriendsView: View {
                                         .foregroundColor(.purple)
                                     Text("\(friend.fullName)")
                                         .font(.headline)
-                                    Spacer()
-                                    Text("Balance: \(friend.balance)$")
-                                        .font(.subheadline)
-                                        .foregroundColor(friend.balance >= 0 ? .green : .red)
                                 }
                             }
                         }

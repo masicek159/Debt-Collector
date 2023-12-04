@@ -11,7 +11,7 @@ class User: Hashable, Identifiable, Codable {
     var email: String
     var fullName: String
     var id: String
-    var balance: Int = 0
+    var balance: Double = 0
     
     enum CodingKeys: String, CodingKey {
             case email
@@ -35,15 +35,15 @@ class User: Hashable, Identifiable, Codable {
         hasher.combine(email)
     }
     
-    func getBalance() -> Int{
+    func getBalance() -> Double{
         return(balance)
     }
     
-    func addBalance(bal: Int){
+    func addBalance(bal: Double){
         balance += bal
     }
     
-    func removeBalance(bal: Int){
+    func removeBalance(bal: Double){
         balance -= bal
     }
 }

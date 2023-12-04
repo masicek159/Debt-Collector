@@ -71,7 +71,7 @@ struct GroupDetail: View {
                                     Text(member.fullName)
                                         .font(.headline)
                                     Spacer()
-                                    Text("Balance: \(member.balance)$")
+                                    Text("\(member.balance)$")
                                         .font(.subheadline)
                                         .foregroundColor(member.balance >= 0 ? .green : .red)
                                 }
@@ -133,18 +133,7 @@ struct GroupDetail: View {
             }
         }
         .onAppear {
-            Task {
-                do {
-                    let groupMembers = try await groupViewModel.getMembers(groupId: group.id)
-                    let users = try await UserManager.shared.getUsersForGroupMembers(groupMembers: groupMembers)
-                    group.members = users
-                    
-                    // Now you have a GroupModel with user details for members
-                    // You can use groupWithUsers for your UI or wherever needed
-                } catch {
-                    print("Error fetching group members or expenses: \(error)")
-                }
-            }
+            groupViewModel.getGroups()
         }
     }
 }

@@ -42,9 +42,8 @@ final class GroupManager {
             let groupRef = groupCollection.document()
             let group = GroupModel(id: groupRef.documentID, name: name, currency: currency, color: color.base64EncodedString(), owner: currentUser)
             try groupRef.setData(from: group, merge: false)
-            let userId = Auth.auth().currentUser?.uid ?? ""
-            try await UserManager.shared.addGroupUser(userId: userId, groupId: groupRef.documentID)
-            try await addGroupMember(groupId: group.id, userId: currentUser.id, balance: 0)
+            try await UserManager.shared.addGroupUser(userId: currentUser.id, groupId: groupRef.documentID)
+            try await addGroupMember(groupId: group.id, userId: currentUser.id, balance: 0, fullName: currentUser.fullName)
         }
     }
     
@@ -84,12 +83,13 @@ final class GroupManager {
         try await groupDocument(groupId: groupId).getDocument(as: GroupModel.self)
     }
     
-    func addGroupMember(groupId: String, userId: String, balance: Double) async throws {
+    func addGroupMember(groupId: String, userId: String, balance: Double, fullName: String) async throws {
         let document = groupMembersCollection(groupId: groupId).document(userId)
         
         let data: [String : Any] = [
             GroupMember.CodingKeys.memberId.rawValue : userId,
-            GroupMember.CodingKeys.balance.rawValue : balance
+            GroupMember.CodingKeys.balance.rawValue : balance,
+            GroupMember.CodingKeys.fullName.rawValue : fullName
         ]
         
         try await document.setData(data, merge: false)
@@ -99,6 +99,16 @@ final class GroupManager {
         try await groupMembersCollection(groupId: groupId).getDocuments(as: GroupMember.self)
     }
 
+    func updateBalance(groupId: String, memberId: String, addAmount: Bool, amount: Double) async throws {
+        let member = groupMemberDocument(memberId: memberId, groupId: groupId)
+        var newAmount: Double = try await member.getDocument(as: GroupMember.self).balance
+        if addAmount {
+            newAmount += amount
+        } else {
+            newAmount -= amount
+        }
+        try await member.updateData(["balance": newAmount])
+    }
     
     func getMember(groupId: String, memberId: String) async throws -> DocumentSnapshot {
         return try await groupMemberDocument(memberId: memberId, groupId: groupId).getDocument()
@@ -111,7 +121,7 @@ final class GroupManager {
     func getExpensesInvolvingFriend(userId: String, friendId: String) async throws -> [ExpenseModel] {
         let expenses = try await groupExpenseCollection(groupId: userId).getDocuments(as: ExpenseModel.self)
         let expensesInvolvingFriend = expenses.filter { expense in
-            let participantsIds = expense.participants.map { $0.id }
+            let participantsIds = expense.participants.map { $0.userId }
             return participantsIds.contains(userId) && participantsIds.contains(friendId)
         }
         return expensesInvolvingFriend
