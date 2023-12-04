@@ -43,7 +43,6 @@
 		8EB1813D2B1D23610055E204 /* CategoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB1813C2B1D23610055E204 /* CategoryManager.swift */; };
 		8EB1813F2B1D23A00055E204 /* CategoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB1813E2B1D23A00055E204 /* CategoryModel.swift */; };
 		8EB181412B1D23C90055E204 /* CategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB181402B1D23C90055E204 /* CategoryViewModel.swift */; };
-		8EB181432B1D24420055E204 /* AddExpenseInGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB181422B1D24420055E204 /* AddExpenseInGroupView.swift */; };
 		8EB589F82AE88118005F112B /* SecureInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB589F72AE88118005F112B /* SecureInputView.swift */; };
 		8EC66CB42B01BAD800024520 /* GroupDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC66CB32B01BAD800024520 /* GroupDetail.swift */; };
 		8ED068BA2AF8538600991071 /* NewGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED068B92AF8538600991071 /* NewGroupView.swift */; };
@@ -151,11 +150,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6C5026362B1E104C00796636 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				8EB181422B1D24420055E204 /* AddExpenseInGroupView.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		6CBCD5152ADF231400F431AA = {
 			isa = PBXGroup;
 			children = (
 				6CBCD5202ADF231400F431AA /* Debt-Collector */,
 				6CBCD51F2ADF231400F431AA /* Products */,
+				6C5026362B1E104C00796636 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -377,7 +385,6 @@
 				C4CD80C32AE1B25300A79570 /* AddExpenseView.swift in Sources */,
 				C4E70D9A2B17C68E00463815 /* FriendRequestManager.swift in Sources */,
 				1450FE1D2AE2EC76009BE3EC /* UserModel.swift in Sources */,
-				8EB181432B1D24420055E204 /* AddExpenseInGroupView.swift in Sources */,
 				C47A3D7A2B12B9C200E8225A /* MultiSelector.swift in Sources */,
 				8EAD53C62AF68E1100B63851 /* UserManager.swift in Sources */,
 				6CC0F1EE2AE0552300627704 /* ContentView.swift in Sources */,
