@@ -9,43 +9,67 @@ import SwiftUI
 import SwiftUICharts
 
 struct ChartsView: View {
-    @State private var groups: [GroupModel] = []
-
+    @ObservedObject var groupViewModel = GroupViewModel()
+    @ObservedObject var categoryViewModel = CategoryViewModel()
+    @State var groups: [GroupModel] = []
+    @State var selectedGroup: GroupModel? = nil
+    @State var selectedParticipantId: String? = nil
+    @State var selectedPaidByUser: User? = nil
+    @State var selectedCategory: Category? = nil
+    @State var filteredExpenses: [ExpenseModel] = []
+    
     var body: some View {
+        Form {
+            Section(header: Text("Filter Options")) {
+                Picker("Group", selection: $selectedGroup) {
+                    Text("All Groups").tag(nil as String?)
+                    ForEach(groups, id: \.id) { group in
+                        Text(group.name).tag(group as GroupModel?)
+                    }
+                }
+                
+                if let selectedGroup = selectedGroup {
+                    Picker("Paid by", selection: $selectedPaidByUser) {
+                        Text("Paid by - not selected").tag(nil as String?)
+                        ForEach(selectedGroup.members, id: \.id) { member in
+                            Text(member.fullName).tag(member as User?)
+                        }
+                    }
+                    
+                    Picker("Participant", selection: $selectedParticipantId) {
+                        Text("All Participants").tag(nil as String?)
+                        ForEach(selectedGroup.members, id: \.self) { member in
+                            Text(member.fullName).tag(member.id as String?)
+                        }
+                    }
+                }
+                
+                Picker("Category", selection: $selectedCategory) {
+                    Text("All Categories").tag(nil as String?)
+                    ForEach(categoryViewModel.categories, id: \.self) { category in
+                        Text(category.name).tag(category as Category?)
+                    }
+                }
+                
+                Button(action: {
+                    print("Filters submitted!")
+                }) {
+                    Text("Apply filters")
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(Color.blue)
+                        .cornerRadius(8)
+                }
+                .padding()
+                
+            }
+        }
+        
         List(groups, id: \.id) { group in
             Text(group.name)
         }
         .onAppear {
-            // Call a function to fetch and display the list of groups for the current user
-            getGroupsForCurrentUser()
-        }
-    }
-
-    func getGroupsForCurrentUser() {
-        Task {
-            do {
-                guard let userId = await AuthViewModel.shared.currentUser?.id else { return }
-                let userGroups = try await UserManager.shared.getAllUserGroups(userId: userId)
-
-                // Fetch detailed group data for each group ID
-                var detailedGroups: [GroupModel] = []
-                for userGroup in userGroups {
-                    do {
-                        let group = try await GroupManager.shared.getGroup(groupId: userGroup.groupId)
-                        detailedGroups.append(group)
-                        
-                        // Print out the group data
-                        print("Fetched Group ID: \(group.id), Name: \(group.name), Members: \(group.members)")
-                    } catch {
-                        print("Error fetching group data for group ID \(userGroup.groupId): \(error)")
-                    }
-                }
-
-                // Update the groups array
-                groups = detailedGroups
-            } catch {
-                print("Error fetching user groups: \(error)")
-            }
+            groups = groupViewModel.groups
         }
     }
 }

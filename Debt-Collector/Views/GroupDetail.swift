@@ -13,6 +13,8 @@ struct GroupDetail: View {
     @State var showAddMemberPopUp = false
     @State var isMemberListExpanded = true
     @State var isExpenseListExpanded = true
+    @State private var showAllExpenses = false
+    @State private var showAllMembers = false
     
     @State var group: GroupModel
     @State var expenses: [ExpenseModel] = []
@@ -61,7 +63,7 @@ struct GroupDetail: View {
                         if group.members.isEmpty {
                             Text("Group does not have any members")
                         } else {
-                            ForEach(group.members, id: \.self) { member in
+                            ForEach(group.members.prefix(showAllMembers ? group.members.count : 3), id: \.self) { member in
                                 HStack {
                                     Image(systemName: "person.fill")
                                         .font(.largeTitle)
@@ -73,6 +75,12 @@ struct GroupDetail: View {
                                         .font(.subheadline)
                                         .foregroundColor(member.balance >= 0 ? .green : .red)
                                 }
+                            }
+                            
+                            Button(action: {
+                                showAllMembers.toggle()
+                            }) {
+                                Text(showAllMembers ? "Show Less" : "Show All")
                             }
                         }
                     }
@@ -103,12 +111,18 @@ struct GroupDetail: View {
                         if expenses.isEmpty {
                             Text("Group does not have any expenses")
                         } else {
-                            ForEach(expenses, id: \.id) { expense in
+                            ForEach(expenses.prefix(showAllExpenses ? expenses.count : 3), id: \.id) { expense in
                                 HStack{
                                     Text(expense.name)
                                     
                                     Text("\(expense.amount)")
                                 }
+                            }
+                            
+                            Button(action: {
+                                showAllExpenses.toggle()
+                            }) {
+                                Text(showAllExpenses ? "Show Less" : "Show All")
                             }
                         }
                     }
@@ -119,19 +133,19 @@ struct GroupDetail: View {
             }
         }
         .onAppear {
-                    Task {
-                        do {
-                            let groupMembers = try await groupViewModel.getMembers(groupId: group.id)
-                            let users = try await UserManager.shared.getUsersForGroupMembers(groupMembers: groupMembers)
-                            group.members = users
-                            
-                            // Now you have a GroupModel with user details for members
-                            // You can use groupWithUsers for your UI or wherever needed
-                        } catch {
-                            print("Error fetching group members or expenses: \(error)")
-                        }
-                    }
+            Task {
+                do {
+                    let groupMembers = try await groupViewModel.getMembers(groupId: group.id)
+                    let users = try await UserManager.shared.getUsersForGroupMembers(groupMembers: groupMembers)
+                    group.members = users
+                    
+                    // Now you have a GroupModel with user details for members
+                    // You can use groupWithUsers for your UI or wherever needed
+                } catch {
+                    print("Error fetching group members or expenses: \(error)")
                 }
+            }
+        }
     }
 }
 
