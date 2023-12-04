@@ -10,12 +10,16 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var swiftUIShared: SwiftUIShared
+    @EnvironmentObject var categoryViewModel: CategoryViewModel
     
     var body: some View {
         ZStack {
             Group {
                 if authViewModel.userSession != nil && authViewModel.showLandingView {
                     LandingView()
+                        .task {
+                            await categoryViewModel.loadCategories()
+                        }
                 } else {
                     LoginView()
                 }

@@ -10,13 +10,14 @@ import SwiftUI
 struct AddExpenseInGroupView: View {
     @ObservedObject var groupViewModel = GroupViewModel()
     @ObservedObject var expenseViewModel = ExpenseViewModel()
+    @EnvironmentObject var categoryViewModel: CategoryViewModel
     var group: GroupModel
     @Binding var showAddExpensePopUp: Bool
     
     @State var name: String = ""
     @State var amount: Double = 0.0
     @State var uploadingExpense = false
-    @State var category: String = ""
+    @State var category: Category? = nil
     @State var expenseCurrency: String = "USD"
     @State var paidBy: User? = AuthViewModel.shared.currentUser
     @State var participants: Set<User> = []
@@ -45,7 +46,13 @@ struct AddExpenseInGroupView: View {
                 
                 TextField("Name", text: $name)
                 
-                TextField("Category", text: $category)
+                Picker("Category", selection: $category) {
+                    ForEach(categoryViewModel.categories , id: \.id) { category in
+                        Text(category.name)
+                            .tag(category as Category?)
+                    }
+                }
+                .pickerStyle(.menu)
                 
                 TextField("Amount", value: $amount, formatter: decimalFormatter)
                 
@@ -88,6 +95,8 @@ struct AddExpenseInGroupView: View {
         }
         .padding()
         .task {
+            category = categoryViewModel.categories.filter{$0.name == "General"}.first
+            paidBy = AuthViewModel.shared.currentUser
             groupViewModel.getGroups()
             expenseCurrency = group.currency
         }
