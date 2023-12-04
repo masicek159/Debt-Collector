@@ -44,7 +44,7 @@ struct LandingView: View {
             
             ProfileView()
                 .tabItem{
-                    Image(systemName: "circle.grid.2x2.fill")
+                    Image(systemName: "person.fill")
                     Text("Profile")
                 }
                 .tag(4)

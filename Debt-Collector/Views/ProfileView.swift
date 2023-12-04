@@ -21,13 +21,13 @@ struct ProfileView: View {
     @StateObject private var profileViewModel = ProfileViewModel()
     @StateObject private var friendRequestViewModel: FriendRequestViewModel = FriendRequestViewModel()
     @StateObject private var userViewModel: UserViewModel = UserViewModel()
+    @State private var showingSettings = false
     
     @State private var addFailed: Bool = false
     @State private var showAlert: Bool = false
-    @State private var showingSettings = false
     
     func acceptFriendRequest(friendRequest: FriendRequest, friendsRequestViewModel: FriendRequestViewModel, userViewModel: UserViewModel) async{
-
+        
         // add friend to receiver
         do {
             try await userViewModel.addFriend(userId: friendRequest.receiverId, friendId: friendRequest.senderId)
@@ -44,7 +44,7 @@ struct ProfileView: View {
         friendsRequestViewModel.updateRequestStatus(updatedStatus: "ACCEPTED", requestId: friendRequest.id)
         await friendsRequestViewModel.loadFriendRequests()
     }
-
+    
     func declineFriendRequest(friendRequest: FriendRequest, friendsRequestViewModel: FriendRequestViewModel) async{
         // update the request to declined
         friendsRequestViewModel.updateRequestStatus(updatedStatus: "DECLINED", requestId: friendRequest.id)
@@ -67,7 +67,7 @@ struct ProfileView: View {
                 
                 Section(header: Text("Friend requests")) {
                     if friendRequestViewModel.friendRequests.isEmpty {
-                            Text("You do not have any friend requests")
+                        Text("You do not have any friend requests")
                     } else {
                         ForEach(friendRequestViewModel.friendRequests, id: \.self) { friendRequest in
                             HStack{
@@ -136,12 +136,26 @@ struct ProfileView: View {
                     }
                 }
             }
+            .navigationTitle("Profile")
+            .navigationBarItems(trailing:
+                                    Button(action: {
+                showingSettings = true
+            }) {
+                Image(systemName: "gearshape")
+                    .font(.title2)
+                    .foregroundColor(.purple)
+                    .frame(width: 30, height: 30)
+            }
+            )
         }
         .onAppear() {
             profileViewModel.loadCurrentUser()
         }
         .task {
             await friendRequestViewModel.loadFriendRequests()
+        }
+        .sheet(isPresented: $showingSettings) {
+            SettingView(showingSettings: $showingSettings)
         }
         
     }

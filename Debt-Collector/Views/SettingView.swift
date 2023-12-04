@@ -11,9 +11,18 @@ struct SettingView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @State var confirmationShown = false
     @Environment(\.presentationMode) var presentationMode
+    @Binding var showingSettings: Bool
     
     var body: some View {
         VStack {
+            Button(action: {
+                showingSettings = false
+            }) {
+                Text("Cancel")
+            }
+            
+            Spacer()
+            
             Text("Settings")
             
             Button {
@@ -34,6 +43,9 @@ struct SettingView: View {
                     }
                 )
             }
+            
+            Spacer()
         }
+        .padding()
     }
 }
