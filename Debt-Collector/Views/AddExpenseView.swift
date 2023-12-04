@@ -125,7 +125,7 @@ struct AddExpenseView: View {
                     .disabled(uploadingExpense)
                 }
                 .task {
-                    groupViewModel.getGroups()
+                    await groupViewModel.getGroups()
                     category = categoryViewModel.categories.filter{$0.name == "General"}.first
                     for member in group?.membersAsUsers ?? [] {
                         participants.append(Participant(userId: member.id, fullName: member.fullName))

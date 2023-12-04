@@ -59,7 +59,7 @@ struct GroupsView: View {
                 )
             }
             .task {
-                groupViewModel.getGroups()
+                await groupViewModel.getGroups()
             }
         }
     }

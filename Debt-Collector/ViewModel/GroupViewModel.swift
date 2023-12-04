@@ -40,7 +40,7 @@ final class GroupViewModel: ObservableObject {
     func memberAlreadyExists(groupId: String, userId: String) async -> Bool {
         do {
             if try await GroupManager.shared.getMember(groupId: groupId, memberId: userId).exists {
-             return true
+                return true
             }
         } catch {
             print("Error fetching member")
@@ -62,7 +62,7 @@ final class GroupViewModel: ObservableObject {
     }
     func readGroupFile() throws -> [GroupModel] {
         let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("groupFile.json")
-
+        
         do {
             let data = try Data(contentsOf: fileURL)
             let decoder = JSONDecoder()
@@ -73,26 +73,24 @@ final class GroupViewModel: ObservableObject {
         }
     }
     
-    func getGroups () {
-        Task {
-                do {
-                    // Read the contents of the groupFile.json file
-                    let groupModels = try readGroupFile()
-
-                    // Update the groups array
-                    self.groups = groupModels
-                    
-                    // get members to groups
-                    for group in groups {
-                        group.members = try await GroupManager.shared.getMembers(groupId: group.id)
-                        for member in group.members {
-                            group.membersAsUsers.append(try await UserManager.shared.getUser(userId: member.memberId))
-                        }
-                    }
-                    
-                } catch {
-                    print("Error reading group file: \(error)")
+    func getGroups () async {
+        do {
+            // Read the contents of the groupFile.json file
+            let groupModels = try readGroupFile()
+            
+            // Update the groups array
+            self.groups = groupModels
+            
+            // get members to groups
+            for group in groups {
+                group.members = try await GroupManager.shared.getMembers(groupId: group.id)
+                for member in group.members {
+                    group.membersAsUsers.append(try await UserManager.shared.getUser(userId: member.memberId))
                 }
             }
+            
+        } catch {
+            print("Error reading group file: \(error)")
+        }
     }
 }

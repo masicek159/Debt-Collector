@@ -132,9 +132,6 @@ struct GroupDetail: View {
                 }
             }
         }
-        .onAppear {
-            groupViewModel.getGroups()
-        }
     }
 }
 

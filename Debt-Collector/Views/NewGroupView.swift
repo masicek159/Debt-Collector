@@ -57,7 +57,7 @@ struct NewGroupView: View {
                     try await viewModel.addGroup(name: groupName, currency: groupCurrency, color: UIColor(selectedColor).encode())
                     showPopup = false
                     uploadingGroup = false
-                    viewModel.getGroups()
+                    await viewModel.getGroups()
                 }
             }) {
                 Text("Create Group")

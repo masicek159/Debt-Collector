@@ -108,7 +108,7 @@ struct AddExpenseInGroupView: View {
         .task {
             category = categoryViewModel.categories.filter{$0.name == "General"}.first
             paidBy = AuthViewModel.shared.currentUser
-            groupViewModel.getGroups()
+            await groupViewModel.getGroups()
             expenseCurrency = group.currency
         }
     }
