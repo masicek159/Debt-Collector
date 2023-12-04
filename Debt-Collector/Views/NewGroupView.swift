@@ -34,38 +34,49 @@ struct NewGroupView: View {
     }
     
     var body: some View {
-        Form {
-            Section(header: Text("Group Information")) {
-                TextField("Name", text: $groupName)
-                
-                Picker("Select Currency", selection: $groupCurrency) {
-                    ForEach(CurrenciesHelper.shared.currencies, id: \.self) { currency in
-                        Text(currency).tag(currency)
+        NavigationView{
+            Form {
+                Section(header: Text("Group Information")) {
+                    TextField("Name", text: $groupName)
+                    
+                    Picker("Select Currency", selection: $groupCurrency) {
+                        ForEach(CurrenciesHelper.shared.currencies, id: \.self) { currency in
+                            Text(currency)
+                                .tag(currency)
+                        }
                     }
+                    .pickerStyle(.menu)
+                    .accentColor(.purple)
                 }
-                .pickerStyle(.menu)
-            }
-            
-            Section(header: Text("Group Color")) {
-                ColorPicker("Select a color", selection: $selectedColor)
-            }
-            
-            
-            Button(action: {
-                Task {
-                    uploadingGroup = true
-                    try await viewModel.addGroup(name: groupName, currency: groupCurrency, color: UIColor(selectedColor).encode())
-                    showPopup = false
-                    uploadingGroup = false
-                    await viewModel.getGroups()
+                
+                Section(header: Text("Group Color")) {
+                    ColorPicker("Select a color", selection: $selectedColor)
                 }
-            }) {
-                Text("Create Group")
+                
+                VStack {
+                    Spacer()
+                    Button(action: {
+                        Task {
+                            uploadingGroup = true
+                            try await viewModel.addGroup(name: groupName, currency: groupCurrency, color: UIColor(selectedColor).encode())
+                            showPopup = false
+                            uploadingGroup = false
+                            await viewModel.getGroups()
+                        }
+                    }) {
+                        Text("Create Group")
+                            .font(.title2)
+                            .foregroundColor(.purple)
+                    }
+                    Spacer()
+                }
+                
             }
+            .disabled(uploadingGroup)
+            .navigationBarTitle("New Group")
         }
-        .disabled(uploadingGroup)
-        .navigationBarTitle("Create Group")
     }
+        
 
 }
 

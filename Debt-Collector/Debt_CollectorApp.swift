@@ -10,10 +10,10 @@ import Firebase
 
 @main
 struct Debt_CollectorApp: App {
-    @StateObject var authViewModel = AuthViewModel()
-    @StateObject var swiftUIShared = SwiftUIShared()
-    @StateObject var categoryViewModel = CategoryViewModel()
-    @StateObject var groupViewModel = GroupViewModel()
+    @StateObject var authViewModel: AuthViewModel = AuthViewModel()
+    @StateObject var swiftUIShared: SwiftUIShared = SwiftUIShared()
+    @StateObject var categoryViewModel: CategoryViewModel = CategoryViewModel()
+    @StateObject var groupViewModel: GroupViewModel = GroupViewModel()
     
     init() {
         FirebaseApp.configure()
