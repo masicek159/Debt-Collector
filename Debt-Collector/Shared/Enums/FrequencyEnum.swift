@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+enum FrequencyEnum:  String, CaseIterable {
+    case hourly = "Hourly"
+    case daily = "Daily"
+    case monthly = "Monthly"
+}
