@@ -44,6 +44,10 @@ struct AddExpenseView: View {
                     
                     Button(action: {
                         expenseAdded = false
+                        selectedParticipants = []
+                        participants = []
+                        amount = 0
+                        name = ""
                     }) {
                         Text("Add another expense")
                     }
@@ -95,7 +99,7 @@ struct AddExpenseView: View {
                         
                         MultiSelector(
                             totalAmount: $amount,
-                            participants: participants,
+                            participants: $participants,
                             selectedParticipants: $selectedParticipants
                         )
                         

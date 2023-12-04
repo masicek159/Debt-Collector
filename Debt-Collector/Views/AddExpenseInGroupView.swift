@@ -76,7 +76,7 @@ struct AddExpenseInGroupView: View {
                 
                 MultiSelector(
                     totalAmount: $amount,
-                    participants: participants,
+                    participants: $participants,
                     selectedParticipants: $selectedParticipants
                 )
                 

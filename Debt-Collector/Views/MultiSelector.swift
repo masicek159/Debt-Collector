@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MultiSelector: View {
     let totalAmount: Binding<Double>
-    let participants: [Participant]
+    let participants: Binding<[Participant]>
 
     var selectedParticipants: Binding<[Participant]>
 

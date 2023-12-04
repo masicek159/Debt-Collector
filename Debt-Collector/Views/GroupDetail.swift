@@ -63,7 +63,7 @@ struct GroupDetail: View {
                         if group.members.isEmpty {
                             Text("Group does not have any members")
                         } else {
-                            ForEach(group.members.prefix(showAllMembers ? group.members.count : 3), id: \.self) { member in
+                            ForEach(group.members.sorted(by: {$0.balance < $1.balance}).prefix(showAllMembers ? group.members.count : 3), id: \.self) { member in
                                 HStack {
                                     Image(systemName: "person.fill")
                                         .font(.largeTitle)

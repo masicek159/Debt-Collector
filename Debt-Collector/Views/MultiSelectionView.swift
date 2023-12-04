@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MultiSelectionView: View {
     @Binding var totalAmount: Double
-    let participants: [Participant]
+    @Binding var participants: [Participant]
     
     @State var isPopupVisibleForShares = false
     @State var isPopupVisibleForAmounts = false
