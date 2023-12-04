@@ -9,11 +9,6 @@ import SwiftUI
 
 struct LandingView: View {
     @State var selectedTab: Int = 1
-    var friends: [User] = [
-        User(id: "ss", email: "Friend1@gmail.com", fullName: "Friend 1"),
-            User(id: "sssdsd", email: "Friend2@gmail.com", fullName: "Friend 2"),
-            
-        ]
     
     var body: some View {
         
