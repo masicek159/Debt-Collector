@@ -35,7 +35,7 @@ final class ExpenseManager {
         try expenseRef.setData(from: expense, merge: false)
     }
     
-    func getExpenses(withinGroup groupId: String) -> [ExpenseModel] {
-        groupExpenseCollection(groupId: groupId).getDocuments(as: ExpenseModel.self)
+    func getExpenses(withinGroup groupId: String) async throws -> [ExpenseModel] {
+        try await groupExpenseCollection(groupId: groupId).getDocuments(as: ExpenseModel.self)
     }
 }
