@@ -25,6 +25,7 @@ struct AddExpenseInGroupView: View {
     @State var selectedParticipants: [Participant] = []
     
     @Binding var participants: [Participant]
+    @Binding var sharesNotSpecified: Bool
     
     let decimalFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -78,7 +79,8 @@ struct AddExpenseInGroupView: View {
                 MultiSelector(
                     totalAmount: $amount,
                     participants: $participants,
-                    selectedParticipants: $selectedParticipants
+                    selectedParticipants: $selectedParticipants,
+                    sharesNotSpecified: $sharesNotSpecified
                 )
                 
                 DatePicker(

@@ -18,12 +18,14 @@ struct MultiSelectionView: View {
 
 
     @Binding var selectedParticipants: [Participant]
+    @Binding var sharesNotSpecified: Bool
 
     var body: some View {
         VStack {
             HStack {
                 Button(action: {
                     isPopupVisibleForShares = true
+                    sharesNotSpecified = false
                 }) {
                     Text("Shares")
                         .padding()
@@ -37,8 +39,9 @@ struct MultiSelectionView: View {
                         
                         let totalShares: Double = shareValues.reduce(0, +)
                         for idx in 0..<selectedParticipants.count {
-                            participants[idx].share = shareValues[idx]
-                            participants[idx].amountToPay = Double(totalAmount / totalShares) * participants[idx].share
+                            selectedParticipants[idx].share = shareValues[idx]
+                            selectedParticipants[idx].amountToPay = Double(totalAmount / totalShares) * selectedParticipants[idx].share
+
                         }
                         
                         isPopupVisibleForShares = false
@@ -48,6 +51,7 @@ struct MultiSelectionView: View {
 
                 Button(action: {
                     isPopupVisibleForAmounts = true
+                    sharesNotSpecified = false
                 }) {
                     Text("Amount")
                         .padding()
@@ -61,8 +65,8 @@ struct MultiSelectionView: View {
                         let total: Double = amounts.reduce(0, +)
 
                         for idx in 0..<selectedParticipants.count {
-                            participants[idx].amountToPay = amounts[idx]
-                            participants[idx].share = Double(participants[idx].amountToPay / totalAmount) * total
+                            selectedParticipants[idx].amountToPay = amounts[idx]
+                            selectedParticipants[idx].share = Double(participants[idx].amountToPay / totalAmount) * total
                         }
                         
                         isPopupVisibleForAmounts = false
@@ -86,6 +90,7 @@ struct MultiSelectionView: View {
                     }.tag(participant.id)
                 }
             }
+            
         }
         .listStyle(GroupedListStyle())
     }
