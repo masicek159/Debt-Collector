@@ -34,4 +34,8 @@ final class ExpenseManager {
         let expense = ExpenseModel(id: expenseRef.documentID, name: name, amount: amount, category: category, currency: currency, groupId: groupId, paidBy: paidBy, participants: participants)
         try expenseRef.setData(from: expense, merge: false)
     }
+    
+    func getExpenses(withinGroup groupId: String) -> [ExpenseModel] {
+        groupExpenseCollection(groupId: groupId).getDocuments(as: ExpenseModel.self)
+    }
 }
