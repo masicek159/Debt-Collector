@@ -17,9 +17,11 @@ struct AddExpenseInGroupView: View {
     @State var amount: Double = 0.0
     @State var uploadingExpense = false
     @State var category: String = ""
-    @State var expenseCurrency: String = "USD"
+    @State var expenseCurrency: String = ""
     @State var paidBy: User? = AuthViewModel.shared.currentUser
-    @State var participants: Set<User> = []
+    @State var selectedParticipants: [Participant] = []
+    @State var expenseAdded = false
+    @State var participants: [Participant] = []
     
     let decimalFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -64,11 +66,10 @@ struct AddExpenseInGroupView: View {
                 }
                 .pickerStyle(.menu)
                 
-                MultiSelector<Text, User>(
-                    label: Text("For whom"),
-                    options: Array(group.members),
-                    optionToString: { $0.fullName },
-                    selected: $participants
+                MultiSelector(
+                    totalAmount: $amount,
+                    participants: participants,
+                    selectedParticipants: $selectedParticipants
                 )
                 
                 Button(action: {
