@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GroupsView: View {
-    @ObservedObject var groupViewModel: GroupViewModel = GroupViewModel()
+    @EnvironmentObject var groupViewModel: GroupViewModel
     @State private var showPopup = false
     @State private var groupToDelete: GroupModel?
     @State private var showDeleteAlert = false

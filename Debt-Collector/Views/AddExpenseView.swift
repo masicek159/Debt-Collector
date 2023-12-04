@@ -23,6 +23,7 @@ struct AddExpenseView: View {
     @State var expenseAdded = false
     @State var dateCreated: Date = Date()
     @State var participants: [Participant] = []
+    @State var sharesNotSpecified: Bool = true
     
     
     init() {
@@ -100,7 +101,8 @@ struct AddExpenseView: View {
                         MultiSelector(
                             totalAmount: $amount,
                             participants: $participants,
-                            selectedParticipants: $selectedParticipants
+                            selectedParticipants: $selectedParticipants,
+                            sharesNotSpecified: $sharesNotSpecified
                         )
                         
                         DatePicker(
@@ -114,10 +116,23 @@ struct AddExpenseView: View {
                                 if let group = group, let paidBy = paidBy {
                                     uploadingExpense = true
                                     
+                                    // defaualt shares - equally
+                                    if sharesNotSpecified {
+                                        let totalShares: Double = Double(selectedParticipants.count)
+                                        for idx in 0..<selectedParticipants.count {
+                                            selectedParticipants[idx].share = 1
+                                            selectedParticipants[idx].amountToPay = Double(amount / totalShares) * selectedParticipants[idx].share
+                                        }
+                                    }
+                                    
                                     var total: Double = 0
                                     for participant in selectedParticipants {
+                                        print("participant")
                                         total += participant.amountToPay
                                     }
+                                    
+                                    print("total: \(total)")
+                                    print("amount: \(amount)")
                                     
                                     if total != amount {
                                         // change the totalAmounts

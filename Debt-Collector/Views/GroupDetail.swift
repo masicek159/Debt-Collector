@@ -20,6 +20,7 @@ struct GroupDetail: View {
     
     @State var group: GroupModel
     @State var expenses: [ExpenseModel] = []
+    @State var sharesNotSpecified: Bool = true
     
     var body: some View {
         NavigationView {
@@ -80,10 +81,12 @@ struct GroupDetail: View {
                                 }
                             }
                             
-                            Button(action: {
-                                showAllMembers.toggle()
-                            }) {
-                                Text(showAllMembers ? "Show Less" : "Show All")
+                            if group.members.count >= 3 {
+                                Button(action: {
+                                    showAllMembers.toggle()
+                                }) {
+                                    Text(showAllMembers ? "Show Less" : "Show All")
+                                }
                             }
                         }
                     }
@@ -135,7 +138,7 @@ struct GroupDetail: View {
                     }
                 }
                 .sheet(isPresented: $showAddExpensePopUp) {
-                    AddExpenseInGroupView(group: group, showAddExpensePopUp: $showAddExpensePopUp, participants: $participants)
+                    AddExpenseInGroupView(group: group, showAddExpensePopUp: $showAddExpensePopUp, participants: $participants, sharesNotSpecified: $sharesNotSpecified)
                 }
             }
         }

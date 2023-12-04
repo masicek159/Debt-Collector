@@ -11,6 +11,7 @@ struct MultiSelector: View {
     var totalAmount: Binding<Double>
     var participants: Binding<[Participant]>
     var selectedParticipants: Binding<[Participant]>
+    var sharesNotSpecified: Binding<Bool>
 
     private var formattedSelectedListString: String {
         ListFormatter.localizedString(byJoining: selectedParticipants.wrappedValue.map { $0.fullName })
@@ -39,7 +40,8 @@ struct MultiSelector: View {
         MultiSelectionView(
             totalAmount: totalAmount,
             participants: participants,
-            selectedParticipants: selectedParticipants
+            selectedParticipants: selectedParticipants,
+            sharesNotSpecified: sharesNotSpecified
         )
     }
 }
