@@ -9,13 +9,20 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var swiftUIShared: SwiftUIShared
     
     var body: some View {
-        Group {
-            if authViewModel.userSession != nil {
-                LandingView()
-            } else {
-                LoginView()
+        ZStack {
+            Group {
+                if authViewModel.userSession != nil && authViewModel.showLandingView {
+                    LandingView()
+                } else {
+                    LoginView()
+                }
+            }
+            
+            if swiftUIShared.showLoadingPage {
+                LoadingPageView()
             }
         }
     }

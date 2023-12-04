@@ -7,13 +7,16 @@
 
 import Foundation
 import FirebaseAuth
+import FirebaseFirestore
 
 @MainActor
 final class UserViewModel: ObservableObject {
     @Published var friends: [User] = []
     @Published var friendsWithExpenses: [FriendshipModel] = []
-    
+    @Published var positiveBalance: String = ""
+    @Published var negativeBalance: String = ""
     func getFriends () {
+        print("zzzzzzz")
         Task {
             guard let userId = AuthViewModel.shared.currentUser?.id else { return }
             let userFriends = try await UserManager.shared.getAllUserFriends(userId: userId)
@@ -21,6 +24,7 @@ final class UserViewModel: ObservableObject {
             
             for userFriend in userFriends {
                 if let friend = try? await UserManager.shared.getUser(userId: userFriend.friendId) {
+                    print("mmmmmmmm")
                     localArray.append(friend)
                 }
             }
@@ -61,6 +65,7 @@ final class UserViewModel: ObservableObject {
     }
     
     func fetchFriendsWithExpenses() async {
+        print("aaaaaa")
             guard let currentUser = AuthViewModel.shared.currentUser else { return }
             
             do {
@@ -69,12 +74,14 @@ final class UserViewModel: ObservableObject {
 
                 for userFriend in userFriends {
                     if let friend = try? await UserManager.shared.getUser(userId: userFriend.friendId) {
+                        print("bbbbbb")
                         let expenses = try await GroupManager.shared.getExpensesInvolvingFriend(userId: currentUser.id, friendId: userFriend.friendId)
                         let totalExpense = expenses.reduce(0.0) { $0 + $1.amount }
                         let friendship = FriendshipModel(friendId: friend.id, balance: totalExpense)
                         updatedFriendships.append(friendship)
                     }
                 }
+                print(updatedFriendships[0].balance, updatedFriendships[1].balance)
                 self.friendsWithExpenses = updatedFriendships
             } catch {
                 print("Error fetching friends' expenses: \(error)")
@@ -90,4 +97,47 @@ final class UserViewModel: ObservableObject {
         let totalNegativeBalance = friendsWithExpenses.filter { $0.balance < 0 }.reduce(0.0) { $0 + $1.balance }
         return String(format: "%.2f", totalNegativeBalance)
     }
+    func fetchPositiveBalances(completion: @escaping (Float) -> Void) {
+        var userId = Auth.auth().currentUser?.uid
+        userId = userId!
+        Firestore.firestore().collection("users").document(userId!).collection("friends")
+                .whereField("balance", isGreaterThanOrEqualTo: 0)
+                .getDocuments { snapshot, error in
+                    guard let snapshot = snapshot, error == nil else {
+                        print("Error fetching positive balances: \(error?.localizedDescription ?? "Unknown error")")
+                        completion(0.0)
+                        return
+                    }
+
+                    let positiveBalance = snapshot.documents.reduce(0.0) { $0 + ($1["balance"] as? Double ?? 0.0) }
+                    completion(Float(positiveBalance))
+                }
+        }
+
+        func fetchNegativeBalances(completion: @escaping (Float) -> Void) {
+            var userId = Auth.auth().currentUser?.uid
+            userId = userId!
+            Firestore.firestore().collection("users").document(userId!).collection("friends")
+                .whereField("balance", isLessThan: 0)
+                .getDocuments { snapshot, error in
+                    guard let snapshot = snapshot, error == nil else {
+                        print("Error fetching negative balances: \(error?.localizedDescription ?? "Unknown error")")
+                        completion(0.0)
+                        return
+                    }
+
+                    let negativeBalance = snapshot.documents.reduce(0.0) { $0 + ($1["balance"] as? Double ?? 0.0) }
+                    completion(Float(negativeBalance))
+                }
+        }
+    func fetchBalances() {
+            fetchPositiveBalances { positiveBalance in
+                self.positiveBalance = String(positiveBalance)
+            }
+
+            fetchNegativeBalances { negativeBalance in
+                self.negativeBalance = String(negativeBalance)
+            }
+        self.negativeBalance = self.negativeBalance
+        }
 }

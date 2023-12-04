@@ -24,6 +24,7 @@ struct ProfileView: View {
     
     @State private var addFailed: Bool = false
     @State private var showAlert: Bool = false
+    @State private var showingSettings = false
     
     func acceptFriendRequest(friendRequest: FriendRequest, friendsRequestViewModel: FriendRequestViewModel, userViewModel: UserViewModel) async{
 
@@ -139,12 +140,13 @@ struct ProfileView: View {
         .onAppear() {
             profileViewModel.loadCurrentUser()
         }
-        .navigationTitle("Profile")
         .task {
             await friendRequestViewModel.loadFriendRequests()
         }
+        
     }
 }
+
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {

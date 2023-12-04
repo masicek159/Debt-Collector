@@ -9,12 +9,15 @@ import SwiftUI
 
 struct CustomGoogleSignInButton: View {
     @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var swiftUIShared: SwiftUIShared
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         Button {
             Task {
+                swiftUIShared.showLoadingPage(showLoadingPage: true)
                 try await authViewModel.googleSignIn()
+                swiftUIShared.showLoadingPage(showLoadingPage: false)
             }
         } label: {
             HStack {

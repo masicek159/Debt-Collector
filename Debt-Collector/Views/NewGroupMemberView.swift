@@ -16,14 +16,29 @@ struct NewGroupMemberView: View {
     @State private var showAlert: Bool = false
     @State private var existingMember: Bool = false
     
+    @Binding var showAddMemberPopUp: Bool
     var group: GroupModel
     
     var body: some View {
-        Form {
-            Section {
-                Picker("Select a member", selection: $selectedMember) {
-                    ForEach(userViewModel.friends, id: \.id) { user in
-                        Text(user.fullName).tag(user as User?)
+        Section (header: HStack {
+            Text("Add a member")
+                .font(.title)
+            
+            Spacer()
+            
+            Button(action: {
+                showAddMemberPopUp = false
+            }) {
+                Text("Cancel")
+            }
+        }) 
+        {
+            Form {
+                Section {
+                    Picker("Select a member", selection: $selectedMember) {
+                        ForEach(userViewModel.friends, id: \.id) { user in
+                            Text(user.fullName).tag(user as User?)
+                        }
                     }
                 }
                 .pickerStyle(.menu)
@@ -33,13 +48,13 @@ struct NewGroupMemberView: View {
             }
             .navigationBarBackButtonHidden(true)
         
-            // accept request
+        // accept request
             Section {
                 Button(action: {
                     // add friend
                     Task {
                         if let selectedUser = selectedMember {
-                            if await !groupViewModel.memberAlreadyExists(groupId: group.id, userId: selectedUser.id) {
+                            if await groupViewModel.memberAlreadyExists(groupId: group.id, userId: selectedUser.id) {
                                 existingMember = true
                             } else {
                                 addFailed = await !groupViewModel.addMemberIntoGroup(groupId: group.id, userId: selectedUser.id)
@@ -51,7 +66,6 @@ struct NewGroupMemberView: View {
                     Text("Add member")
                         .foregroundColor(.blue)
                 }
-                //        .disabled(!isFormValid)
                 .alert(isPresented: $showAlert) {
                     if existingMember {
                         return Alert(
@@ -76,21 +90,26 @@ struct NewGroupMemberView: View {
                             message: Text("Member added successfully!"),
                             dismissButton: .default(Text("Cancel"), action: {
                                 showAlert = false
+                                showAddMemberPopUp = false
+                                if let selectedMember = selectedMember {
+                                    group.members.append(selectedMember)
+                                }
                             })
                         )
                     }
                 }
             }
         }
+        .padding()
     }
- /*       Button(action: {
-            if let selectedUser = selectedMember {
-                try await viewModel.addGroupMember(groupId: group.id, userId: selectedUser.id, balance: 0)
-            } else {
-                // Handle the case where selectedMember is nil
-                print("No member selected")
-            }
-        } {
-            Text("Add member")
-        } */
+    /*       Button(action: {
+     if let selectedUser = selectedMember {
+     try await viewModel.addGroupMember(groupId: group.id, userId: selectedUser.id, balance: 0)
+     } else {
+     // Handle the case where selectedMember is nil
+     print("No member selected")
+     }
+     } {
+     Text("Add member")
+     } */
 }

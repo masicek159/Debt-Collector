@@ -60,7 +60,22 @@ final class UserManager {
             return nil
         }
     }
-    
+    func getUsersForGroupMembers(groupMembers: [GroupMember]) async throws -> [User] {
+            var users: [User] = []
+
+            for groupMember in groupMembers {
+                let userId = groupMember.memberId
+                do {
+                    let user = try await getUser(userId: userId)
+                    users.append(user)
+                } catch {
+                    // Handle the error, e.g., log it or skip the user in case of an error
+                    print("Error fetching user details for userId \(userId): \(error)")
+                }
+            }
+
+            return users
+        }
     func createFirestoreUserIfNotExists(uid: String, email: String, fullName: String) async {
         let userRef = Firestore.firestore().collection("users").document(uid)
         let userDoc = try? await userRef.getDocument()
@@ -80,7 +95,7 @@ final class UserManager {
     }
     
     func addGroupUser(userId: String, groupId: String, role: String = "member") async throws {
-        let document = groupUserCollection(userId: userId).document()
+        let document = groupUserCollection(userId: userId).document(groupId)
         
         let data: [String : Any] = [
             GroupUser.CodingKeys.dateCreated.rawValue : Timestamp(),

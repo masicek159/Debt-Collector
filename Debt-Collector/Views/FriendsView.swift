@@ -9,22 +9,20 @@ import SwiftUI
 import FirebaseAuth
 
 struct FriendsView: View {
-
-    @ObservedObject var viewModel = UserViewModel()
+    @ObservedObject var userViewModel = UserViewModel()
     @State var showPopup = false
-
+    @State var isFriendListExpanded = true
     var body: some View {
         NavigationView {
             VStack {
                 List {
                     Section(header: Text("Balances")) {
-                        
-                        HStack{
+                        HStack {
                             VStack {
                                 Text("Positive Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("\(viewModel.calculateTotalPositiveBalance())$")
+                                Text("\(userViewModel.positiveBalance)$")
                                     .font(.title)
                                     .foregroundColor(.green)
                             }
@@ -35,28 +33,28 @@ struct FriendsView: View {
                                 Text("Negative Balance:")
                                     .font(.headline)
                                 Spacer()
-                                Text("\(viewModel.calculateTotalNegativeBalance())$")
+                                Text("\(userViewModel.negativeBalance)$")
                                     .font(.title)
                                     .foregroundColor(.red)
                             }
                         }
                     }
-                    
-                    Section(header: FriendsSectionHeaderView(showPopup: $showPopup)) {
-                        if viewModel.friendsWithExpenses.isEmpty {
+
+                    Section(header: FriendsSectionHeaderView(showPopup: $showPopup, isFriendListExpanded: $isFriendListExpanded)) {
+                        if userViewModel.friends.isEmpty {
                             Text("You do not have any friends.")
                         } else {
-                            ForEach(viewModel.friendsWithExpenses, id: \.friendId) { friendship in
+                            ForEach(userViewModel.friends, id: \.id) { friend in
                                 HStack {
                                     Image(systemName: "person.fill")
                                         .font(.largeTitle)
                                         .foregroundColor(.purple)
-                                    Text(friendship.friendId)
+                                    Text("\(friend.fullName)")
                                         .font(.headline)
                                     Spacer()
-                                    Text("Balance: \(friendship.balance)$")
+                                    Text("Balance: \(friend.balance)$")
                                         .font(.subheadline)
-                                        .foregroundColor(friendship.balance >= 0 ? .green : .red)
+                                        .foregroundColor(friend.balance >= 0 ? .green : .red)
                                 }
                             }
                         }
@@ -65,7 +63,8 @@ struct FriendsView: View {
                         AddFriendView(showPopup: $showPopup)
                     })
                     .onAppear {
-                        viewModel.getFriends()
+                        userViewModel.getFriends()
+                        userViewModel.fetchBalances() // Fetch balances when the view appears
                     }
                 }
             }
@@ -80,20 +79,14 @@ struct FriendsView: View {
                         Image(systemName: "person.fill")
                             .font(.headline)
                     }
-                    
                 }
             }
-            
         }
     }
-    
-/*    func calculateTotalPositiveBalance() -> String {
-            let totalPositiveBalance = friends.filter { $0.balance >= 0 }.reduce(0) { $0 + $1.balance }
-            return String(totalPositiveBalance)
-        }
-    func calculateTotalNegativeBalance() -> String {
-            let totalNegativeBalance = friends.filter { $0.balance < 0 }.reduce(0) { $0 + $1.balance }
-            return String(totalNegativeBalance)
-        }
-*/
+}
+
+struct FriendsView_Previews: PreviewProvider {
+    static var previews: some View {
+        FriendsView()
+    }
 }
