@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct MultiSelector: View {
-    let totalAmount: Binding<Double>
-    let participants: Binding<[Participant]>
-
+    var totalAmount: Binding<Double>
+    var participants: Binding<[Participant]>
     var selectedParticipants: Binding<[Participant]>
 
     private var formattedSelectedListString: String {

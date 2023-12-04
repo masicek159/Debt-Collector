@@ -16,6 +16,8 @@ struct GroupDetail: View {
     @State private var showAllExpenses = false
     @State private var showAllMembers = false
     
+    @State var participants: [Participant] = []
+    
     @State var group: GroupModel
     @State var expenses: [ExpenseModel] = []
     
@@ -103,6 +105,10 @@ struct GroupDetail: View {
                     Spacer()
                     
                     Button(action: {
+                        participants = []
+                        for user in group.membersAsUsers {
+                            participants.append(Participant(userId: user.id, fullName: user.fullName))
+                        }
                         showAddExpensePopUp = true
                     }) {
                         Image(systemName: "plus")
@@ -129,7 +135,7 @@ struct GroupDetail: View {
                     }
                 }
                 .sheet(isPresented: $showAddExpensePopUp) {
-                    AddExpenseInGroupView(group: group, showAddExpensePopUp: $showAddExpensePopUp)
+                    AddExpenseInGroupView(group: group, showAddExpensePopUp: $showAddExpensePopUp, participants: $participants)
                 }
             }
         }
