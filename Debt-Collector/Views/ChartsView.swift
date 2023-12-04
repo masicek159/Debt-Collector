@@ -14,7 +14,7 @@ struct ChartsView: View {
     @State var groups: [GroupModel] = []
     @State var selectedGroup: GroupModel? = nil
     @State var selectedParticipantId: String? = nil
-    @State var selectedPaidByUser: User? = nil
+    @State var selectedPaidByUserId: String? = nil
     @State var selectedCategory: Category? = nil
     @State var filteredExpenses: [ExpenseModel] = []
     
@@ -29,16 +29,17 @@ struct ChartsView: View {
                 }
                 
                 if let selectedGroup = selectedGroup {
-                    Picker("Paid by", selection: $selectedPaidByUser) {
+                    Picker("Paid by", selection: $selectedPaidByUserId) {
                         Text("Paid by - not selected").tag(nil as String?)
-                        ForEach(selectedGroup.members, id: \.id) { member in
-                            Text(member.fullName).tag(member as User?)
+                        ForEach(selectedGroup.membersAsUsers, id: \.id) { member in
+                            Text(member.fullName)
+                                .tag(member.id as String?)
                         }
                     }
                     
                     Picker("Participant", selection: $selectedParticipantId) {
                         Text("All Participants").tag(nil as String?)
-                        ForEach(selectedGroup.members, id: \.self) { member in
+                        ForEach(selectedGroup.membersAsUsers, id: \.self) { member in
                             Text(member.fullName).tag(member.id as String?)
                         }
                     }
