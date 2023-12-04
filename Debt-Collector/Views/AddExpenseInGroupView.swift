@@ -20,10 +20,12 @@ struct AddExpenseInGroupView: View {
     @State var category: Category? = nil
     @State var expenseCurrency: String = "USD"
     @State var paidBy: User? = AuthViewModel.shared.currentUser
-    @State var selectedParticipants: [Participant] = []
     @State var expenseAdded = false
-    @State var participants: [Participant] = []
     @State var dateCreated: Date = Date()
+    @State var selectedParticipants: [Participant] = []
+    
+    @Binding var participants: [Participant]
+    @Binding var sharesNotSpecified: Bool
     
     let decimalFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -76,8 +78,9 @@ struct AddExpenseInGroupView: View {
                 
                 MultiSelector(
                     totalAmount: $amount,
-                    participants: participants,
-                    selectedParticipants: $selectedParticipants
+                    participants: $participants,
+                    selectedParticipants: $selectedParticipants,
+                    sharesNotSpecified: $sharesNotSpecified
                 )
                 
                 DatePicker(

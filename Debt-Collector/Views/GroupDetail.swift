@@ -16,8 +16,11 @@ struct GroupDetail: View {
     @State private var showAllExpenses = false
     @State private var showAllMembers = false
     
+    @State var participants: [Participant] = []
+    
     @State var group: GroupModel
     @State var expenses: [ExpenseModel] = []
+    @State var sharesNotSpecified: Bool = true
     
     var body: some View {
         NavigationView {
@@ -63,7 +66,7 @@ struct GroupDetail: View {
                         if group.members.isEmpty {
                             Text("Group does not have any members")
                         } else {
-                            ForEach(group.members.prefix(showAllMembers ? group.members.count : 3), id: \.self) { member in
+                            ForEach(group.members.sorted(by: {$0.balance < $1.balance}).prefix(showAllMembers ? group.members.count : 3), id: \.self) { member in
                                 HStack {
                                     Image(systemName: "person.fill")
                                         .font(.largeTitle)
@@ -105,6 +108,10 @@ struct GroupDetail: View {
                     Spacer()
                     
                     Button(action: {
+                        participants = []
+                        for user in group.membersAsUsers {
+                            participants.append(Participant(userId: user.id, fullName: user.fullName))
+                        }
                         showAddExpensePopUp = true
                     }) {
                         Image(systemName: "plus")
@@ -131,7 +138,7 @@ struct GroupDetail: View {
                     }
                 }
                 .sheet(isPresented: $showAddExpensePopUp) {
-                    AddExpenseInGroupView(group: group, showAddExpensePopUp: $showAddExpensePopUp)
+                    AddExpenseInGroupView(group: group, showAddExpensePopUp: $showAddExpensePopUp, participants: $participants, sharesNotSpecified: $sharesNotSpecified)
                 }
             }
         }
