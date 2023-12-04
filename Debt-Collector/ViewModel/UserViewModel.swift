@@ -91,6 +91,7 @@ final class UserViewModel: ObservableObject {
         let totalNegativeBalance = friendsWithExpenses.filter { $0.balance < 0 }.reduce(0.0) { $0 + $1.balance }
         return String(format: "%.2f", totalNegativeBalance)
     }
+    
     func fetchPositiveBalances(completion: @escaping (Float) -> Void) {
         var userId = Auth.auth().currentUser?.uid
         userId = userId!

@@ -43,7 +43,7 @@ final class GroupManager {
             let group = GroupModel(id: groupRef.documentID, name: name, currency: currency, color: color.base64EncodedString(), owner: currentUser)
             try groupRef.setData(from: group, merge: false)
             try await UserManager.shared.addGroupUser(userId: currentUser.id, groupId: groupRef.documentID)
-            try await addGroupMember(groupId: group.id, userId: currentUser.id, balance: 0, fullName: currentUser.fullName)
+            try await addGroupMember(groupId: group.id, userId: currentUser.id, balance: 0)
         }
     }
     
@@ -83,13 +83,12 @@ final class GroupManager {
         try await groupDocument(groupId: groupId).getDocument(as: GroupModel.self)
     }
     
-    func addGroupMember(groupId: String, userId: String, balance: Double, fullName: String) async throws {
+    func addGroupMember(groupId: String, userId: String, balance: Double) async throws {
         let document = groupMembersCollection(groupId: groupId).document(userId)
         
         let data: [String : Any] = [
             GroupMember.CodingKeys.memberId.rawValue : userId,
-            GroupMember.CodingKeys.balance.rawValue : balance,
-            GroupMember.CodingKeys.fullName.rawValue : fullName
+            GroupMember.CodingKeys.balance.rawValue : balance
         ]
         
         try await document.setData(data, merge: false)

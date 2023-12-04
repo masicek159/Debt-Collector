@@ -58,7 +58,8 @@ struct ProfileView: View {
                     if let user = profileViewModel.user {
                         Text("Name: \(user.fullName)")
                         Text("Email: \(user.email)")
-                        Text("Balance: \(user.balance)")
+                        let formattedBalance = String(format: "%.2f", user.balance)
+                        Text("Balance: \(formattedBalance)")
                     }
                 }
                 .task{

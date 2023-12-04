@@ -71,7 +71,8 @@ struct GroupDetail: View {
                                     Text(member.fullName)
                                         .font(.headline)
                                     Spacer()
-                                    Text("\(member.balance)$")
+                                    let formattedBalance = String(format: "%.2f", member.balance)
+                                    Text("Balance: \(formattedBalance)$")
                                         .font(.subheadline)
                                         .foregroundColor(member.balance >= 0 ? .green : .red)
                                 }
@@ -91,7 +92,7 @@ struct GroupDetail: View {
                 
                 
                 Section(header: HStack {
-                    Text("Expeneses")
+                    Text("Expenses")
                     
                     Button(action: {
                         isExpenseListExpanded.toggle()

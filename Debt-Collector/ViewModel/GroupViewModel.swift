@@ -14,7 +14,7 @@ final class GroupViewModel: ObservableObject {
     @Published private(set) var groups: [GroupModel] = []
     
     private func getMembersIds(groupId: String) async throws -> [String] {
-        var members = try await GroupManager.shared.getMembers(groupId: groupId)
+        let members = try await GroupManager.shared.getMembers(groupId: groupId)
         return members.map { $0.memberId }
     }
     
@@ -32,7 +32,7 @@ final class GroupViewModel: ObservableObject {
     
     func addGroupMember(groupId: String, userId: String, balance: Double = 0) async throws {
         let user = try await UserManager.shared.getUser(userId: userId)
-        try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: balance, fullName: user.fullName)
+        try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: balance)
         try await UserManager.shared.addGroupUser(userId: userId, groupId: groupId)
         await fetchDataAndWriteToFile()
     }
@@ -51,8 +51,7 @@ final class GroupViewModel: ObservableObject {
     
     func addMemberIntoGroup(groupId: String, userId: String) async -> Bool{
         do {
-            let user = try await UserManager.shared.getUser(userId: userId)
-            try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: 0, fullName: user.fullName)
+            try await GroupManager.shared.addGroupMember(groupId: groupId, userId: userId, balance: 0)
             await fetchDataAndWriteToFile()
         } catch {
             print("Error adding member")

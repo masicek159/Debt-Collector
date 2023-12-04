@@ -57,12 +57,14 @@ class GroupModel: Codable, Identifiable, Hashable {
         do {
             self.members = try await GroupManager.shared.getMembers(groupId: self.id)
             for member in self.members {
-                self.membersAsUsers.append(try await UserManager.shared.getUser(userId: member.memberId))
+                let user = try await UserManager.shared.getUser(userId: member.memberId)
+                self.membersAsUsers.append(user)
+                member.fullName = user.fullName
             }
+            
         } catch {
             self.membersAsUsers = []
         }
-        
     }
     
     func getGroupID() -> String {
