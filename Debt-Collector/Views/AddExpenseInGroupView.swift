@@ -12,7 +12,9 @@ struct AddExpenseInGroupView: View {
     @ObservedObject var expenseViewModel = ExpenseViewModel()
     @EnvironmentObject var categoryViewModel: CategoryViewModel
     var group: GroupModel
-    @Binding var showAddExpensePopUp: Bool
+    @Binding var showAddOrEditExpensePopUp: Bool
+    var mode: ExpenseViewModeEnum
+    var existingExpense: ExpenseModel?
     
     @State var name: String = ""
     @State var amount: Double = 0.0
@@ -97,7 +99,7 @@ struct AddExpenseInGroupView: View {
                                 )
                                 
                                 uploadingExpense = false
-                                showAddExpensePopUp = false
+                                showAddOrEditExpensePopUp = false
                             }
                         }
                     }) {
@@ -109,12 +111,27 @@ struct AddExpenseInGroupView: View {
             .padding()
             .navigationBarTitle("Add Expense", displayMode: .inline)
             .navigationBarItems(trailing: Button("Cancel") {
-                showAddExpensePopUp = false
+                showAddOrEditExpensePopUp = false
             })
             .task {
-                category = categoryViewModel.categories.first
-                paidBy = AuthViewModel.shared.currentUser
-                await fetchDataAndWriteToFile()
+                print(mode)
+                print("---------")
+                if mode == .update, let existingExpense = existingExpense {
+                    print("tsdiojgiosog")
+                    print(mode)
+                    print(existingExpense)
+                    print("sdfdsgdsf")
+                    name = existingExpense.name
+                    amount = existingExpense.amount
+                    category = existingExpense.category
+                    expenseCurrency = existingExpense.currency
+                    paidBy = existingExpense.paidBy
+                    selectedParticipants = existingExpense.participants
+                } else {
+                    category = categoryViewModel.categories.first
+                    paidBy = AuthViewModel.shared.currentUser
+                    await fetchDataAndWriteToFile()
+                }
             }
         }
     }

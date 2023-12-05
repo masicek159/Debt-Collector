@@ -31,14 +31,19 @@ class Transaction: Hashable {
 
 struct GroupDetail: View {
     @ObservedObject var groupViewModel = GroupViewModel()
-    @State var showAddExpensePopUp = false
+    @State var showAddOrEditExpensePopUp = false
     @State var showAddMemberPopUp = false
     @State var isMemberListExpanded = true
     @State var isExpenseListExpanded = true
     @State private var showAllExpenses = false
     @State private var showAllMembers = false
     @State private var showDeleteMemberAlert: Bool = false
+    @State private var showDeleteExpenseAlert: Bool = false
+    @State private var showEditExpenseAlert: Bool = false
     @State private var memberToDelete: GroupMember? = nil
+    @State private var expenseToDelete: ExpenseModel? = nil
+    @State private var expenseToEdit: ExpenseModel? = nil
+    @State var mode: ExpenseViewModeEnum = .add
     
     @State var participants: [Participant] = []
     
@@ -113,14 +118,17 @@ struct GroupDetail: View {
                                     .tint(.red)
                                 }
                                 .alert(isPresented: $showDeleteMemberAlert) {
-                                    if let memberToDelete = memberToDelete, memberToDelete.balance == 0 {
+                                    if let innerMemberToDelete = memberToDelete, innerMemberToDelete.balance == 0 {
                                         return Alert(
                                             title: Text("Delete Member"),
-                                            message: Text("Are you sure you want to delete \(memberToDelete.fullName) from this group?"),
+                                            message: Text("Are you sure you want to delete \(innerMemberToDelete.fullName) from this group?"),
                                             primaryButton: .destructive(Text("Delete"), action: {
                                                 // TODO: delete member from group
+                                                memberToDelete = nil
                                             }),
-                                            secondaryButton: .cancel()
+                                            secondaryButton: .cancel({
+                                                memberToDelete = nil
+                                            })
                                         )
                                     } else {
                                         return Alert(
@@ -128,6 +136,7 @@ struct GroupDetail: View {
                                             message: Text("You cannot delete user with non zero balance."),
                                             dismissButton: .default(Text("OK"), action: {
                                                 showDeleteMemberAlert = false
+                                                memberToDelete = nil
                                             })
                                         )
                                     }
@@ -164,7 +173,7 @@ struct GroupDetail: View {
                         for user in group.membersAsUsers {
                             participants.append(Participant(userId: user.id, fullName: user.fullName))
                         }
-                        showAddExpensePopUp = true
+                        showAddOrEditExpensePopUp = true
                     }) {
                         Image(systemName: "plus")
                     }
@@ -180,6 +189,47 @@ struct GroupDetail: View {
                                     
                                     Text(formattedExpense)
                                 }
+                                .swipeActions {
+                                    Button {
+                                        expenseToEdit = expense
+                                        mode = .update
+                                        showAddOrEditExpensePopUp = true
+                                    } label: {
+                                        Label("Edit", systemImage: "pencil")
+                                    }
+                                    .tint(.blue)
+                                    
+                                    Button {
+                                        expenseToDelete = expense
+                                        showDeleteExpenseAlert = true
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                    .tint(.red)
+                                }
+                                .alert(isPresented: $showDeleteExpenseAlert) {
+                                    Alert(
+                                        title: Text("Delete Expense"),
+                                        message: Text("Are you sure you want to expense: \(expenseToDelete?.name ?? "") from this group?"),
+                                        primaryButton: .destructive(Text("Delete"), action: {
+                                            // TODO: delete expense from group + update balances in memebers
+                                        }),
+                                        secondaryButton: .cancel({
+                                            expenseToDelete = nil
+                                        })
+                                    )
+                                    
+                                }
+                                .alert(isPresented: $showEditExpenseAlert) {
+                                    Alert(
+                                        title: Text("Success"),
+                                        message: Text("Expense was successfully deleted"),
+                                        dismissButton: .default(Text("OK"), action: {
+                                            showEditExpenseAlert = false
+                                        })
+                                    )
+                                    
+                                }
                             }
                             
                             if group.expenses.count > 3 {
@@ -192,8 +242,12 @@ struct GroupDetail: View {
                         }
                     }
                 }
-                .sheet(isPresented: $showAddExpensePopUp) {
-                    AddExpenseInGroupView(group: group, showAddExpensePopUp: $showAddExpensePopUp, participants: $participants, sharesNotSpecified: $sharesNotSpecified)
+                .sheet(isPresented: $showAddOrEditExpensePopUp) {
+                    if mode == .add {
+                        AddExpenseInGroupView(group: group, showAddOrEditExpensePopUp: $showAddOrEditExpensePopUp, mode: mode, participants: $participants, sharesNotSpecified: $sharesNotSpecified)
+                    } else if let expenseToEdit = expenseToEdit {
+                        AddExpenseInGroupView(group: group, showAddOrEditExpensePopUp: $showAddOrEditExpensePopUp, mode: mode, existingExpense: expenseToEdit, participants: $participants, sharesNotSpecified: $sharesNotSpecified)
+                    }
                 }
                 .task {
                     await groupViewModel.getGroups()
