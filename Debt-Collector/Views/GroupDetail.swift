@@ -118,7 +118,13 @@ struct GroupDetail: View {
                                             title: Text("Delete Member"),
                                             message: Text("Are you sure you want to delete \(memberToDelete.fullName) from this group?"),
                                             primaryButton: .destructive(Text("Delete"), action: {
-                                                // TODO: delete member from group
+                                                do {
+                                                    let groupManager = GroupManager.shared
+                                                    try groupManager.deleteMember(groupId: group.id, userId: memberToDelete.memberId)
+                                                } catch {
+                                                    // Handle the error, e.g., display an error message
+                                                    print("Error deleting member: \(error)")
+                                                }
                                             }),
                                             secondaryButton: .cancel()
                                         )
