@@ -11,19 +11,18 @@ struct AddExpenseInGroupView: View {
     @ObservedObject var groupViewModel = GroupViewModel()
     @ObservedObject var expenseViewModel = ExpenseViewModel()
     @EnvironmentObject var categoryViewModel: CategoryViewModel
-    
     var group: GroupModel
     @Binding var showAddExpensePopUp: Bool
     
-    @State private var name: String = ""
-    @State private var amount: Double = 0.0
-    @State private var uploadingExpense = false
-    @State private var category: Category? = nil
-    @State private var expenseCurrency: String = "USD"
-    @State private var paidBy: User? = AuthViewModel.shared.currentUser
-    @State private var expenseAdded = false
-    @State private var dateCreated: Date = Date()
-    @State private var selectedParticipants: [Participant] = []
+    @State var name: String = ""
+    @State var amount: Double = 0.0
+    @State var uploadingExpense = false
+    @State var category: Category? = nil
+    @State var expenseCurrency: String = "USD"
+    @State var paidBy: User? = AuthViewModel.shared.currentUser
+    @State var expenseAdded = false
+    @State var dateCreated: Date = Date()
+    @State var selectedParticipants: [Participant] = []
     
     @Binding var participants: [Participant]
     @Binding var sharesNotSpecified: Bool

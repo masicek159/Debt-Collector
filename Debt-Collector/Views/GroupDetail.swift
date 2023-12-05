@@ -19,7 +19,6 @@ struct GroupDetail: View {
     @State var participants: [Participant] = []
     
     @State var group: GroupModel
-    @State var expenses: [ExpenseModel] = []
     @State var sharesNotSpecified: Bool = true
     
     var body: some View {
@@ -95,7 +94,6 @@ struct GroupDetail: View {
                     NewGroupMemberView(showAddMemberPopUp: $showAddMemberPopUp, group: group)
                 }
                 
-                
                 Section(header: HStack {
                     Text("Expenses")
                     
@@ -118,14 +116,15 @@ struct GroupDetail: View {
                     }
                 }) {
                     if isExpenseListExpanded {
-                        if expenses.isEmpty {
+                        if group.expenses.isEmpty {
                             Text("Group does not have any expenses")
                         } else {
-                            ForEach(expenses.prefix(showAllExpenses ? expenses.count : 3), id: \.id) { expense in
+                            ForEach(group.expenses.prefix(showAllExpenses ? group.expenses.count : 3), id: \.id) { expense in
                                 HStack{
                                     Text(expense.name)
-                                    
-                                    Text("\(expense.amount)")
+                                    let formattedExpense = String(format: "%.2f", expense.amount)
+
+                                    Text(formattedExpense)
                                 }
                             }
                             
@@ -139,6 +138,9 @@ struct GroupDetail: View {
                 }
                 .sheet(isPresented: $showAddExpensePopUp) {
                     AddExpenseInGroupView(group: group, showAddExpensePopUp: $showAddExpensePopUp, participants: $participants, sharesNotSpecified: $sharesNotSpecified)
+                }
+                .task {
+                    await groupViewModel.getGroups()
                 }
             }
         }
