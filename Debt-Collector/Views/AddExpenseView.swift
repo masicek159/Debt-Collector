@@ -110,45 +110,47 @@ struct AddExpenseView: View {
                             selection: $dateCreated,
                             displayedComponents: [.date]
                         )
-                        
-                        Button(action: {
-                            Task {
-                                if let group = group, let paidBy = paidBy {
-                                    uploadingExpense = true
-                                    
-                                    // defaualt shares - equally
-                                    if sharesNotSpecified {
-                                        let totalShares: Double = Double(selectedParticipants.count)
-                                        for idx in 0..<selectedParticipants.count {
-                                            selectedParticipants[idx].share = 1
-                                            selectedParticipants[idx].amountToPay = Double(amount / totalShares) * selectedParticipants[idx].share
+                        Section{
+                            Button(action: {
+                                Task {
+                                    if let group = group, let paidBy = paidBy {
+                                        uploadingExpense = true
+                                        
+                                        // defaualt shares - equally
+                                        if sharesNotSpecified {
+                                            let totalShares: Double = Double(selectedParticipants.count)
+                                            for idx in 0..<selectedParticipants.count {
+                                                selectedParticipants[idx].share = 1
+                                                selectedParticipants[idx].amountToPay = Double(amount / totalShares) * selectedParticipants[idx].share
+                                            }
                                         }
+                                        
+                                        var total: Double = 0
+                                        for participant in selectedParticipants {
+                                            print("participant")
+                                            total += participant.amountToPay
+                                        }
+                                        
+                                        print("total: \(total)")
+                                        print("amount: \(amount)")
+                                        
+                                        if total != amount {
+                                            // change the totalAmounts
+                                            amount = total
+                                        }
+                                        
+                                        try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: selectedParticipants, dateCreated: dateCreated)
+                                        uploadingExpense = false
+                                        expenseAdded = true
                                     }
-                                    
-                                    var total: Double = 0
-                                    for participant in selectedParticipants {
-                                        print("participant")
-                                        total += participant.amountToPay
-                                    }
-                                    
-                                    print("total: \(total)")
-                                    print("amount: \(amount)")
-                                    
-                                    if total != amount {
-                                        // change the totalAmounts
-                                        amount = total
-                                    }
-                                    
-                                    try await expenseViewModel.addExpense(name: name, amount: amount, category: category, currency: expenseCurrency, groupId: group.id, paidBy: paidBy, participants: selectedParticipants, dateCreated: dateCreated)
-                                    uploadingExpense = false
-                                    expenseAdded = true
                                 }
+                            }) {
+                                Text("Add Expense")
+                                    .font(.title2)
                             }
-                        }) {
-                            Text("Add Expense")
                         }
+                        .disabled(uploadingExpense)
                     }
-                    .disabled(uploadingExpense)
                 }
                 .task {
                     await groupViewModel.getGroups()

@@ -46,6 +46,7 @@ struct AddExpenseInGroupView: View {
                         }
                     }
                     .pickerStyle(.menu)
+                    .accentColor(.purple)
                     TextField("Amount", value: $amount, formatter: decimalFormatter)
                     Picker("Select Currency", selection: $expenseCurrency) {
                         ForEach(CurrenciesHelper.shared.currencies, id: \.self) { currency in
@@ -53,12 +54,14 @@ struct AddExpenseInGroupView: View {
                         }
                     }
                     .pickerStyle(.menu)
+                    .accentColor(.purple)
                     Picker("Select Who Paid", selection: $paidBy) {
                         ForEach(group.membersAsUsers, id: \.id) { user in
                             Text(user.fullName).tag(user as User?)
                         }
                     }
                     .pickerStyle(.menu)
+                    .accentColor(.purple)
                     MultiSelector(
                         totalAmount: $amount,
                         participants: $participants,
@@ -122,8 +125,12 @@ struct AddExpenseInGroupView: View {
                     }) {
                         if mode == .add {
                             Text("Add Expense")
+                                .font(.title2)
+                                .foregroundColor(.purple)
                         } else {
                             Text("Update Expense")
+                                .font(.title2)
+                                .foregroundColor(.purple)
                         }
                     }
                     .disabled(uploadingExpense)
@@ -131,9 +138,14 @@ struct AddExpenseInGroupView: View {
             }
             .padding()
             .navigationBarTitle(mode == .add ? "Add Expense" : "Update Expense", displayMode: .inline)
-            .navigationBarItems(trailing: Button("Cancel") {
+            
+            .navigationBarItems(trailing: Button(action: {
                 showAddOrEditExpensePopUp = false
+            }) {
+                Text("Cancel")
+                    .foregroundColor(.purple)
             })
+            
             .task {
                 if mode == .update, let existingExpense = existingExpense {
                     name = existingExpense.name
