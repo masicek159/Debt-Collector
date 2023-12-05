@@ -88,7 +88,7 @@ struct AddExpenseInGroupView: View {
                                     currency: expenseCurrency,
                                     groupId: group.id,
                                     paidBy: paidBy,
-                                    participants: Array(participants),
+                                    participants: selectedParticipants,
                                     dateCreated: dateCreated
                                 )
                                 

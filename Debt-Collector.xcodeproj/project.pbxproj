@@ -54,6 +54,7 @@
 		C47A3D782B12B9B400E8225A /* MultiSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A3D772B12B9B400E8225A /* MultiSelectionView.swift */; };
 		C47A3D7A2B12B9C200E8225A /* MultiSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A3D792B12B9C200E8225A /* MultiSelector.swift */; };
 		C47A3D7C2B12B9FF00E8225A /* ExpenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47A3D7B2B12B9FF00E8225A /* ExpenseManager.swift */; };
+		C47B7D722B1EA02C009651EE /* FrequencyEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47B7D712B1EA02C009651EE /* FrequencyEnum.swift */; };
 		C481408D2B1BC7D00004A877 /* ParticipantModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C481408C2B1BC7D00004A877 /* ParticipantModel.swift */; };
 		C481408F2B1BD5D20004A877 /* PopupViewShares.swift in Sources */ = {isa = PBXBuildFile; fileRef = C481408E2B1BD5D20004A877 /* PopupViewShares.swift */; };
 		C4960F252B15389E00002155 /* GroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4960F242B15389E00002155 /* GroupViewModel.swift */; };
@@ -112,6 +113,7 @@
 		C47A3D772B12B9B400E8225A /* MultiSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiSelectionView.swift; sourceTree = "<group>"; };
 		C47A3D792B12B9C200E8225A /* MultiSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiSelector.swift; sourceTree = "<group>"; };
 		C47A3D7B2B12B9FF00E8225A /* ExpenseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpenseManager.swift; sourceTree = "<group>"; };
+		C47B7D712B1EA02C009651EE /* FrequencyEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrequencyEnum.swift; sourceTree = "<group>"; };
 		C481408C2B1BC7D00004A877 /* ParticipantModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticipantModel.swift; sourceTree = "<group>"; };
 		C481408E2B1BD5D20004A877 /* PopupViewShares.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupViewShares.swift; sourceTree = "<group>"; };
 		C4960F242B15389E00002155 /* GroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewModel.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 		6C5026382B1E13D700796636 /* Enums */ = {
 			isa = PBXGroup;
 			children = (
+				C47B7D712B1EA02C009651EE /* FrequencyEnum.swift */,
 				6C5026392B1E13F000796636 /* ExpenseViewModeEnum.swift */,
 			);
 			path = Enums;
@@ -396,6 +399,7 @@
 				C4CD80C32AE1B25300A79570 /* AddExpenseView.swift in Sources */,
 				C4E70D9A2B17C68E00463815 /* FriendRequestManager.swift in Sources */,
 				1450FE1D2AE2EC76009BE3EC /* UserModel.swift in Sources */,
+				C47B7D722B1EA02C009651EE /* FrequencyEnum.swift in Sources */,
 				C47A3D7A2B12B9C200E8225A /* MultiSelector.swift in Sources */,
 				8EAD53C62AF68E1100B63851 /* UserManager.swift in Sources */,
 				6CC0F1EE2AE0552300627704 /* ContentView.swift in Sources */,
