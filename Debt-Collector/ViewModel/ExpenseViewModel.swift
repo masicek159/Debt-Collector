@@ -15,9 +15,9 @@ final class ExpenseViewModel: ObservableObject {
         let totalParticipants = expense.participants.count
         let impactPerParticipant = expense.amount / Double(totalParticipants)
         for participant in expense.participants {
-            try await UserManager.shared.updateFriendBalance(userId: expense.paidBy.id, friendId: participant.userId, amount: -impactPerParticipant)
+            try await UserManager.shared.updateFriendBalance(userId: expense.paidBy.id, friendId: participant.userId, amount: impactPerParticipant)
             try await GroupManager.shared.updateBalance(groupId: groupId, memberId: participant.userId, addAmount: true, amount: impactPerParticipant)
-            try await UserManager.shared.updateFriendBalance(userId: participant.userId, friendId: expense.paidBy.id, amount: impactPerParticipant)
+            try await UserManager.shared.updateFriendBalance(userId: participant.userId, friendId: expense.paidBy.id, amount: -impactPerParticipant)
             try await GroupManager.shared.updateBalance(groupId: groupId, memberId: expense.paidBy.id, addAmount: false, amount: impactPerParticipant)
         }
         try await ExpenseManager.shared.deleteExpenseFromFirebase(expenseId: expenseId, groupId: groupId)

@@ -85,8 +85,8 @@ struct AddExpenseInGroupView: View {
                                 var toPay = amount/counter
                                 for participant in selectedParticipants {
                                     participant.amountToPay += toPay
-                                    try await UserManager.shared.updateFriendBalance(userId: paidBy.id, friendId: participant.userId, amount: toPay)
-                                    try await UserManager.shared.updateFriendBalance(userId: participant.userId, friendId: paidBy.id, amount: -toPay)
+                                    try await UserManager.shared.updateFriendBalance(userId: paidBy.id, friendId: participant.userId, amount: -toPay)
+                                    try await UserManager.shared.updateFriendBalance(userId: participant.userId, friendId: paidBy.id, amount: toPay)
                                     print(participant.amountToPay)
                                 }
                                 

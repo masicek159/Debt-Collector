@@ -143,19 +143,27 @@ final class UserManager {
     }
     func updateFriendBalance(userId: String, friendId: String, amount: Double) async throws {
         let userDocument = Firestore.firestore().collection("users").document(userId)
-        let friendDocument = userDocument.collection("friends").document(friendId)
-        
+        let friendsCollection = userDocument.collection("friends")
+
         do {
-            // Get the friend's data
-            var friendData = try await friendDocument.getDocument().data()
-            
+            // Find the friend document in the subcollection
+            let friendDocument = friendsCollection.whereField("friendId", isEqualTo: friendId)
+            let friendSnapshot = try await friendDocument.getDocuments()
+
+            // Ensure there's only one document (assuming friendId is unique)
+            guard var friendData = friendSnapshot.documents.first?.data() else {
+                // Handle the case where the friend is not found
+                print("Error: Friend with ID \(friendId) not found in the user's subcollection.")
+                return
+            }
+
             // Update the balance
-            if var balance = friendData?["balance"] as? Double {
+            if var balance = friendData["balance"] as? Double {
                 balance -= amount
-                friendData?["balance"] = balance
-                
+                friendData["balance"] = balance
+
                 // Update the friend's document in Firebase
-                try await friendDocument.setData(friendData ?? [:], merge: true)
+                try await friendSnapshot.documents.first?.reference.setData(friendData, merge: true)
             } else {
                 // Handle the case where balance is not a valid Double
                 print("Error: Invalid balance data for friend with ID \(friendId)")
