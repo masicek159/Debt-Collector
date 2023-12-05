@@ -108,8 +108,12 @@ struct AddExpenseInGroupView: View {
                     }) {
                         if mode == .add {
                             Text("Add Expense")
+                                .font(.title2)
+                                .foregroundColor(.purple)
                         } else {
                             Text("Update Expense")
+                                .font(.title2)
+                                .foregroundColor(.purple)
                         }
                     }
                     .disabled(uploadingExpense)
@@ -117,7 +121,8 @@ struct AddExpenseInGroupView: View {
             }
             .padding()
             .navigationBarTitle(mode == .add ? "Add Expense" : "Update Expense", displayMode: .inline)
-            .navigationBarItems(trailing: Button("Cancel") {
+            
+            .navigationBarItems(trailing: Button(action: {
                 showAddOrEditExpensePopUp = false
             }) {
                 Text("Cancel")
