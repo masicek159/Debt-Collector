@@ -37,6 +37,8 @@ struct GroupDetail: View {
     @State var isExpenseListExpanded = true
     @State private var showAllExpenses = false
     @State private var showAllMembers = false
+    @State private var showDeleteMemberAlert: Bool = false
+    @State private var memberToDelete: GroupMember? = nil
     
     @State var participants: [Participant] = []
     
@@ -100,6 +102,35 @@ struct GroupDetail: View {
                                     Text("Balance: \(formattedBalance)$")
                                         .font(.subheadline)
                                         .foregroundColor(member.balance >= 0 ? .green : .red)
+                                }
+                                .swipeActions {
+                                    Button {
+                                        memberToDelete = member
+                                        showDeleteMemberAlert = true
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                    .tint(.red)
+                                }
+                                .alert(isPresented: $showDeleteMemberAlert) {
+                                    if let memberToDelete = memberToDelete, memberToDelete.balance == 0 {
+                                        return Alert(
+                                            title: Text("Delete Member"),
+                                            message: Text("Are you sure you want to delete \(memberToDelete.fullName) from this group?"),
+                                            primaryButton: .destructive(Text("Delete"), action: {
+                                                // TODO: delete member from group
+                                            }),
+                                            secondaryButton: .cancel()
+                                        )
+                                    } else {
+                                        return Alert(
+                                            title: Text("Fail to delete member"),
+                                            message: Text("You cannot delete user with non zero balance."),
+                                            dismissButton: .default(Text("OK"), action: {
+                                                showDeleteMemberAlert = false
+                                            })
+                                        )
+                                    }
                                 }
                             }
                             
