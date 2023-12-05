@@ -48,6 +48,7 @@ struct AddExpenseInGroupView: View {
                     .pickerStyle(.menu)
                     .accentColor(.purple)
                     TextField("Amount", value: $amount, formatter: decimalFormatter)
+                        .keyboardType(.numberPad)
                     Picker("Select Currency", selection: $expenseCurrency) {
                         ForEach(CurrenciesHelper.shared.currencies, id: \.self) { currency in
                             Text(currency).tag(currency)

@@ -83,6 +83,7 @@ struct AddExpenseView: View {
                         .pickerStyle(.menu)
                         
                         TextField("Amount", value: $amount, formatter: decimalFormatter)
+                            .keyboardType(.numberPad)
                         
                         Picker("Select Currency", selection: $expenseCurrency) {
                             ForEach(CurrenciesHelper.shared.currencies, id: \.self) { currency in
