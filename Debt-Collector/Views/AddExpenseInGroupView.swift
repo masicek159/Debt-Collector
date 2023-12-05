@@ -74,12 +74,14 @@ struct AddExpenseInGroupView: View {
                                 uploadingExpense = true
                                 
                                 var total: Double = 0
+                                var counter: Double = 0
                                 for participant in selectedParticipants {
-                                    total += participant.amountToPay
+                                    counter += 1
                                 }
-                                
-                                if total != amount {
-                                    amount = total
+                                var toPay = amount/counter
+                                for participant in selectedParticipants {
+                                    participant.amountToPay += toPay
+                                    print(participant.amountToPay)
                                 }
                                 
                                 try await expenseViewModel.addExpense(
@@ -111,6 +113,7 @@ struct AddExpenseInGroupView: View {
             .task {
                 category = categoryViewModel.categories.first
                 paidBy = AuthViewModel.shared.currentUser
+                await fetchDataAndWriteToFile()
             }
         }
     }
