@@ -84,19 +84,36 @@ struct AddExpenseInGroupView: View {
                                     participant.amountToPay += toPay
                                     try await UserManager.shared.updateFriendBalance(userId: paidBy.id, friendId: participant.userId, amount: toPay)
                                     try await UserManager.shared.updateFriendBalance(userId: participant.userId, friendId: paidBy.id, amount: -toPay)
-                                    print(participant.amountToPay)
                                 }
                                 
-                                try await expenseViewModel.addExpense(
-                                    name: name,
-                                    amount: amount,
-                                    category: category,
-                                    currency: expenseCurrency,
-                                    groupId: group.id,
-                                    paidBy: paidBy,
-                                    participants: selectedParticipants,
-                                    dateCreated: dateCreated
-                                )
+                                if mode == .add {
+                                    try await expenseViewModel.addExpense(
+                                        name: name,
+                                        amount: amount,
+                                        category: category,
+                                        currency: expenseCurrency,
+                                        groupId: group.id,
+                                        paidBy: paidBy,
+                                        participants: selectedParticipants,
+                                        dateCreated: dateCreated
+                                    )
+                                } else {
+                                    if let existingExpense = existingExpense {
+                                        try await expenseViewModel.editExpense(
+                                            previousExpense: existingExpense,
+                                            expenseId: existingExpense.id,
+                                            name: name,
+                                            amount: amount,
+                                            category: category,
+                                            currency: expenseCurrency,
+                                            groupId: group.id,
+                                            paidBy: paidBy,
+                                            participants: selectedParticipants,
+                                            dateCreated: dateCreated
+                                            )
+                                        
+                                    }
+                                }
                                 
                                 uploadingExpense = false
                                 showAddOrEditExpensePopUp = false
