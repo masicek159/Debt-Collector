@@ -148,6 +148,7 @@ struct AddExpenseInGroupView: View {
             })
             
             .task {
+                selectedParticipants = participants
                 if mode == .update, let existingExpense = existingExpense {
                     name = existingExpense.name
                     amount = existingExpense.amount

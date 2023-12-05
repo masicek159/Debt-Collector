@@ -169,7 +169,12 @@ struct ChartsView: View {
             var dataPoints: [dataPoint] = []
             
             for (interval, expensesInInterval) in groupedExpenses {
-                let totalAmount = expensesInInterval.reduce(0) { $0 + $1.amount }
+                var totalAmount = 0.0
+                if let selectedParticipantId = selectedParticipantId {
+                    totalAmount = expensesInInterval.reduce(0) { $0 + ($1.participants.filter{$0.userId == selectedParticipantId}.first?.amountToPay ?? 0) }
+                } else {
+                    totalAmount = expensesInInterval.reduce(0) { $0 + $1.amount }
+                }
                 let dataPoint = dataPoint(date: interval, amount: totalAmount)
                 dataPoints.append(dataPoint)
             }

@@ -189,7 +189,11 @@ struct GroupDetail: View {
                         } else {
                             ForEach(group.expenses.prefix(showAllExpenses ? group.expenses.count : 3), id: \.id) { expense in
                                 HStack{
-                                    Text(expense.name)
+                                    VStack {
+                                        Text(expense.name)
+                                        Text("\(dateFormatter.string(from: expense.dateCreated))")
+                                            .font(.footnote)
+                                    }
                                     let formattedExpense = String(format: "$%.2f", expense.amount)
                                     Spacer()
                                     VStack{
@@ -299,6 +303,12 @@ struct GroupDetail: View {
             
         }
     }
+    
+    private let dateFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MM/dd/yyyy"
+            return formatter
+    }()
     
     private func calculateDebt() {
         var netAmounts: [String: Double] = [:]

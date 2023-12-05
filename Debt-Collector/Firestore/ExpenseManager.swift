@@ -57,6 +57,6 @@ final class ExpenseManager {
     }
     
     func getExpenses(withinGroup groupId: String) async throws -> [ExpenseModel] {
-        try await groupExpenseCollection(groupId: groupId).getDocuments(as: ExpenseModel.self)
+        try await groupExpenseCollection(groupId: groupId).order(by: "dateCreated", descending: true).getDocuments(as: ExpenseModel.self)
     }
 }
