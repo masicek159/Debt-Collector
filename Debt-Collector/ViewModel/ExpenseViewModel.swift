@@ -21,6 +21,7 @@ final class ExpenseViewModel: ObservableObject {
             try await GroupManager.shared.updateBalance(groupId: groupId, memberId: expense.paidBy.id, addAmount: false, amount: impactPerParticipant)
         }
         try await ExpenseManager.shared.deleteExpenseFromFirebase(expenseId: expenseId, groupId: groupId)
+        await fetchDataAndWriteToFile()
     }
     func addExpense(name: String, amount: Double, category: Category?, currency: String, groupId: String, paidBy: User, participants: [Participant], dateCreated: Date) async throws {
         print("adding expense")

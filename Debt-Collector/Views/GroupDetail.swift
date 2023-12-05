@@ -190,9 +190,13 @@ struct GroupDetail: View {
                             ForEach(group.expenses.prefix(showAllExpenses ? group.expenses.count : 3), id: \.id) { expense in
                                 HStack{
                                     Text(expense.name)
-                                    let formattedExpense = String(format: "%.2f", expense.amount)
-                                    
-                                    Text(formattedExpense)
+                                    let formattedExpense = String(format: "$%.2f", expense.amount)
+                                    Spacer()
+                                    VStack{
+                                        Text(formattedExpense)
+                                        Text("Paid by: \(expense.paidBy.fullName)")
+                                            .font(.footnote)
+                                    }
                                 }
                                 .swipeActions {
                                     Button {
