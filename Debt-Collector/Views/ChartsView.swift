@@ -7,6 +7,13 @@
 
 import SwiftUI
 import SwiftUICharts
+import Charts
+
+struct dataPoint: Identifiable {
+    var id = UUID()
+    var date: Date
+    var amount: Double
+}
 
 struct ChartsView: View {
     @EnvironmentObject var groupViewModel: GroupViewModel
@@ -18,6 +25,12 @@ struct ChartsView: View {
     @State var selectedPaidByUserId: String? = nil
     @State var selectedCategory: Category? = nil
     @State var filteredExpenses: [ExpenseModel] = []
+    @State var selectedFrequency: FrequencyEnum? = nil
+    @State var points: [dataPoint] = []
+    
+    init() {
+        filterExpenses()
+    }
     
     var body: some View {
         VStack {
@@ -31,6 +44,7 @@ struct ChartsView: View {
                     }
                     .task {
                         groups = groupViewModel.groups
+                        filterExpenses()
                     }
                     
                     
@@ -61,36 +75,63 @@ struct ChartsView: View {
                         }
                     }
                     
-                    Button(action: {
-                        filterExpenses()
-                    }) {
-                        Text("Apply filters")
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(Color.blue)
-                            .cornerRadius(8)
+                    Picker("Frequency", selection: $selectedFrequency) {
+                        Text("None").tag(nil as String?)
+                        ForEach(FrequencyEnum.allCases, id: \.self) { frequency in
+                            Text(frequency.rawValue).tag(frequency as FrequencyEnum?)
+                        }
+                        .task {
+                            await categoryViewModel.loadCategories()
+                        }
                     }
-                    .padding()
                     
+                    HStack {
+                        Button(action: {}) {
+                            Text("Apply filters")
+                        }
+                        .onTapGesture {
+                            filterExpenses()
+                            extractChartData(from: filteredExpenses)
+                        }
+                        
+                        Spacer()
+                        
+                        Divider().background(Color.black)
+                        
+                        Spacer()
+                        
+                        Button(action: {}) {
+                            Text("Remove filters")
+                        }
+                        .onTapGesture {
+                            resetFilters()
+                            filterExpenses()
+                            extractChartData(from: filteredExpenses)
+                        }
+                    }
                 }
             }
             
-            if !filteredExpenses.isEmpty {
-                LineChartView(
-                    data: extractChartData(from: filteredExpenses),
-                    title: "Expense Chart",
-                    legend: "Expenses",
-                    style: ChartStyle(
-                        backgroundColor: .white,
-                        accentColor: .blue,
-                        gradientColor: GradientColor(start: .blue, end: .red),
-                        textColor: .black,
-                        legendTextColor: .green,
-                        dropShadowColor: .gray
-                    )
-                )
+            Section{
+                if !filteredExpenses.isEmpty {
+                    Chart(points) {
+                        BarMark(
+                            x: .value("Date", $0.date),
+                            y: .value("Amount", $0.amount)
+                        )
+                    }
+                }
             }
+            .padding(50)
         }
+    }
+    
+    private func resetFilters() {
+        selectedGroup = nil
+        selectedCategory = nil
+        selectedPaidByUserId = nil
+        selectedParticipantId = nil
+        selectedFrequency = nil
     }
     
     private func filterExpenses() {
@@ -119,21 +160,40 @@ struct ChartsView: View {
                 !$0.participants.filter{ $0.userId == selectedParticipantId}.isEmpty
             }
         }
-        print(filteredExpenses)
     }
     
-    private func extractChartData(from expenses: [ExpenseModel]) -> [Double] {
-            // TODO: Sort expenses by creation date
-//            let sortedExpenses = expenses.sorted(by: { $0.creationDate < $1.creationDate })
-
+    private func extractChartData(from expenses: [ExpenseModel]) {
+        let sortedExpenses = filteredExpenses.sorted(by: { $0.dateCreated < $1.dateCreated })
         
-            var chartData: [Double] = []
-            for expense in expenses {
-                chartData.append(expense.amount)
+        if let selectedFrequency = selectedFrequency {
+            let groupedExpenses: [Date: [ExpenseModel]] = Dictionary(grouping: sortedExpenses) { expense in
+                switch selectedFrequency {
+                case .hourly:
+                    return Calendar.current.date(bySettingHour: Calendar.current.component(.hour, from: expense.dateCreated), minute: 0, second: 0, of: expense.dateCreated) ?? expense.dateCreated
+                case .daily:
+                    return Calendar.current.startOfDay(for: expense.dateCreated)
+                case .monthly:
+                    return Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: expense.dateCreated)) ?? expense.dateCreated
+                }
             }
-
-            return chartData
+            
+            // Calculate sum of amounts within each interval
+            var dataPoints: [dataPoint] = []
+            
+            for (interval, expensesInInterval) in groupedExpenses {
+                let totalAmount = expensesInInterval.reduce(0) { $0 + $1.amount }
+                let dataPoint = dataPoint(date: interval, amount: totalAmount)
+                dataPoints.append(dataPoint)
+            }
+            points = dataPoints
+        } else {
+            var dataPoints: [dataPoint] = []
+            for filteredExpense in filteredExpenses {
+                dataPoints.append(dataPoint(date: filteredExpense.dateCreated, amount: filteredExpense.amount))
+            }
+            points = dataPoints
         }
+    }
 }
 
 struct ChartsView_Previews: PreviewProvider {
