@@ -125,6 +125,7 @@ struct ChartsView: View {
         if let selectedGroup = selectedGroup {
             filteredExpenses = selectedGroup.expenses
         } else {
+            filteredExpenses = []
             for group in groupViewModel.groups {
                 filteredExpenses += group.expenses
             }
