@@ -212,29 +212,6 @@ struct GroupDetail: View {
                                     }
                                     .tint(.red)
                                 }
-                                .alert(isPresented: $showDeleteExpenseAlert) {
-                                    Alert(
-                                        title: Text("Delete Expense"),
-                                        message: Text("Are you sure you want to expense: \(expenseToDelete?.name ?? "") from this group?"),
-                                        primaryButton: .destructive(Text("Delete"), action: {
-                                            // TODO: delete expense from group + update balances in memebers
-                                        }),
-                                        secondaryButton: .cancel({
-                                            expenseToDelete = nil
-                                        })
-                                    )
-                                    
-                                }
-                                .alert(isPresented: $showEditExpenseAlert) {
-                                    Alert(
-                                        title: Text("Success"),
-                                        message: Text("Expense was successfully deleted"),
-                                        dismissButton: .default(Text("OK"), action: {
-                                            showEditExpenseAlert = false
-                                        })
-                                    )
-                                    
-                                }
                             }
                             
                             if group.expenses.count > 3 {
@@ -295,6 +272,29 @@ struct GroupDetail: View {
                 }
                 
             }
+        }
+        .alert(isPresented: $showDeleteExpenseAlert) {
+            print("baeiryf")
+            return Alert(
+                title: Text("Delete Expense"),
+                message: Text("Are you sure you want to delete the expense?"),
+                primaryButton: .destructive(Text("Delete"), action: {
+                    Task {
+                        do {
+                            let expenseViewModel = ExpenseViewModel()
+                            if let expenseToDelete = expenseToDelete {
+                                
+                                try await expenseViewModel.deleteExpense(expenseId: expenseToDelete.id, groupId: group.id)
+                            }
+                        } catch {
+                            // Handle the error, e.g., display an error message
+                            print("Error deleting expense: \(error)")
+                        }
+                    }
+                }),
+                secondaryButton: .cancel()
+            )
+            
         }
     }
     
