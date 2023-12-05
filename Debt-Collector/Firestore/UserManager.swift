@@ -61,21 +61,21 @@ final class UserManager {
         }
     }
     func getUsersForGroupMembers(groupMembers: [GroupMember]) async throws -> [User] {
-            var users: [User] = []
-
-            for groupMember in groupMembers {
-                let userId = groupMember.memberId
-                do {
-                    let user = try await getUser(userId: userId)
-                    users.append(user)
-                } catch {
-                    // Handle the error, e.g., log it or skip the user in case of an error
-                    print("Error fetching user details for userId \(userId): \(error)")
-                }
+        var users: [User] = []
+        
+        for groupMember in groupMembers {
+            let userId = groupMember.memberId
+            do {
+                let user = try await getUser(userId: userId)
+                users.append(user)
+            } catch {
+                // Handle the error, e.g., log it or skip the user in case of an error
+                print("Error fetching user details for userId \(userId): \(error)")
             }
-
-            return users
         }
+        
+        return users
+    }
     func createFirestoreUserIfNotExists(uid: String, email: String, fullName: String) async {
         let userRef = Firestore.firestore().collection("users").document(uid)
         let userDoc = try? await userRef.getDocument()
@@ -132,14 +132,39 @@ final class UserManager {
     
     func addFriendToUser(userId: String, friendId: String, balance: Double) async throws {
         let friendsDoc = friendsCollection(userId: userId).document(friendId)
-            
+        
         let data: [String : Any] = [
             FriendshipModel.CodingKeys.friendId.rawValue : friendId,
             FriendshipModel.CodingKeys.balance.rawValue : balance
         ]
-            
+        
         try await friendsDoc.setData(data, merge: false)
         
+    }
+    func updateFriendBalance(userId: String, friendId: String, amount: Double) async throws {
+        let userDocument = Firestore.firestore().collection("users").document(userId)
+        let friendDocument = userDocument.collection("friends").document(friendId)
+        
+        do {
+            // Get the friend's data
+            var friendData = try await friendDocument.getDocument().data()
+            
+            // Update the balance
+            if var balance = friendData?["balance"] as? Double {
+                balance -= amount
+                friendData?["balance"] = balance
+                
+                // Update the friend's document in Firebase
+                try await friendDocument.setData(friendData ?? [:], merge: true)
+            } else {
+                // Handle the case where balance is not a valid Double
+                print("Error: Invalid balance data for friend with ID \(friendId)")
+            }
+        } catch {
+            // Handle the error
+            print("Error updating friend balance: \(error)")
+            throw error
+        }
     }
 }
 
