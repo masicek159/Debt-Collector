@@ -49,6 +49,13 @@ final class ExpenseManager {
         try expenseRef.setData(from: expense, merge: false)
     }
     
+    func updateExpense(expenseId: String, name: String, amount: Double, category: Category?, currency: String, groupId: String, paidBy: User, participants: [Participant], dateCreated: Date) async throws {
+        let expenseRef = groupExpenseCollection(groupId: groupId).document(expenseId)
+        let expense = ExpenseModel(id: expenseRef.documentID, name: name, amount: amount, category: category, currency: currency, groupId: groupId, paidBy: paidBy, dateCreated: dateCreated, participants: participants)
+        print(paidBy)
+        try expenseRef.setData(from: expense, merge: true)
+    }
+    
     func getExpenses(withinGroup groupId: String) async throws -> [ExpenseModel] {
         try await groupExpenseCollection(groupId: groupId).getDocuments(as: ExpenseModel.self)
     }
