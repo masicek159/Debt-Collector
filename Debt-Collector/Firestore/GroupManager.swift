@@ -37,6 +37,20 @@ final class GroupManager {
         groupMembersCollection(groupId: groupId).document(expenseId)
     }
     
+    func deleteMember(groupId: String, userId: String) async throws {
+        let groupMembersCollection = groupDocument(groupId: groupId).collection("members")
+        let memberDocument = groupMembersCollection.document(userId)
+
+        do {
+            // Delete the member document
+            try await memberDocument.delete()
+        } catch {
+            // Handle the error
+            print("Error deleting group member: \(error)")
+            throw error
+        }
+    }
+    
     func uploadGroup(name: String, currency: String, color: Data) async throws {
         if let currentUser = await AuthViewModel.shared.currentUser {
             let groupRef = groupCollection.document()
