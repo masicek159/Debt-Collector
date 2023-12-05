@@ -40,13 +40,18 @@ final class ExpenseViewModel: ObservableObject {
         // REVERT - update balances
         for participant in previousExpense.participants {
             try await GroupManager.shared.updateBalance(groupId: previousExpense.groupId, memberId: participant.userId, addAmount: true, amount: participant.amountToPay)
+            try await UserManager.shared.updateFriendBalance(userId: participant.userId, friendId: previousExpense.paidBy.id, amount: -participant.amountToPay)
+            try await UserManager.shared.updateFriendBalance(userId: previousExpense.paidBy.id, friendId: participant.userId, amount: participant.amountToPay)
         }
         // REVERT - add balance to the payer
         try await GroupManager.shared.updateBalance(groupId: previousExpense.groupId, memberId: previousExpense.paidBy.id, addAmount: false, amount: previousExpense.amount)
+
         
         // update balances
         for participant in participants {
             try await GroupManager.shared.updateBalance(groupId: groupId, memberId: participant.userId, addAmount: false, amount: participant.amountToPay)
+            try await UserManager.shared.updateFriendBalance(userId: participant.userId, friendId: paidBy.id, amount: participant.amountToPay)
+            try await UserManager.shared.updateFriendBalance(userId: participant.userId, friendId: paidBy.id, amount: -participant.amountToPay)
         }
         // add balance to the payer
         try await GroupManager.shared.updateBalance(groupId: groupId, memberId: paidBy.id, addAmount: true, amount: amount)
