@@ -12,7 +12,7 @@ import FirebaseFirestoreSwift
 class GroupModel: Codable, Identifiable, Hashable {
     var id: String = ""
     var name: String
-    var currency: String // TODO: add currency model or currency enum
+    var currency: String
     var color: String
     var members: [GroupMember] = []
     var membersAsUsers: [User] = []
