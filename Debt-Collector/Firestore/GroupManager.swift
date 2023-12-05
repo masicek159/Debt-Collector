@@ -37,13 +37,13 @@ final class GroupManager {
         groupMembersCollection(groupId: groupId).document(expenseId)
     }
     
-    func deleteMember(groupId: String, userId: String) async throws {
+    func deleteMember(groupId: String, userId: String) throws {
         let groupMembersCollection = groupDocument(groupId: groupId).collection("members")
         let memberDocument = groupMembersCollection.document(userId)
 
         do {
             // Delete the member document
-            try await memberDocument.delete()
+            try memberDocument.delete()
         } catch {
             // Handle the error
             print("Error deleting group member: \(error)")

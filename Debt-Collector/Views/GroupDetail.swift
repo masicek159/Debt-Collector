@@ -125,7 +125,7 @@ struct GroupDetail: View {
                                             primaryButton: .destructive(Text("Delete"), action: {
                                                 do {
                                                     let groupManager = GroupManager.shared
-//                                                    try groupManager.deleteMember(groupId: group.id, userId: innerMemberToDelete.memberId)
+                                                    try groupManager.deleteMember(groupId: group.id, userId: memberToDelete!.memberId)
                                                 } catch {
                                                     // Handle the error, e.g., display an error message
                                                     print("Error deleting member: \(error)")
