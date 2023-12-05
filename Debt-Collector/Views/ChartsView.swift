@@ -18,7 +18,6 @@ struct dataPoint: Identifiable {
 struct ChartsView: View {
     @EnvironmentObject var groupViewModel: GroupViewModel
     @EnvironmentObject var categoryViewModel: CategoryViewModel
-    @State var groups: [GroupModel] = []
     @State var selectedGroup: GroupModel? = nil
     @State var selectedParticipantId: String? = nil
     @State var selectedParticipant: Participant? = nil
@@ -27,10 +26,6 @@ struct ChartsView: View {
     @State var filteredExpenses: [ExpenseModel] = []
     @State var selectedFrequency: FrequencyEnum? = nil
     @State var points: [dataPoint] = []
-    
-    init() {
-        filterExpenses()
-    }
     
     var body: some View {
         VStack {
@@ -42,11 +37,6 @@ struct ChartsView: View {
                             Text(group.name).tag(group as GroupModel?)
                         }
                     }
-                    .task {
-                        groups = groupViewModel.groups
-                        filterExpenses()
-                    }
-                    
                     
                     if let selectedGroup = selectedGroup {
                         Picker("Paid by", selection: $selectedPaidByUserId) {
@@ -79,9 +69,6 @@ struct ChartsView: View {
                         Text("None").tag(nil as String?)
                         ForEach(FrequencyEnum.allCases, id: \.self) { frequency in
                             Text(frequency.rawValue).tag(frequency as FrequencyEnum?)
-                        }
-                        .task {
-                            await categoryViewModel.loadCategories()
                         }
                     }
                     
@@ -138,7 +125,7 @@ struct ChartsView: View {
         if let selectedGroup = selectedGroup {
             filteredExpenses = selectedGroup.expenses
         } else {
-            for group in groups {
+            for group in groupViewModel.groups {
                 filteredExpenses += group.expenses
             }
         }
