@@ -88,7 +88,7 @@ struct NewGroupMemberView: View {
                         return Alert(
                             title: Text("Success"),
                             message: Text("Member added successfully!"),
-                            dismissButton: .default(Text("Cancel"), action: {
+                            dismissButton: .default(Text("OK"), action: {
                                 showAlert = false
                                 showAddMemberPopUp = false
                                 if let selectedMember = selectedMember {
