@@ -35,6 +35,8 @@ struct AddFriendView: View {
                 }) {
                     Text("Cancel")
                         .padding()
+                        .foregroundColor(.purple)
+
                 }
             }
             

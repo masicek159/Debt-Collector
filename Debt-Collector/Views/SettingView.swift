@@ -19,6 +19,7 @@ struct SettingView: View {
                 showingSettings = false
             }) {
                 Text("Cancel")
+                    .foregroundColor(.purple)
             }
             
             Spacer()

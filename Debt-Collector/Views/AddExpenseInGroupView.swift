@@ -14,7 +14,7 @@ struct AddExpenseInGroupView: View {
     var group: GroupModel
     @Binding var showAddOrEditExpensePopUp: Bool
     var mode: ExpenseViewModeEnum
-    var existingExpense: ExpenseModel?
+    @Binding var existingExpense: ExpenseModel?
     
     @State var name: String = ""
     @State var amount: Double = 0.0
@@ -46,6 +46,7 @@ struct AddExpenseInGroupView: View {
                         }
                     }
                     .pickerStyle(.menu)
+                    .accentColor(.purple)
                     TextField("Amount", value: $amount, formatter: decimalFormatter)
                     Picker("Select Currency", selection: $expenseCurrency) {
                         ForEach(CurrenciesHelper.shared.currencies, id: \.self) { currency in
@@ -53,12 +54,14 @@ struct AddExpenseInGroupView: View {
                         }
                     }
                     .pickerStyle(.menu)
+                    .accentColor(.purple)
                     Picker("Select Who Paid", selection: $paidBy) {
                         ForEach(group.membersAsUsers, id: \.id) { user in
                             Text(user.fullName).tag(user as User?)
                         }
                     }
                     .pickerStyle(.menu)
+                    .accentColor(.purple)
                     MultiSelector(
                         totalAmount: $amount,
                         participants: $participants,
@@ -103,24 +106,31 @@ struct AddExpenseInGroupView: View {
                             }
                         }
                     }) {
-                        Text("Add Expense")
+                        if mode == .add {
+                            Text("Add Expense")
+                                .font(.title2)
+                                .foregroundColor(.purple)
+                        } else {
+                            Text("Update Expense")
+                                .font(.title2)
+                                .foregroundColor(.purple)
+                        }
                     }
                     .disabled(uploadingExpense)
                 }
             }
             .padding()
-            .navigationBarTitle("Add Expense", displayMode: .inline)
-            .navigationBarItems(trailing: Button("Cancel") {
+            .navigationBarTitle(mode == .add ? "Add Expense" : "Update Expense", displayMode: .inline)
+            
+            .navigationBarItems(trailing: Button(action: {
                 showAddOrEditExpensePopUp = false
+            }) {
+                Text("Cancel")
+                    .foregroundColor(.purple)
             })
+            
             .task {
-                print(mode)
-                print("---------")
                 if mode == .update, let existingExpense = existingExpense {
-                    print("tsdiojgiosog")
-                    print(mode)
-                    print(existingExpense)
-                    print("sdfdsgdsf")
                     name = existingExpense.name
                     amount = existingExpense.amount
                     category = existingExpense.category

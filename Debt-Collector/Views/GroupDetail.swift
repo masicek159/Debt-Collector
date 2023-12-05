@@ -31,7 +31,8 @@ class Transaction: Hashable {
 
 struct GroupDetail: View {
     @ObservedObject var groupViewModel = GroupViewModel()
-    @State var showAddOrEditExpensePopUp = false
+    @State var showAddExpensePopUp = false
+    @State var showEditExpensePopUp = false
     @State var showAddMemberPopUp = false
     @State var isMemberListExpanded = true
     @State var isExpenseListExpanded = true
@@ -43,7 +44,6 @@ struct GroupDetail: View {
     @State private var memberToDelete: GroupMember? = nil
     @State private var expenseToDelete: ExpenseModel? = nil
     @State private var expenseToEdit: ExpenseModel? = nil
-    @State var mode: ExpenseViewModeEnum = .add
     
     @State var participants: [Participant] = []
     
@@ -178,7 +178,7 @@ struct GroupDetail: View {
                         for user in group.membersAsUsers {
                             participants.append(Participant(userId: user.id, fullName: user.fullName))
                         }
-                        showAddOrEditExpensePopUp = true
+                        showAddExpensePopUp = true
                     }) {
                         Image(systemName: "plus")
                     }
@@ -196,9 +196,8 @@ struct GroupDetail: View {
                                 }
                                 .swipeActions {
                                     Button {
-                                        expenseToEdit = expense
-                                        mode = .update
-                                        showAddOrEditExpensePopUp = true
+                                        self.expenseToEdit = expense
+                                        showEditExpensePopUp = true
                                     } label: {
                                         Label("Edit", systemImage: "pencil")
                                     }
@@ -224,12 +223,11 @@ struct GroupDetail: View {
                         }
                     }
                 }
-                .sheet(isPresented: $showAddOrEditExpensePopUp) {
-                    if mode == .add {
-                        AddExpenseInGroupView(group: group, showAddOrEditExpensePopUp: $showAddOrEditExpensePopUp, mode: mode, participants: $participants, sharesNotSpecified: $sharesNotSpecified)
-                    } else if let expenseToEdit = expenseToEdit {
-                        AddExpenseInGroupView(group: group, showAddOrEditExpensePopUp: $showAddOrEditExpensePopUp, mode: mode, existingExpense: expenseToEdit, participants: $participants, sharesNotSpecified: $sharesNotSpecified)
-                    }
+                .sheet(isPresented: $showAddExpensePopUp) {
+                    AddExpenseInGroupView(group: group, showAddOrEditExpensePopUp: $showAddExpensePopUp, mode: ExpenseViewModeEnum.add, existingExpense: $expenseToEdit, participants: $participants, sharesNotSpecified: $sharesNotSpecified)
+                }
+                .sheet(isPresented: $showEditExpensePopUp) {
+                    AddExpenseInGroupView(group: group, showAddOrEditExpensePopUp: $showEditExpensePopUp, mode: ExpenseViewModeEnum.update, existingExpense: $expenseToEdit, participants: $participants, sharesNotSpecified: $sharesNotSpecified)
                 }
                 .task {
                     await groupViewModel.getGroups()

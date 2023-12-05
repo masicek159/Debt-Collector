@@ -30,10 +30,12 @@ struct NewGroupMemberView: View {
                 showAddMemberPopUp = false
             }) {
                 Text("Cancel")
+                    .foregroundColor(.purple)
             }
         }) 
         {
             Form {
+               
                 Section {
                     Picker("Select a member", selection: $selectedMember) {
                         ForEach(userViewModel.friends, id: \.id) { user in
@@ -42,6 +44,7 @@ struct NewGroupMemberView: View {
                     }
                 }
                 .pickerStyle(.menu)
+                .accentColor(.purple)
             }
             .task {
                 userViewModel.getFriends()
@@ -64,7 +67,8 @@ struct NewGroupMemberView: View {
                     }
                 }) {
                     Text("Add member")
-                        .foregroundColor(.blue)
+                        .font(.title2)
+                        .foregroundColor(.purple)
                 }
                 .alert(isPresented: $showAlert) {
                     if existingMember {
