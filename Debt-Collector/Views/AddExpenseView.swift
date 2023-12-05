@@ -68,6 +68,7 @@ struct AddExpenseView: View {
                             for member in newGroup?.membersAsUsers ?? [] {
                                 participants.append(Participant(userId: member.id, fullName: member.fullName))
                             }
+                            selectedParticipants = participants
                             expenseCurrency = newGroup?.currency ?? "USD"
                         }
                         
@@ -154,10 +155,12 @@ struct AddExpenseView: View {
                 }
                 .task {
                     await groupViewModel.getGroups()
+                    participants = []
                     category = categoryViewModel.categories.filter{$0.name == "General"}.first
                     for member in group?.membersAsUsers ?? [] {
                         participants.append(Participant(userId: member.id, fullName: member.fullName))
                     }
+                    selectedParticipants = participants
                 }
             }
         }
