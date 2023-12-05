@@ -7,6 +7,28 @@
 
 import SwiftUI
 
+class Transaction: Hashable {
+    var debtor: String
+    var creditor: String
+    var debt: Double
+    
+    init(debtor: String, creditor: String, debt: Double) {
+        self.debtor = debtor
+        self.creditor = creditor
+        self.debt = debt
+    }
+    
+    static func == (lhs: Transaction, rhs: Transaction) -> Bool {
+        return lhs.debtor == rhs.debtor && lhs.creditor == rhs.creditor && lhs.debt == rhs.debt
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(debtor)
+        hasher.combine(creditor)
+        hasher.combine(debt)
+    }
+}
+
 struct GroupDetail: View {
     @ObservedObject var groupViewModel = GroupViewModel()
     @State var showAddExpensePopUp = false
@@ -20,6 +42,7 @@ struct GroupDetail: View {
     
     @State var group: GroupModel
     @State var sharesNotSpecified: Bool = true
+    @State var transactions: [Transaction] = []
     
     var body: some View {
         NavigationView {
@@ -80,7 +103,7 @@ struct GroupDetail: View {
                                 }
                             }
                             
-                            if group.members.count >= 3 {
+                            if group.members.count > 3 {
                                 Button(action: {
                                     showAllMembers.toggle()
                                 }) {
@@ -123,15 +146,17 @@ struct GroupDetail: View {
                                 HStack{
                                     Text(expense.name)
                                     let formattedExpense = String(format: "%.2f", expense.amount)
-
+                                    
                                     Text(formattedExpense)
                                 }
                             }
                             
-                            Button(action: {
-                                showAllExpenses.toggle()
-                            }) {
-                                Text(showAllExpenses ? "Show Less" : "Show All")
+                            if group.expenses.count > 3 {
+                                Button(action: {
+                                    showAllExpenses.toggle()
+                                }) {
+                                    Text(showAllExpenses ? "Show Less" : "Show All")
+                                }
                             }
                         }
                     }
@@ -142,6 +167,67 @@ struct GroupDetail: View {
                 .task {
                     await groupViewModel.getGroups()
                 }
+                
+                Section("Debts") {
+                    if transactions.isEmpty{
+                        Text("There are no any debts")
+                    } else {
+                        ForEach(transactions, id: \.self) { transaction in
+                            GeometryReader { geometry in
+                                HStack {
+                                    Text(transaction.debtor)
+                                        .frame(width: geometry.size.width / 3, alignment: .leading)
+                                    
+                                    Spacer()
+                                    
+                                    VStack {
+                                        Image(systemName: "arrow.right")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 100)
+                                            .foregroundColor(.blue)
+                                        
+                                        Text(String(format: "$%.2f", transaction.debt))
+                                            .font(.footnote)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Text(transaction.creditor)
+                                        .frame(width: geometry.size.width / 3, alignment: .trailing)
+                                }
+                            }
+                        }
+                    }
+                }
+                .task {
+                    calculateDebt()
+                }
+                
+            }
+        }
+    }
+    
+    private func calculateDebt() {
+        var netAmounts: [String: Double] = [:]
+        transactions = []
+        
+        for member in group.members {
+            if member.balance != 0 {
+                netAmounts[member.fullName] = member.balance
+            }
+        }
+        while netAmounts.count > 1 {
+            if let (debtor, debt) = netAmounts.min(by: { $0.value < $1.value }) {
+                if let (creditor, credit) = netAmounts.max(by: { $0.value < $1.value }) {
+                    netAmounts[creditor] = credit + debt
+                    netAmounts.removeValue(forKey: debtor)
+                    transactions.append(Transaction(debtor: debtor, creditor: creditor, debt: -debt))
+                } else {
+                    break
+                }
+            } else {
+                break
             }
         }
     }
