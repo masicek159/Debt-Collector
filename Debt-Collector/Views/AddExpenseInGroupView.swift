@@ -14,7 +14,7 @@ struct AddExpenseInGroupView: View {
     var group: GroupModel
     @Binding var showAddOrEditExpensePopUp: Bool
     var mode: ExpenseViewModeEnum
-    var existingExpense: ExpenseModel?
+    @Binding var existingExpense: ExpenseModel?
     
     @State var name: String = ""
     @State var amount: Double = 0.0
@@ -106,16 +106,18 @@ struct AddExpenseInGroupView: View {
                             }
                         }
                     }) {
-                        Text("Add Expense")
-                            .font(.title2)
-                            .foregroundColor(.purple)
+                        if mode == .add {
+                            Text("Add Expense")
+                        } else {
+                            Text("Update Expense")
+                        }
                     }
                     .disabled(uploadingExpense)
                 }
             }
             .padding()
-            .navigationBarTitle("Add Expense", displayMode: .inline)
-            .navigationBarItems(trailing: Button(action: {
+            .navigationBarTitle(mode == .add ? "Add Expense" : "Update Expense", displayMode: .inline)
+            .navigationBarItems(trailing: Button("Cancel") {
                 showAddOrEditExpensePopUp = false
             }) {
                 Text("Cancel")
@@ -123,13 +125,7 @@ struct AddExpenseInGroupView: View {
             })
             
             .task {
-                print(mode)
-                print("---------")
                 if mode == .update, let existingExpense = existingExpense {
-                    print("tsdiojgiosog")
-                    print(mode)
-                    print(existingExpense)
-                    print("sdfdsgdsf")
                     name = existingExpense.name
                     amount = existingExpense.amount
                     category = existingExpense.category
